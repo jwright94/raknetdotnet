@@ -1,0 +1,162 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F078BA68-B214-46E7-AB72-F3B99DF589B2}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RakNetDotNet</RootNamespace>
+    <AssemblyName>RakNetDotNet</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BitStream.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="NetworkID.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="NetworkIDGenerator.cs" />
+    <Compile Include="NetworkIDNode.cs" />
+    <Compile Include="NetworkIDNodeAVLBalancedBinarySearchTree.cs" />
+    <Compile Include="NetworkIDNodeBinarySearchTree.cs" />
+    <Compile Include="Packet.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PacketLogger.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PacketPriority.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PacketReliability.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PluginInterface.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PluginReceiveResult.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RakNet.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="RakNetPINVOKE.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="RakNetStatisticsStruct.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="RakNetworkFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="RakPeerInterface.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="RPCParameters.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ServerNetworkIDGenerator.cs" />
+    <Compile Include="StringCompressor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SWIGTYPE_p_ConnectionGraph.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SWIGTYPE_p_ConsoleServer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SWIGTYPE_p_f_p_RPCParameters__void.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SWIGTYPE_p_int.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SWIGTYPE_p_InternalPacket.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SWIGTYPE_p_LogCommandParser.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SWIGTYPE_p_PacketConsoleLogger.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SWIGTYPE_p_PacketFileLogger.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SWIGTYPE_p_p_unsigned_char.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SWIGTYPE_p_RakNetCommandParser.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SWIGTYPE_p_RakNetTransport.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SWIGTYPE_p_ReplicaManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SWIGTYPE_p_Router.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SWIGTYPE_p_RouterInterface.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SWIGTYPE_p_TelnetTransport.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SWIGTYPE_p_unsigned_char.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SWIGTYPE_p_unsigned_int.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SWIGTYPE_p_unsigned_short.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SWIGTYPE_p_void.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SystemAddress.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RakNetWrapper\RakNetWrapper.vcproj">
+      <Project>{0720617B-A599-4B72-9C7E-03A7A39ED774}</Project>
+      <Name>RakNetWrapper</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

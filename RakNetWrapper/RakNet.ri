@@ -1,0 +1,502 @@
+<%#
+大雑把な方針: 
+  swigはパターンマッチングによって、C++とC#の間で変数を変換する。マッチング対象はあくまで、変数の型と名前が対象。
+  同じ型でも変換方法を変えたいときは、関数宣言で特別な変数名を使うことになる。ところが.hをそのまま使って、ラッパーを
+  作成するときはこれができない。でもたいていは、ひとつのヘッダ内だけに注目すれば、型と名前が同じなら
+  変換方法も同じでよいことがほとんど。次のような２つの宣言があったとして、
+    void foo(char* input);
+    void bar(char* input);
+  fooはinputを読み込みにしか使わないが、barは書き込みもする。などということがあるだろうか。普通そうはしないはず。
+  この仮定で進めることにする...
+
+インタフェースファイル:
+  ラップするインタフェースとマッチングルール(%typemap, %apply, %template...)を書いたものだ。swigはパターンマッチングで
+  ラッパーのコードを生成するのだけれど、そもそもルールの定義がめんどくさい。swigの開発者はマクロ使いなさいといってる。
+  なので最初はBoost.Preprocessorを使って、マクロだけでメタプログラミングしようとしたけど、swigのマクロサポートはコンパイラほどではなかった。
+  で、インタフェースファイルも生成してしまうことにした。ERB(Ruby)で。.riはrubyな(swig)interfaceということ。
+    erb -P RakNet.ri
+  を実行すれば.i相当が得られる。
+
+TODO: RPCへの対応。
+TODO: 余計なマーシャリングが起こらないようにする。何が余計かは使ってみないとわからないだろう。
+TODO: SWIG interfaceの分割。まず名前空間で、続いてクラス。
+%>
+
+<%
+module TypeHelper
+  INT_TYPES = ['bool', 'signed char', 'unsigned char', 'short', 'unsigned short', 'int', 'unsigned int', 'long', 'unsigned long']
+  FP_TYPES = ['float', 'double']
+  CTYPES = INT_TYPES + FP_TYPES
+  
+  def ref(ctype)
+    "#{ctype}&"
+  end
+  
+  module_function :ref
+end
+
+# Rule definition helpers.
+module DirectiveHelper
+  include TypeHelper
+  
+  def member_template_specialize_in(ctypes, names)
+    out = ''
+    for name in names
+      for ctype in ctypes
+        out << "%template(#{name}) #{name}<#{ctype}>;\n"
+      end
+    end
+    out
+  end
+  
+  module_function :member_template_specialize_in
+end
+
+class TypeMapper
+  include TypeHelper
+
+  def initialize
+    @scope_stack = []
+  end
+    
+  def typemap_input_blittable(ctype, name, cstype)
+    ctype_and_name = concat ctype, name
+    <<EOS
+%typemap(ctype)  #{ctype_and_name} "#{ctype}"
+%typemap(imtype) #{ctype_and_name} "#{cstype}"
+%typemap(cstype) #{ctype_and_name} "#{cstype}"
+%typemap(in)     #{ctype_and_name} %{$1 = ($1_ltype)$input;%}
+%typemap(csin)   #{ctype_and_name} "$csinput"
+EOS
+  end
+  
+  def typemap_inout_blittable(ctype, name, cstype)
+    ctype_and_name = concat ctype, name
+    <<EOS
+%typemap(ctype)  #{ctype_and_name} "#{ctype}"
+%typemap(imtype) #{ctype_and_name} "[In, Out] #{cstype}"
+%typemap(cstype) #{ctype_and_name} "#{cstype}"
+%typemap(in)     #{ctype_and_name} %{$1 = ($1_ltype)$input;%}
+%typemap(csin)   #{ctype_and_name} "$csinput"
+EOS
+  end
+  
+  def typemap_void_ptr(ctype, name)
+    ctype_and_name = concat ctype, name
+    <<EOS
+%typemap(ctype)                        #{ctype_and_name} "#{ctype}"
+%typemap(imtype, out="IntPtr")         #{ctype_and_name} "IntPtr"
+%typemap(cstype)                       #{ctype_and_name} "IntPtr"
+%typemap(in)                           #{ctype_and_name} %{$1 = ($1_ltype)$input;%}
+%typemap(out)                          #{ctype_and_name} %{$result = ($1_ltype)$1;%}
+%typemap(csin)                         #{ctype_and_name} "$csinput"
+%typemap(csout, excode=SWIGEXCODE)     #{ctype_and_name} {
+    return $imcall;$excode
+  }
+%typemap(csdirectorin)                 #{ctype_and_name} "$iminput"
+%typemap(csdirectorout)                #{ctype_and_name} "$cscall"
+%typemap(csvarin, excode=SWIGEXCODE)   #{ctype_and_name} %{
+    set {
+      $imcall;$excode
+    }
+%}
+%typemap(csvarout, excode=SWIGEXCODE)  #{ctype_and_name} %{
+    get {
+      return $imcall;$excode
+    }
+%}
+EOS
+  end
+  
+  def typemap_csvarout_blittable_array(ctype, name, element_cstype, length_code)
+    ctype_and_name = concat ctype, name
+    <<EOS
+%typemap(ctype)                        #{ctype_and_name} "#{ctype}"
+%typemap(imtype, out="IntPtr")         #{ctype_and_name} "#{element_cstype}[]"
+%typemap(cstype)                       #{ctype_and_name} "#{element_cstype}[]"
+%typemap(out)                          #{ctype_and_name} %{$result = ($1_ltype)$1;%} 
+%typemap(csvarout, excode=SWIGEXCODE2) #{ctype_and_name} %{
+    get {
+      int length = (int)#{length_code};
+      #{element_cstype}[] ret = new #{element_cstype}[length];
+      IntPtr data = $imcall;
+      System.Runtime.InteropServices.Marshal.Copy(data, ret, 0, length);$excode
+      return ret;
+    }
+%}
+%typemap(csvarin, excode=SWIGEXCODE2)  #{ctype_and_name} %{$excode%}
+EOS
+  end
+  
+  def start_scope(name=nil)
+    state = {:name=>name, :clear_directives=>[]}
+    @scope_stack.unshift(state)
+    "/*** Begin #{name} ***/" if name
+  end
+  
+  def apply(ctype, name, mapped_ctype, mapped_name='')
+    current_clear_directives << "%clear #{mapped_ctype} #{mapped_name};"
+    "%apply #{ctype} #{name} { #{mapped_ctype} #{mapped_name} };"
+  end
+  
+  def apply_same_ctype(ctype, name, mapped_name='')
+    apply(ctype, name, ctype, mapped_name)
+  end
+  
+  def apply_to_creftypes(name, mapped_name='')
+    out = ''
+    for ctype in CTYPES
+      out << apply_same_ctype(ref(ctype), name, mapped_name) << "\n"
+    end
+    out
+  end
+  
+  def end_scope
+    out = ''
+    state = @scope_stack.shift
+    state[:clear_directives].each {|directive|
+      out << directive << "\n"
+    }
+    out << "/*** End #{state[:name]} ***/\n" if state[:name]
+    out
+  end
+  
+  private
+  def current_clear_directives
+    @scope_stack.first[:clear_directives]
+  end
+  
+  def concat(ctype, name)
+    ctype + ' ' + name
+  end
+end
+%>
+
+
+<%# ↓は.i用のコメント。間違えないようにね。 %>
+// WARNING: このファイル(*.i)はコードジェネレーターにより作成されました。
+// このファイルを書き換えないでください。必要ならソースファイル(*.ri)を修正してください。
+
+%module(directors="1") RakNet
+%{
+#include "BitStream.h"
+#include "MessageIdentifiers.h"
+#include "PacketPriority.h"
+#include "PluginInterface.h"
+#include "NetworkIDGenerator.h"
+#include "ServerNetworkIDGenerator.h"
+#include "RakNetTypes.h"
+#include "GetTime.h"
+#include "PacketLogger.h"
+#include "RakNetStatistics.h"
+#include "RakNetworkFactory.h"
+#include "StringCompressor.h"
+#include "RakPeerInterface.h"
+%}
+
+%include <typemaps.i>  // char*, const char* -> string
+%include <windows.i>
+
+
+// globals
+<% type_mapper = TypeMapper.new %>
+
+<%= type_mapper.typemap_input_blittable('char*', 'INPUT_BLITTABLE_ARRAY', 'byte[]') %>
+<%= type_mapper.typemap_input_blittable('const char*', 'INPUT_BLITTABLE_ARRAY', 'byte[]') %>
+<%= type_mapper.typemap_input_blittable('unsigned char*', 'INPUT_BLITTABLE_ARRAY', 'byte[]') %>
+<%= type_mapper.typemap_input_blittable('const unsigned char*', 'INPUT_BLITTABLE_ARRAY', 'byte[]') %>
+<%= type_mapper.typemap_input_blittable('const char*', 'INPUT_BLITTABLE_PTR', 'IntPtr') %>
+// add more types.
+
+<%= type_mapper.typemap_inout_blittable('char*', 'INOUT_BLITTABLE_ARRAY', 'byte[]') %>
+<%= type_mapper.typemap_inout_blittable('unsigned char*', 'INOUT_BLITTABLE_ARRAY', 'byte[]') %>
+// add more types.
+
+<%= type_mapper.typemap_void_ptr('unsigned char*', 'VOID_PTR') %>
+<%= type_mapper.typemap_void_ptr('void*', 'VOID_PTR') %>
+// add more types.
+
+
+<%= type_mapper.start_scope('BitStream') %>
+
+<%= type_mapper.apply_same_ctype('unsigned char*', 'INPUT_BLITTABLE_ARRAY', '_data') %>        // Ctor
+<%= type_mapper.apply_same_ctype('const char*', 'INPUT_BLITTABLE_ARRAY', 'input') %>           // Write
+<%= type_mapper.apply_same_ctype('const unsigned char*', 'INPUT_BLITTABLE_ARRAY', 'input') %>  // WriteAlignedBytes
+
+<%= type_mapper.apply_same_ctype('char*', 'INOUT_BLITTABLE_ARRAY', 'output') %>                // Read
+<%= type_mapper.apply_same_ctype('unsigned char*', 'INOUT_BLITTABLE_ARRAY', 'output') %>       // ReadAlignedBytes
+
+%import "../RakNet30Beta/Include/Export.h"
+%include "../RakNet30Beta/Include/BitStream.h"
+
+namespace RakNet {
+  %extend BitStream {
+    <%
+    bs_template_functions_of_fp_types = [
+      'WriteVector', 'WriteNormVector', 'WriteNormQuat', 'WriteOrthMatrix', 
+      'ReadVector', 'ReadNormVector', 'ReadNormQuat', 'ReadOrthMatrix',
+      'SerializeVector', 'SerializeNormVector', 'SerializeNormQuat', 'SerializeOrthMatrix'
+    ] 
+    bs_template_functions_of_ctypes = [
+      'Write', 'WriteDelta', 'WriteCompressed', 'WriteCompressedDelta', 
+      'Read', 'ReadDelta', 'ReadCompressed', 'ReadCompressedDelta',
+      'Serialize', 'SerializeDelta', 'SerializeCompressed', 'SerializeCompressedDelta'
+    ]
+    %>
+    
+    <%= type_mapper.apply_to_creftypes('OUTPUT') %>  // for specialize
+    <%= DirectiveHelper::member_template_specialize_in(TypeHelper::FP_TYPES, bs_template_functions_of_fp_types.grep(/(Write)|(Read)\w*/)) %>
+    <%= DirectiveHelper::member_template_specialize_in(TypeHelper::CTYPES, bs_template_functions_of_ctypes.grep(/(Write)|(Read)\w*/)) %>
+    
+    <%= type_mapper.apply_to_creftypes('INOUT') %>   // for specialize
+    <%= DirectiveHelper::member_template_specialize_in(TypeHelper::FP_TYPES, bs_template_functions_of_fp_types.grep(/Serialize\w*/)) %>
+    <%= DirectiveHelper::member_template_specialize_in(TypeHelper::CTYPES, bs_template_functions_of_ctypes.grep(/Serialize\w*/)) %>
+    
+    <%= DirectiveHelper::member_template_specialize_in(['NetworkID'], ['Write', 'Read', 'Serialize']) %>
+  }
+}
+
+<%= type_mapper.end_scope %>
+
+
+%include "../RakNet30Beta/Include/MessageIdentifiers.h"
+%include "../RakNet30Beta/Include/PluginInterface.h"
+%include "../RakNet30Beta/Include/PacketPriority.h"
+
+
+<%= type_mapper.start_scope('RakNetTypes') %>
+// RPCParameters input
+<%= type_mapper.typemap_csvarout_blittable_array('unsigned char*', 'CSVAROUT_RPC_PARAMETERS_BLITTABLE_ARRAY', 'byte', 'this.numberOfBitsOfData/8') %>
+<%= type_mapper.apply_same_ctype('unsigned char*', 'CSVAROUT_RPC_PARAMETERS_BLITTABLE_ARRAY', 'input') %>
+
+// Packet data
+<%= type_mapper.typemap_csvarout_blittable_array('unsigned char*', 'CSVAROUT_PACKET_BLITTABLE_ARRAY', 'byte', 'this.length') %>
+<%= type_mapper.apply_same_ctype('unsigned char*', 'CSVAROUT_PACKET_BLITTABLE_ARRAY', 'data') %>
+
+// This matches GetDataPtr and GetInputPtr
+<%= type_mapper.apply_same_ctype('unsigned char*', 'VOID_PTR') %>
+
+%include "../RakNet30Beta/Include/RakNetTypes.h"
+%extend Packet {
+  unsigned char* GetDataPtr() {
+    return self->data;
+  } 
+}
+%extend RPCParameters {
+  unsigned char* GetInputPtr() {
+    return self->input;
+  }
+}
+
+<%= type_mapper.end_scope %>
+
+
+%include "../RakNet30Beta/Include/GetTime.h"
+%include "../RakNet30Beta/Include/PacketLogger.h"
+%include "../RakNet30Beta/Include/RakNetStatistics.h"
+%include "../RakNet30Beta/Include/RakNetworkFactory.h"
+
+%ignore DataStructures::BinarySearchTree::Height;
+%ignore DataStructures::BinarySearchTree::Add;
+%ignore DataStructures::BinarySearchTree::Del;
+%ignore DataStructures::BinarySearchTree::IsIn;  // Why does not find 'find'?
+%include "../RakNet30Beta/Include/DS_BinarySearchTree.h"
+namespace DataStructures {
+  %template(NetworkIDNodeBinarySearchTree)            BinarySearchTree<NetworkIDNode>;
+  %template(NetworkIDNodeAVLBalancedBinarySearchTree) AVLBalancedBinarySearchTree<NetworkIDNode>;
+}
+
+
+<%= type_mapper.start_scope('NetworkIDGenerator') %>
+// This matches GetParent, SetParent, GET_BASE_OBJECT_FROM_ID, GET_OBJECT_FROM_ID
+<%= type_mapper.apply_same_ctype('void*', 'VOID_PTR') %>
+
+%feature("director") NetworkIDGenerator;
+%rename NetworkIDNode::object NetworkedObject;
+%csmethodmodifiers NetworkIDGenerator::SetParent "private";
+%csmethodmodifiers NetworkIDGenerator::GetParent "private";
+%csmethodmodifiers NetworkIDGenerator::GET_OBJECT_FROM_ID "private";
+%rename NetworkIDGenerator::GET_OBJECT_FROM_ID GET_OBJECT_FROM_IDImpl;
+
+%typemap(csdestruct, methodname="Dispose", methodmodifiers="public") NetworkIDGenerator {
+    lock(this) {
+      Parent = null;
+      if(swigCPtr.Handle != IntPtr.Zero && swigCMemOwn) {
+        swigCMemOwn = false;
+        $imcall;
+      }
+      swigCPtr = new HandleRef(null, IntPtr.Zero);
+      GC.SuppressFinalize(this);
+    }
+  }
+
+%typemap(cscode) NetworkIDGenerator %{
+  public object Parent {
+    get {
+      IntPtr parent = GetParent();
+      if (parent == IntPtr.Zero) return null;
+      return GCHandle.FromIntPtr(parent).Target;
+    }
+    set {
+      if (value != null) {
+        GCHandle gch = GCHandle.Alloc(value);
+        SetParent(GCHandle.ToIntPtr(gch));
+      } else {
+        IntPtr parent = GetParent();
+        if (parent == IntPtr.Zero) return;
+        SetParent(IntPtr.Zero);
+        GCHandle.FromIntPtr(parent).Free();
+      }
+    }
+  }
+  
+  public static object GET_OBJECT_FROM_ID(NetworkID x) {
+    IntPtr parent = GET_OBJECT_FROM_IDImpl(x);
+    if (parent == IntPtr.Zero) return null;
+    return GCHandle.FromIntPtr(parent).Target;
+  }
+%}
+
+%include "../RakNet30Beta/Include/NetworkIDGenerator.h"
+%include "ServerNetworkIDGenerator.h"
+
+<%= type_mapper.end_scope %>
+
+
+<%= type_mapper.start_scope('RakPeerInterface') %>
+<%= type_mapper.apply('char*', '', 'unsigned char*', 'input') %>                      // GenerateTreeFromStrings
+
+%include "../RakNet30Beta/Include/StringCompressor.h"
+
+<%= type_mapper.end_scope %>
+
+
+<%= type_mapper.start_scope('RakPeerInterface') %>
+<%= type_mapper.apply_same_ctype('const char*', 'INPUT_BLITTABLE_ARRAY', 'data') %>   // Send
+<%= type_mapper.apply_same_ctype('const char*', 'INPUT_BLITTABLE_PTR', 'dataPtr') %>  // SendWithPtr
+<%= type_mapper.apply('unsigned char', '', 'char', 'orderingChannel') %>              // Send and RPC. unsigned char map to byte.
+
+%ignore RakPeerInterface::RegisterAsRemoteProcedureCall;
+%ignore RakPeerInterface::RegisterClassMemberRPC;
+
+%csmethodmodifiers RakPeerInterface::UnregisterAsRemoteProcedureCall "private";
+%rename RakPeerInterface::UnregisterAsRemoteProcedureCall UnregisterAsRemoteProcedureCallImpl;
+
+%csmethodmodifiers RakPeerInterface::Shutdown "private";
+%rename RakPeerInterface::Shutdown ShutdownImpl;
+
+%wrapper %{
+typedef void (__cdecl* RPI_Callback_RPCFunction)(void *);
+SWIGEXPORT void SWIGSTDCALL CSharp_RakPeerInterface_RegisterAsRemoteProcedureCall(void * jarg1, char * jarg2, RPI_Callback_RPCFunction jarg3) {
+  RakPeerInterface *arg1 = (RakPeerInterface *) 0 ;
+  char *arg2 = (char *) 0 ;
+  void (*arg3)(RPCParameters *) = (void (*)(RPCParameters *)) 0 ;
+  
+  arg1 = (RakPeerInterface *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (void (*)(RPCParameters *))jarg3; 
+  (arg1)->RegisterAsRemoteProcedureCall(arg2,arg3);
+}
+typedef void (__cdecl* RPI_Callback_ClassMemberRPCFunction)(void *, void *);
+SWIGEXPORT void SWIGSTDCALL CSharp_RakPeerInterface_RegisterClassMemberRPC(void * jarg1, char * jarg2, RPI_Callback_ClassMemberRPCFunction jarg3) {
+  RakPeerInterface *arg1 = (RakPeerInterface *) 0 ;
+  char *arg2 = (char *) 0 ;
+  void *arg3 = (void *) 0 ;
+  
+  arg1 = (RakPeerInterface *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (void *)jarg3; 
+  (arg1)->RegisterClassMemberRPC(arg2,arg3);
+}
+%}
+%pragma(csharp) imclasscode=%{
+  [DllImport("RakNetWrapper", EntryPoint="CSharp_RakPeerInterface_RegisterAsRemoteProcedureCall")]
+  public static extern void RakPeerInterface_RegisterAsRemoteProcedureCall(HandleRef jarg1, string jarg2, RakPeerInterface._RPI_Delegate_RPCFunction jarg3);
+  
+  [DllImport("RakNetWrapper", EntryPoint="CSharp_RakPeerInterface_RegisterClassMemberRPC")]
+  public static extern void RakPeerInterface_RegisterClassMemberRPC(HandleRef jarg1, string jarg2, RakPeerInterface._RPI_Delegate_ClassMemberRPCFunction jarg3);
+%}
+%typemap(cscode) RakPeerInterface %{
+  [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+  public delegate void _RPI_Delegate_RPCFunction( IntPtr rpcParams );
+
+  public delegate void RPI_Delegate_RPCFunction( RPCParameters rpcParams );
+  
+  class RPCFunctionAdapter {
+    private _RPI_Delegate_RPCFunction callDelegate;
+    public _RPI_Delegate_RPCFunction CallDelegate {
+      get { return callDelegate; }
+    }
+    
+    private RPI_Delegate_RPCFunction adaptee;
+    
+    public RPCFunctionAdapter(RPI_Delegate_RPCFunction adaptee) {
+      callDelegate = Call;
+      this.adaptee = adaptee;
+    }
+    
+    public void Call(IntPtr rpcParams) {
+      adaptee(new RPCParameters(rpcParams, false));
+    }
+  }
+
+  [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+  public delegate void _RPI_Delegate_ClassMemberRPCFunction( IntPtr _this, IntPtr rpcParams );
+  
+  class ClassMemberRPCAdapter {
+    private _RPI_Delegate_ClassMemberRPCFunction callDelegate;
+    public _RPI_Delegate_ClassMemberRPCFunction CallDelegate {
+      get { return callDelegate; }
+    }
+    
+    private System.Reflection.MethodInfo mi;
+    
+    public ClassMemberRPCAdapter(System.Reflection.MethodInfo mi) {
+      callDelegate = Call;
+      this.mi = mi;
+    }
+    
+    public void Call(IntPtr _this, IntPtr rpcParams) {
+      if (_this == IntPtr.Zero) return;
+      mi.Invoke(GCHandle.FromIntPtr(_this).Target, new object[] { new RPCParameters(rpcParams, false) });
+    }
+  }
+
+  private System.Collections.IDictionary rpcFunctions = new System.Collections.Specialized.HybridDictionary();  // avoid GC.
+
+  public virtual void RegisterAsRemoteProcedureCall(string uniqueID, RPI_Delegate_RPCFunction functionPointer) {
+    RPCFunctionAdapter adapter = new RPCFunctionAdapter(functionPointer);
+    rpcFunctions.Add(uniqueID, adapter);
+    RakNetPINVOKE.RakPeerInterface_RegisterAsRemoteProcedureCall(swigCPtr, uniqueID, adapter.CallDelegate);
+  }
+  
+  public virtual void RegisterClassMemberRPC(string uniqueID, System.Reflection.MethodInfo mi) {
+    ClassMemberRPCAdapter adapter = new ClassMemberRPCAdapter(mi);
+    rpcFunctions.Add(uniqueID, adapter);
+    RakNetPINVOKE.RakPeerInterface_RegisterClassMemberRPC(swigCPtr, uniqueID, adapter.CallDelegate);
+  }
+
+  public virtual void UnregisterAsRemoteProcedureCall(string uniqueID) {
+    UnregisterAsRemoteProcedureCallImpl(uniqueID);
+    rpcFunctions.Remove(uniqueID);
+  }
+  
+  public virtual void Shutdown(uint blockDuration, byte orderingChannel) {
+    ShutdownImpl(blockDuration, orderingChannel);
+    rpcFunctions.Clear();
+  }
+
+  public virtual void Shutdown(uint blockDuration) {
+    ShutdownImpl(blockDuration);
+    rpcFunctions.Clear();
+  }
+%}
+
+%include "../RakNet30Beta/Include/RakPeerInterface.h"
+%extend RakPeerInterface {
+  virtual bool SendWithPtr( const char *dataPtr, const int length, PacketPriority priority, PacketReliability reliability, unsigned char orderingChannel, SystemAddress systemAddress, bool broadcast ) {
+    return self->Send(dataPtr, length, priority, reliability, orderingChannel, systemAddress, broadcast);
+  } 
+}
+
+<%= type_mapper.end_scope %>
