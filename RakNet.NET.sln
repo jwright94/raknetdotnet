@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RakNetDotNet", "RakNetDotNe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RakNetDotNetSample", "RakNetDotNetSample\RakNetDotNetSample.csproj", "{C4160298-5D23-4F97-A358-E7FFE8A28E8A}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LibStatic", "RakNet30Beta\Lib\LibStatic\LibStatic.vcproj", "{6533BDAE-0F0C-45E4-8FE7-ADD0F37FE063}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LibStatic", "RakNet30Beta\Lib\LibStatic\LibStatic_vc8.vcproj", "{6533BDAE-0F0C-45E4-8FE7-ADD0F37FE063}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -45,6 +45,10 @@ public class PacketLogger : PluginInterface {
     RakNetPINVOKE.PacketLogger_OnAttach(swigCPtr, RakPeerInterface.getCPtr(peer));
   }
 
+  public override void Update(RakPeerInterface peer) {
+    RakNetPINVOKE.PacketLogger_Update(swigCPtr, RakPeerInterface.getCPtr(peer));
+  }
+
   public override void OnDirectSocketSend(string data, uint bitsUsed, SystemAddress remoteSystemAddress) {
     RakNetPINVOKE.PacketLogger_OnDirectSocketSend(swigCPtr, data, bitsUsed, SystemAddress.getCPtr(remoteSystemAddress));
     if (RakNetPINVOKE.SWIGPendingException.Pending) throw RakNetPINVOKE.SWIGPendingException.Retrieve();
@@ -74,6 +78,14 @@ public class PacketLogger : PluginInterface {
 
   public virtual void SetPrintAcks(bool print) {
     RakNetPINVOKE.PacketLogger_SetPrintAcks(swigCPtr, print);
+  }
+
+  public virtual void SetPrefix(string _prefix) {
+    RakNetPINVOKE.PacketLogger_SetPrefix(swigCPtr, _prefix);
+  }
+
+  public virtual void SetSuffix(string _suffix) {
+    RakNetPINVOKE.PacketLogger_SetSuffix(swigCPtr, _suffix);
   }
 
 }

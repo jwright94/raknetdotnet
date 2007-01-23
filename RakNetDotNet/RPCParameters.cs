@@ -82,6 +82,26 @@ public class RPCParameters : IDisposable {
     } 
   }
 
+  public uint remoteTimestamp {
+    set {
+      RakNetPINVOKE.RPCParameters_remoteTimestamp_set(swigCPtr, value);
+    } 
+    get {
+      uint ret = RakNetPINVOKE.RPCParameters_remoteTimestamp_get(swigCPtr);
+      return ret;
+    } 
+  }
+
+  public string functionName {
+    set {
+      RakNetPINVOKE.RPCParameters_functionName_set(swigCPtr, value);
+    } 
+    get {
+      string ret = RakNetPINVOKE.RPCParameters_functionName_get(swigCPtr);
+      return ret;
+    } 
+  }
+
   public BitStream replyToSender {
     set {
       RakNetPINVOKE.RPCParameters_replyToSender_set(swigCPtr, BitStream.getCPtr(value));

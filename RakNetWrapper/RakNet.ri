@@ -17,7 +17,7 @@
     erb -P RakNet.ri
   を実行すれば.i相当が得られる。
 
-TODO: RPCへの対応。
+TODO: RakPeerInterface.StartupのSocketDescriptorの追加に対応する
 TODO: 余計なマーシャリングが起こらないようにする。何が余計かは使ってみないとわからないだろう。
 TODO: SWIG interfaceの分割。まず名前空間で、続いてクラス。
 %>
@@ -226,8 +226,8 @@ end
 <%= type_mapper.apply_same_ctype('char*', 'INOUT_BLITTABLE_ARRAY', 'output') %>                // Read
 <%= type_mapper.apply_same_ctype('unsigned char*', 'INOUT_BLITTABLE_ARRAY', 'output') %>       // ReadAlignedBytes
 
-%import "../RakNet30Beta/Include/Export.h"
-%include "../RakNet30Beta/Include/BitStream.h"
+%import "../RakNet30Beta/Source/Export.h"
+%include "../RakNet30Beta/Source/BitStream.h"
 
 namespace RakNet {
   %extend BitStream {
@@ -259,9 +259,9 @@ namespace RakNet {
 <%= type_mapper.end_scope %>
 
 
-%include "../RakNet30Beta/Include/MessageIdentifiers.h"
-%include "../RakNet30Beta/Include/PluginInterface.h"
-%include "../RakNet30Beta/Include/PacketPriority.h"
+%include "../RakNet30Beta/Source/MessageIdentifiers.h"
+%include "../RakNet30Beta/Source/PluginInterface.h"
+%include "../RakNet30Beta/Source/PacketPriority.h"
 
 
 <%= type_mapper.start_scope('RakNetTypes') %>
@@ -276,7 +276,7 @@ namespace RakNet {
 // This matches GetDataPtr and GetInputPtr
 <%= type_mapper.apply_same_ctype('unsigned char*', 'VOID_PTR') %>
 
-%include "../RakNet30Beta/Include/RakNetTypes.h"
+%include "../RakNet30Beta/Source/RakNetTypes.h"
 %extend Packet {
   unsigned char* GetDataPtr() {
     return self->data;
@@ -291,16 +291,16 @@ namespace RakNet {
 <%= type_mapper.end_scope %>
 
 
-%include "../RakNet30Beta/Include/GetTime.h"
-%include "../RakNet30Beta/Include/PacketLogger.h"
-%include "../RakNet30Beta/Include/RakNetStatistics.h"
-%include "../RakNet30Beta/Include/RakNetworkFactory.h"
+%include "../RakNet30Beta/Source/GetTime.h"
+%include "../RakNet30Beta/Source/PacketLogger.h"
+%include "../RakNet30Beta/Source/RakNetStatistics.h"
+%include "../RakNet30Beta/Source/RakNetworkFactory.h"
 
 %ignore DataStructures::BinarySearchTree::Height;
 %ignore DataStructures::BinarySearchTree::Add;
 %ignore DataStructures::BinarySearchTree::Del;
 %ignore DataStructures::BinarySearchTree::IsIn;  // Why does not find 'find'?
-%include "../RakNet30Beta/Include/DS_BinarySearchTree.h"
+%include "../RakNet30Beta/Source/DS_BinarySearchTree.h"
 namespace DataStructures {
   %template(NetworkIDNodeBinarySearchTree)            BinarySearchTree<NetworkIDNode>;
   %template(NetworkIDNodeAVLBalancedBinarySearchTree) AVLBalancedBinarySearchTree<NetworkIDNode>;
@@ -357,7 +357,7 @@ namespace DataStructures {
   }
 %}
 
-%include "../RakNet30Beta/Include/NetworkIDGenerator.h"
+%include "../RakNet30Beta/Source/NetworkIDGenerator.h"
 %include "ServerNetworkIDGenerator.h"
 
 <%= type_mapper.end_scope %>
@@ -366,7 +366,7 @@ namespace DataStructures {
 <%= type_mapper.start_scope('RakPeerInterface') %>
 <%= type_mapper.apply('char*', '', 'unsigned char*', 'input') %>                      // GenerateTreeFromStrings
 
-%include "../RakNet30Beta/Include/StringCompressor.h"
+%include "../RakNet30Beta/Source/StringCompressor.h"
 
 <%= type_mapper.end_scope %>
 
@@ -375,6 +375,7 @@ namespace DataStructures {
 <%= type_mapper.apply_same_ctype('const char*', 'INPUT_BLITTABLE_ARRAY', 'data') %>   // Send
 <%= type_mapper.apply_same_ctype('const char*', 'INPUT_BLITTABLE_PTR', 'dataPtr') %>  // SendWithPtr
 <%= type_mapper.apply('unsigned char', '', 'char', 'orderingChannel') %>              // Send and RPC. unsigned char map to byte.
+<%= type_mapper.apply_same_ctype('unsigned int*', 'INPUT', 'includedTimestamp') %>    // RPC
 
 %ignore RakPeerInterface::RegisterAsRemoteProcedureCall;
 %ignore RakPeerInterface::RegisterClassMemberRPC;
@@ -492,7 +493,7 @@ SWIGEXPORT void SWIGSTDCALL CSharp_RakPeerInterface_RegisterClassMemberRPC(void 
   }
 %}
 
-%include "../RakNet30Beta/Include/RakPeerInterface.h"
+%include "../RakNet30Beta/Source/RakPeerInterface.h"
 %extend RakPeerInterface {
   virtual bool SendWithPtr( const char *dataPtr, const int length, PacketPriority priority, PacketReliability reliability, unsigned char orderingChannel, SystemAddress systemAddress, bool broadcast ) {
     return self->Send(dataPtr, length, priority, reliability, orderingChannel, systemAddress, broadcast);

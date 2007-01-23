@@ -50,7 +50,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="./../RakNet30Beta/Include"
+				AdditionalIncludeDirectories="./../RakNet30Beta/Source"
 				PreprocessorDefinitions="WIN32;_DEBUG"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
@@ -133,7 +133,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="./../RakNet30Beta/Include"
+				AdditionalIncludeDirectories="./../RakNet30Beta/Source"
 				PreprocessorDefinitions="WIN32;NDEBUG"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -199,7 +199,7 @@
 		/>
 		<ProjectReference
 			ReferencedProjectIdentifier="{6533BDAE-0F0C-45E4-8FE7-ADD0F37FE063}"
-			RelativePathToProject=".\RakNet30Beta\Lib\LibStatic\LibStatic.vcproj"
+			RelativePathToProject=".\RakNet30Beta\Lib\LibStatic\LibStatic_vc8.vcproj"
 		/>
 	</References>
 	<Files>

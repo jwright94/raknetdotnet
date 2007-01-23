@@ -37,7 +37,7 @@ namespace RakNetDotNetSample
         /// </summary>
         public void Connect()
         {
-            client.Startup(1, 0, 30);
+            client.Startup(1, 30, new SocketDescriptor(), 1);
             if (this.client.Connect("127.0.0.1", 61160, null, 0))
                 Program.MainForm.ReceiveClientMessage("Connected." + Environment.NewLine);
             else
@@ -64,11 +64,11 @@ namespace RakNetDotNetSample
         {
             if (message.StartsWith("serverrpc"))
             {
-                client.RPC("ServerRPC", new byte[0], 0, PacketPriority.HIGH_PRIORITY, PacketReliability.RELIABLE, 0, RakNetDotNet.RakNet.UNASSIGNED_SYSTEM_ADDRESS, true, false, RakNetDotNet.RakNet.UNASSIGNED_NETWORK_ID, null);
+                client.RPC("ServerRPC", new byte[0], 0, PacketPriority.HIGH_PRIORITY, PacketReliability.RELIABLE, 0, RakNetDotNet.RakNet.UNASSIGNED_SYSTEM_ADDRESS, true, 0, RakNetDotNet.RakNet.UNASSIGNED_NETWORK_ID, null);
             }
             else if (message.StartsWith("objectmemberrpc"))
             {
-                client.RPC("Apple_Func1", new byte[0], 0, PacketPriority.HIGH_PRIORITY, PacketReliability.RELIABLE_ORDERED, 0, RakNetDotNet.RakNet.UNASSIGNED_SYSTEM_ADDRESS, true, false, Program.apple.GetNetworkID(), null);
+                client.RPC("Apple_Func1", new byte[0], 0, PacketPriority.HIGH_PRIORITY, PacketReliability.RELIABLE_ORDERED, 0, RakNetDotNet.RakNet.UNASSIGNED_SYSTEM_ADDRESS, true, 0, Program.apple.GetNetworkID(), null);
             }
             else
             {

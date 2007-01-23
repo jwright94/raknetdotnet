@@ -113,13 +113,8 @@ public class RakPeerInterface : IDisposable {
     rpcFunctions.Clear();
   }
 
-  public virtual bool Startup(ushort maxConnections, ushort localPort, int _threadSleepTimer, string forceHostAddress) {
-    bool ret = RakNetPINVOKE.RakPeerInterface_Startup__SWIG_0(swigCPtr, maxConnections, localPort, _threadSleepTimer, forceHostAddress);
-    return ret;
-  }
-
-  public virtual bool Startup(ushort maxConnections, ushort localPort, int _threadSleepTimer) {
-    bool ret = RakNetPINVOKE.RakPeerInterface_Startup__SWIG_1(swigCPtr, maxConnections, localPort, _threadSleepTimer);
+  public virtual bool Startup(ushort maxConnections, int _threadSleepTimer, SocketDescriptor socketDescriptors, uint socketDescriptorCount) {
+    bool ret = RakNetPINVOKE.RakPeerInterface_Startup(swigCPtr, maxConnections, _threadSleepTimer, SocketDescriptor.getCPtr(socketDescriptors), socketDescriptorCount);
     return ret;
   }
 
@@ -153,8 +148,13 @@ public class RakPeerInterface : IDisposable {
     RakNetPINVOKE.RakPeerInterface_GetIncomingPassword(swigCPtr, passwordData, SWIGTYPE_p_int.getCPtr(passwordDataLength));
   }
 
+  public virtual bool Connect(string host, ushort remotePort, string passwordData, int passwordDataLength, uint connectionSocketIndex) {
+    bool ret = RakNetPINVOKE.RakPeerInterface_Connect__SWIG_0(swigCPtr, host, remotePort, passwordData, passwordDataLength, connectionSocketIndex);
+    return ret;
+  }
+
   public virtual bool Connect(string host, ushort remotePort, string passwordData, int passwordDataLength) {
-    bool ret = RakNetPINVOKE.RakPeerInterface_Connect(swigCPtr, host, remotePort, passwordData, passwordDataLength);
+    bool ret = RakNetPINVOKE.RakPeerInterface_Connect__SWIG_1(swigCPtr, host, remotePort, passwordData, passwordDataLength);
     return ret;
   }
 
@@ -207,14 +207,14 @@ public class RakPeerInterface : IDisposable {
     RakNetPINVOKE.RakPeerInterface_UnregisterAsRemoteProcedureCallImpl(swigCPtr, uniqueID);
   }
 
-  public virtual bool RPC(string uniqueID, byte[] data, uint bitLength, PacketPriority priority, PacketReliability reliability, byte orderingChannel, SystemAddress systemAddress, bool broadcast, bool shiftTimestamp, NetworkID networkID, BitStream replyFromTarget) {
-    bool ret = RakNetPINVOKE.RakPeerInterface_RPC__SWIG_0(swigCPtr, uniqueID, data, bitLength, (int)priority, (int)reliability, orderingChannel, SystemAddress.getCPtr(systemAddress), broadcast, shiftTimestamp, NetworkID.getCPtr(networkID), BitStream.getCPtr(replyFromTarget));
+  public virtual bool RPC(string uniqueID, byte[] data, uint bitLength, PacketPriority priority, PacketReliability reliability, byte orderingChannel, SystemAddress systemAddress, bool broadcast, uint includedTimestamp, NetworkID networkID, BitStream replyFromTarget) {
+    bool ret = RakNetPINVOKE.RakPeerInterface_RPC__SWIG_0(swigCPtr, uniqueID, data, bitLength, (int)priority, (int)reliability, orderingChannel, SystemAddress.getCPtr(systemAddress), broadcast, includedTimestamp, NetworkID.getCPtr(networkID), BitStream.getCPtr(replyFromTarget));
     if (RakNetPINVOKE.SWIGPendingException.Pending) throw RakNetPINVOKE.SWIGPendingException.Retrieve();
     return ret;
   }
 
-  public virtual bool RPC(string uniqueID, BitStream bitStream, PacketPriority priority, PacketReliability reliability, byte orderingChannel, SystemAddress systemAddress, bool broadcast, bool shiftTimestamp, NetworkID networkID, BitStream replyFromTarget) {
-    bool ret = RakNetPINVOKE.RakPeerInterface_RPC__SWIG_1(swigCPtr, uniqueID, BitStream.getCPtr(bitStream), (int)priority, (int)reliability, orderingChannel, SystemAddress.getCPtr(systemAddress), broadcast, shiftTimestamp, NetworkID.getCPtr(networkID), BitStream.getCPtr(replyFromTarget));
+  public virtual bool RPC(string uniqueID, BitStream bitStream, PacketPriority priority, PacketReliability reliability, byte orderingChannel, SystemAddress systemAddress, bool broadcast, uint includedTimestamp, NetworkID networkID, BitStream replyFromTarget) {
+    bool ret = RakNetPINVOKE.RakPeerInterface_RPC__SWIG_1(swigCPtr, uniqueID, BitStream.getCPtr(bitStream), (int)priority, (int)reliability, orderingChannel, SystemAddress.getCPtr(systemAddress), broadcast, includedTimestamp, NetworkID.getCPtr(networkID), BitStream.getCPtr(replyFromTarget));
     if (RakNetPINVOKE.SWIGPendingException.Pending) throw RakNetPINVOKE.SWIGPendingException.Retrieve();
     return ret;
   }
@@ -266,8 +266,12 @@ public class RakPeerInterface : IDisposable {
     if (RakNetPINVOKE.SWIGPendingException.Pending) throw RakNetPINVOKE.SWIGPendingException.Retrieve();
   }
 
+  public virtual void Ping(string host, ushort remotePort, bool onlyReplyOnAcceptingConnections, uint connectionSocketIndex) {
+    RakNetPINVOKE.RakPeerInterface_Ping__SWIG_1(swigCPtr, host, remotePort, onlyReplyOnAcceptingConnections, connectionSocketIndex);
+  }
+
   public virtual void Ping(string host, ushort remotePort, bool onlyReplyOnAcceptingConnections) {
-    RakNetPINVOKE.RakPeerInterface_Ping__SWIG_1(swigCPtr, host, remotePort, onlyReplyOnAcceptingConnections);
+    RakNetPINVOKE.RakPeerInterface_Ping__SWIG_2(swigCPtr, host, remotePort, onlyReplyOnAcceptingConnections);
   }
 
   public virtual int GetAveragePing(SystemAddress systemAddress) {
@@ -296,8 +300,14 @@ public class RakPeerInterface : IDisposable {
     RakNetPINVOKE.RakPeerInterface_SetOfflinePingResponse(swigCPtr, data, length);
   }
 
+  public virtual SystemAddress GetInternalID(SystemAddress systemAddress) {
+    SystemAddress ret = new SystemAddress(RakNetPINVOKE.RakPeerInterface_GetInternalID__SWIG_0(swigCPtr, SystemAddress.getCPtr(systemAddress)), true);
+    if (RakNetPINVOKE.SWIGPendingException.Pending) throw RakNetPINVOKE.SWIGPendingException.Retrieve();
+    return ret;
+  }
+
   public virtual SystemAddress GetInternalID() {
-    SystemAddress ret = new SystemAddress(RakNetPINVOKE.RakPeerInterface_GetInternalID(swigCPtr), true);
+    SystemAddress ret = new SystemAddress(RakNetPINVOKE.RakPeerInterface_GetInternalID__SWIG_1(swigCPtr), true);
     return ret;
   }
 
@@ -336,8 +346,12 @@ public class RakPeerInterface : IDisposable {
     RakNetPINVOKE.RakPeerInterface_AllowConnectionResponseIPMigration(swigCPtr, allow);
   }
 
+  public virtual void AdvertiseSystem(string host, ushort remotePort, byte[] data, int dataLength, uint connectionSocketIndex) {
+    RakNetPINVOKE.RakPeerInterface_AdvertiseSystem__SWIG_0(swigCPtr, host, remotePort, data, dataLength, connectionSocketIndex);
+  }
+
   public virtual void AdvertiseSystem(string host, ushort remotePort, byte[] data, int dataLength) {
-    RakNetPINVOKE.RakPeerInterface_AdvertiseSystem(swigCPtr, host, remotePort, data, dataLength);
+    RakNetPINVOKE.RakPeerInterface_AdvertiseSystem__SWIG_1(swigCPtr, host, remotePort, data, dataLength);
   }
 
   public virtual void SetSplitMessageProgressInterval(int interval) {

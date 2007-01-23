@@ -81,6 +81,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ServerNetworkIDGenerator.cs" />
+    <Compile Include="SocketDescriptor.cs" />
     <Compile Include="StringCompressor.cs">
       <SubType>Code</SubType>
     </Compile>

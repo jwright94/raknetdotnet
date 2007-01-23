@@ -1076,6 +1076,27 @@ class RakNetPINVOKE {
   [DllImport("RakNetWrapper", EntryPoint="CSharp_UNDEFINED_RPC_INDEX_get")]
   public static extern int UNDEFINED_RPC_INDEX_get();
 
+  [DllImport("RakNetWrapper", EntryPoint="CSharp_new_SocketDescriptor__SWIG_0")]
+  public static extern IntPtr new_SocketDescriptor__SWIG_0();
+
+  [DllImport("RakNetWrapper", EntryPoint="CSharp_new_SocketDescriptor__SWIG_1")]
+  public static extern IntPtr new_SocketDescriptor__SWIG_1(ushort jarg1, string jarg2);
+
+  [DllImport("RakNetWrapper", EntryPoint="CSharp_SocketDescriptor_port_set")]
+  public static extern void SocketDescriptor_port_set(HandleRef jarg1, ushort jarg2);
+
+  [DllImport("RakNetWrapper", EntryPoint="CSharp_SocketDescriptor_port_get")]
+  public static extern ushort SocketDescriptor_port_get(HandleRef jarg1);
+
+  [DllImport("RakNetWrapper", EntryPoint="CSharp_SocketDescriptor_hostAddress_set")]
+  public static extern void SocketDescriptor_hostAddress_set(HandleRef jarg1, string jarg2);
+
+  [DllImport("RakNetWrapper", EntryPoint="CSharp_SocketDescriptor_hostAddress_get")]
+  public static extern string SocketDescriptor_hostAddress_get(HandleRef jarg1);
+
+  [DllImport("RakNetWrapper", EntryPoint="CSharp_delete_SocketDescriptor")]
+  public static extern void delete_SocketDescriptor(HandleRef jarg1);
+
   [DllImport("RakNetWrapper", EntryPoint="CSharp_SystemAddress_binaryAddress_set")]
   public static extern void SystemAddress_binaryAddress_set(HandleRef jarg1, uint jarg2);
 
@@ -1205,6 +1226,18 @@ class RakNetPINVOKE {
   [DllImport("RakNetWrapper", EntryPoint="CSharp_RPCParameters_recipient_get")]
   public static extern IntPtr RPCParameters_recipient_get(HandleRef jarg1);
 
+  [DllImport("RakNetWrapper", EntryPoint="CSharp_RPCParameters_remoteTimestamp_set")]
+  public static extern void RPCParameters_remoteTimestamp_set(HandleRef jarg1, uint jarg2);
+
+  [DllImport("RakNetWrapper", EntryPoint="CSharp_RPCParameters_remoteTimestamp_get")]
+  public static extern uint RPCParameters_remoteTimestamp_get(HandleRef jarg1);
+
+  [DllImport("RakNetWrapper", EntryPoint="CSharp_RPCParameters_functionName_set")]
+  public static extern void RPCParameters_functionName_set(HandleRef jarg1, string jarg2);
+
+  [DllImport("RakNetWrapper", EntryPoint="CSharp_RPCParameters_functionName_get")]
+  public static extern string RPCParameters_functionName_get(HandleRef jarg1);
+
   [DllImport("RakNetWrapper", EntryPoint="CSharp_RPCParameters_replyToSender_set")]
   public static extern void RPCParameters_replyToSender_set(HandleRef jarg1, HandleRef jarg2);
 
@@ -1247,6 +1280,9 @@ class RakNetPINVOKE {
   [DllImport("RakNetWrapper", EntryPoint="CSharp_PacketLogger_OnAttach")]
   public static extern void PacketLogger_OnAttach(HandleRef jarg1, HandleRef jarg2);
 
+  [DllImport("RakNetWrapper", EntryPoint="CSharp_PacketLogger_Update")]
+  public static extern void PacketLogger_Update(HandleRef jarg1, HandleRef jarg2);
+
   [DllImport("RakNetWrapper", EntryPoint="CSharp_PacketLogger_OnDirectSocketSend")]
   public static extern void PacketLogger_OnDirectSocketSend(HandleRef jarg1, string jarg2, uint jarg3, HandleRef jarg4);
 
@@ -1267,6 +1303,12 @@ class RakNetPINVOKE {
 
   [DllImport("RakNetWrapper", EntryPoint="CSharp_PacketLogger_SetPrintAcks")]
   public static extern void PacketLogger_SetPrintAcks(HandleRef jarg1, bool jarg2);
+
+  [DllImport("RakNetWrapper", EntryPoint="CSharp_PacketLogger_SetPrefix")]
+  public static extern void PacketLogger_SetPrefix(HandleRef jarg1, string jarg2);
+
+  [DllImport("RakNetWrapper", EntryPoint="CSharp_PacketLogger_SetSuffix")]
+  public static extern void PacketLogger_SetSuffix(HandleRef jarg1, string jarg2);
 
   [DllImport("RakNetWrapper", EntryPoint="CSharp_RakNetStatisticsStruct_messageSendBuffer_set")]
   public static extern void RakNetStatisticsStruct_messageSendBuffer_set(HandleRef jarg1, HandleRef jarg2);
@@ -1737,11 +1779,8 @@ class RakNetPINVOKE {
   [DllImport("RakNetWrapper", EntryPoint="CSharp_delete_RakPeerInterface")]
   public static extern void delete_RakPeerInterface(HandleRef jarg1);
 
-  [DllImport("RakNetWrapper", EntryPoint="CSharp_RakPeerInterface_Startup__SWIG_0")]
-  public static extern bool RakPeerInterface_Startup__SWIG_0(HandleRef jarg1, ushort jarg2, ushort jarg3, int jarg4, string jarg5);
-
-  [DllImport("RakNetWrapper", EntryPoint="CSharp_RakPeerInterface_Startup__SWIG_1")]
-  public static extern bool RakPeerInterface_Startup__SWIG_1(HandleRef jarg1, ushort jarg2, ushort jarg3, int jarg4);
+  [DllImport("RakNetWrapper", EntryPoint="CSharp_RakPeerInterface_Startup")]
+  public static extern bool RakPeerInterface_Startup(HandleRef jarg1, ushort jarg2, int jarg3, HandleRef jarg4, uint jarg5);
 
   [DllImport("RakNetWrapper", EntryPoint="CSharp_RakPeerInterface_InitializeSecurity")]
   public static extern void RakPeerInterface_InitializeSecurity(HandleRef jarg1, string jarg2, string jarg3, string jarg4, string jarg5);
@@ -1764,8 +1803,11 @@ class RakNetPINVOKE {
   [DllImport("RakNetWrapper", EntryPoint="CSharp_RakPeerInterface_GetIncomingPassword")]
   public static extern void RakPeerInterface_GetIncomingPassword(HandleRef jarg1, string jarg2, HandleRef jarg3);
 
-  [DllImport("RakNetWrapper", EntryPoint="CSharp_RakPeerInterface_Connect")]
-  public static extern bool RakPeerInterface_Connect(HandleRef jarg1, string jarg2, ushort jarg3, string jarg4, int jarg5);
+  [DllImport("RakNetWrapper", EntryPoint="CSharp_RakPeerInterface_Connect__SWIG_0")]
+  public static extern bool RakPeerInterface_Connect__SWIG_0(HandleRef jarg1, string jarg2, ushort jarg3, string jarg4, int jarg5, uint jarg6);
+
+  [DllImport("RakNetWrapper", EntryPoint="CSharp_RakPeerInterface_Connect__SWIG_1")]
+  public static extern bool RakPeerInterface_Connect__SWIG_1(HandleRef jarg1, string jarg2, ushort jarg3, string jarg4, int jarg5);
 
   [DllImport("RakNetWrapper", EntryPoint="CSharp_RakPeerInterface_ShutdownImpl__SWIG_0")]
   public static extern void RakPeerInterface_ShutdownImpl__SWIG_0(HandleRef jarg1, uint jarg2, byte jarg3);
@@ -1798,10 +1840,10 @@ class RakNetPINVOKE {
   public static extern void RakPeerInterface_UnregisterAsRemoteProcedureCallImpl(HandleRef jarg1, string jarg2);
 
   [DllImport("RakNetWrapper", EntryPoint="CSharp_RakPeerInterface_RPC__SWIG_0")]
-  public static extern bool RakPeerInterface_RPC__SWIG_0(HandleRef jarg1, string jarg2, byte[] jarg3, uint jarg4, int jarg5, int jarg6, byte jarg7, HandleRef jarg8, bool jarg9, bool jarg10, HandleRef jarg11, HandleRef jarg12);
+  public static extern bool RakPeerInterface_RPC__SWIG_0(HandleRef jarg1, string jarg2, byte[] jarg3, uint jarg4, int jarg5, int jarg6, byte jarg7, HandleRef jarg8, bool jarg9, uint jarg10, HandleRef jarg11, HandleRef jarg12);
 
   [DllImport("RakNetWrapper", EntryPoint="CSharp_RakPeerInterface_RPC__SWIG_1")]
-  public static extern bool RakPeerInterface_RPC__SWIG_1(HandleRef jarg1, string jarg2, HandleRef jarg3, int jarg4, int jarg5, byte jarg6, HandleRef jarg7, bool jarg8, bool jarg9, HandleRef jarg10, HandleRef jarg11);
+  public static extern bool RakPeerInterface_RPC__SWIG_1(HandleRef jarg1, string jarg2, HandleRef jarg3, int jarg4, int jarg5, byte jarg6, HandleRef jarg7, bool jarg8, uint jarg9, HandleRef jarg10, HandleRef jarg11);
 
   [DllImport("RakNetWrapper", EntryPoint="CSharp_RakPeerInterface_CloseConnection__SWIG_0")]
   public static extern void RakPeerInterface_CloseConnection__SWIG_0(HandleRef jarg1, HandleRef jarg2, bool jarg3, byte jarg4);
@@ -1834,7 +1876,10 @@ class RakNetPINVOKE {
   public static extern void RakPeerInterface_Ping__SWIG_0(HandleRef jarg1, HandleRef jarg2);
 
   [DllImport("RakNetWrapper", EntryPoint="CSharp_RakPeerInterface_Ping__SWIG_1")]
-  public static extern void RakPeerInterface_Ping__SWIG_1(HandleRef jarg1, string jarg2, ushort jarg3, bool jarg4);
+  public static extern void RakPeerInterface_Ping__SWIG_1(HandleRef jarg1, string jarg2, ushort jarg3, bool jarg4, uint jarg5);
+
+  [DllImport("RakNetWrapper", EntryPoint="CSharp_RakPeerInterface_Ping__SWIG_2")]
+  public static extern void RakPeerInterface_Ping__SWIG_2(HandleRef jarg1, string jarg2, ushort jarg3, bool jarg4);
 
   [DllImport("RakNetWrapper", EntryPoint="CSharp_RakPeerInterface_GetAveragePing")]
   public static extern int RakPeerInterface_GetAveragePing(HandleRef jarg1, HandleRef jarg2);
@@ -1851,8 +1896,11 @@ class RakNetPINVOKE {
   [DllImport("RakNetWrapper", EntryPoint="CSharp_RakPeerInterface_SetOfflinePingResponse")]
   public static extern void RakPeerInterface_SetOfflinePingResponse(HandleRef jarg1, byte[] jarg2, uint jarg3);
 
-  [DllImport("RakNetWrapper", EntryPoint="CSharp_RakPeerInterface_GetInternalID")]
-  public static extern IntPtr RakPeerInterface_GetInternalID(HandleRef jarg1);
+  [DllImport("RakNetWrapper", EntryPoint="CSharp_RakPeerInterface_GetInternalID__SWIG_0")]
+  public static extern IntPtr RakPeerInterface_GetInternalID__SWIG_0(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport("RakNetWrapper", EntryPoint="CSharp_RakPeerInterface_GetInternalID__SWIG_1")]
+  public static extern IntPtr RakPeerInterface_GetInternalID__SWIG_1(HandleRef jarg1);
 
   [DllImport("RakNetWrapper", EntryPoint="CSharp_RakPeerInterface_GetExternalID")]
   public static extern IntPtr RakPeerInterface_GetExternalID(HandleRef jarg1, HandleRef jarg2);
@@ -1875,8 +1923,11 @@ class RakNetPINVOKE {
   [DllImport("RakNetWrapper", EntryPoint="CSharp_RakPeerInterface_AllowConnectionResponseIPMigration")]
   public static extern void RakPeerInterface_AllowConnectionResponseIPMigration(HandleRef jarg1, bool jarg2);
 
-  [DllImport("RakNetWrapper", EntryPoint="CSharp_RakPeerInterface_AdvertiseSystem")]
-  public static extern void RakPeerInterface_AdvertiseSystem(HandleRef jarg1, string jarg2, ushort jarg3, byte[] jarg4, int jarg5);
+  [DllImport("RakNetWrapper", EntryPoint="CSharp_RakPeerInterface_AdvertiseSystem__SWIG_0")]
+  public static extern void RakPeerInterface_AdvertiseSystem__SWIG_0(HandleRef jarg1, string jarg2, ushort jarg3, byte[] jarg4, int jarg5, uint jarg6);
+
+  [DllImport("RakNetWrapper", EntryPoint="CSharp_RakPeerInterface_AdvertiseSystem__SWIG_1")]
+  public static extern void RakPeerInterface_AdvertiseSystem__SWIG_1(HandleRef jarg1, string jarg2, ushort jarg3, byte[] jarg4, int jarg5);
 
   [DllImport("RakNetWrapper", EntryPoint="CSharp_RakPeerInterface_SetSplitMessageProgressInterval")]
   public static extern void RakPeerInterface_SetSplitMessageProgressInterval(HandleRef jarg1, int jarg2);

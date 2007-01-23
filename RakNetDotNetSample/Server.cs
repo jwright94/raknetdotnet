@@ -61,7 +61,7 @@ namespace RakNetDotNetSample
         /// </summary>
         public void Start()
         {
-            bool b = server.Startup(128, 61160, 30);
+            bool b = server.Startup(128, 30, new SocketDescriptor(61160, ""), 1);
             server.SetMaximumIncomingConnections(128);
             if (b)
                 Program.MainForm.ReceiveServerMessage("Server started." + Environment.NewLine);
