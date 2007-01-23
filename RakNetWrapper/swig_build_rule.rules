@@ -18,9 +18,9 @@
 		<CustomBuildRule
 			Name="ERB"
 			DisplayName="SWIG ERB Preprocessor"
-			CommandLine="..\ruby\bin\erb -P $(InputFileName) &gt; $(InputName).i"
+			CommandLine="..\ruby\bin\ruby swig-renderer.rb $(InputFileName)"
 			Outputs="$(InputName).i"
-			AdditionalDependencies="type-mapper.rb"
+			AdditionalDependencies="swig-renderer.rb;type-mapper.rb"
 			FileExtensions="*.ri"
 			ExecutionDescription="Generating SWIG interface..."
 			>

@@ -14,17 +14,12 @@
   ラッパーのコードを生成するのだけれど、そもそもルールの定義がめんどくさい。swigの開発者はマクロ使いなさいといってる。
   なので最初はBoost.Preprocessorを使って、マクロだけでメタプログラミングしようとしたけど、swigのマクロサポートはコンパイラほどではなかった。
   で、インタフェースファイルも生成してしまうことにした。ERB(Ruby)で。.riはrubyな(swig)interfaceということ。
-    erb -P RakNet.ri
+    swig-renderer.rb RakNet.ri
   を実行すれば.i相当が得られる。
 
 TODO: 余計なマーシャリングが起こらないようにする。何が余計かは使ってみないとわからないだろう。
 TODO: SWIG interfaceの分割。まず名前空間で、続いてクラス。
 %>
-
-<%
-require 'type-mapper'
-%>
-
 
 <%# ↓は.i用のコメント。間違えないようにね。 %>
 // WARNING: このファイル(*.i)はコードジェネレーターにより作成されました。
@@ -52,32 +47,30 @@ require 'type-mapper'
 
 
 // globals
-<% type_mapper = TypeMapper.new %>
-
-<%= type_mapper.typemap_input_blittable('char*', 'INPUT_BLITTABLE_ARRAY', 'byte[]') %>
-<%= type_mapper.typemap_input_blittable('const char*', 'INPUT_BLITTABLE_ARRAY', 'byte[]') %>
-<%= type_mapper.typemap_input_blittable('unsigned char*', 'INPUT_BLITTABLE_ARRAY', 'byte[]') %>
-<%= type_mapper.typemap_input_blittable('const unsigned char*', 'INPUT_BLITTABLE_ARRAY', 'byte[]') %>
-<%= type_mapper.typemap_input_blittable('const char*', 'INPUT_BLITTABLE_PTR', 'IntPtr') %>
+<%= @type_mapper.typemap_input_blittable('char*', 'INPUT_BLITTABLE_ARRAY', 'byte[]') %>
+<%= @type_mapper.typemap_input_blittable('const char*', 'INPUT_BLITTABLE_ARRAY', 'byte[]') %>
+<%= @type_mapper.typemap_input_blittable('unsigned char*', 'INPUT_BLITTABLE_ARRAY', 'byte[]') %>
+<%= @type_mapper.typemap_input_blittable('const unsigned char*', 'INPUT_BLITTABLE_ARRAY', 'byte[]') %>
+<%= @type_mapper.typemap_input_blittable('const char*', 'INPUT_BLITTABLE_PTR', 'IntPtr') %>
 // add more types.
 
-<%= type_mapper.typemap_inout_blittable('char*', 'INOUT_BLITTABLE_ARRAY', 'byte[]') %>
-<%= type_mapper.typemap_inout_blittable('unsigned char*', 'INOUT_BLITTABLE_ARRAY', 'byte[]') %>
+<%= @type_mapper.typemap_inout_blittable('char*', 'INOUT_BLITTABLE_ARRAY', 'byte[]') %>
+<%= @type_mapper.typemap_inout_blittable('unsigned char*', 'INOUT_BLITTABLE_ARRAY', 'byte[]') %>
 // add more types.
 
-<%= type_mapper.typemap_void_ptr('unsigned char*', 'VOID_PTR') %>
-<%= type_mapper.typemap_void_ptr('void*', 'VOID_PTR') %>
+<%= @type_mapper.typemap_void_ptr('unsigned char*', 'VOID_PTR') %>
+<%= @type_mapper.typemap_void_ptr('void*', 'VOID_PTR') %>
 // add more types.
 
 
-<%= type_mapper.start_scope('BitStream') %>
+<%= @type_mapper.start_scope('BitStream') %>
 
-<%= type_mapper.apply_same_ctype('unsigned char*', 'INPUT_BLITTABLE_ARRAY', '_data') %>        // Ctor
-<%= type_mapper.apply_same_ctype('const char*', 'INPUT_BLITTABLE_ARRAY', 'input') %>           // Write
-<%= type_mapper.apply_same_ctype('const unsigned char*', 'INPUT_BLITTABLE_ARRAY', 'input') %>  // WriteAlignedBytes
+<%= @type_mapper.apply_same_ctype('unsigned char*', 'INPUT_BLITTABLE_ARRAY', '_data') %>        // Ctor
+<%= @type_mapper.apply_same_ctype('const char*', 'INPUT_BLITTABLE_ARRAY', 'input') %>           // Write
+<%= @type_mapper.apply_same_ctype('const unsigned char*', 'INPUT_BLITTABLE_ARRAY', 'input') %>  // WriteAlignedBytes
 
-<%= type_mapper.apply_same_ctype('char*', 'INOUT_BLITTABLE_ARRAY', 'output') %>                // Read
-<%= type_mapper.apply_same_ctype('unsigned char*', 'INOUT_BLITTABLE_ARRAY', 'output') %>       // ReadAlignedBytes
+<%= @type_mapper.apply_same_ctype('char*', 'INOUT_BLITTABLE_ARRAY', 'output') %>                // Read
+<%= @type_mapper.apply_same_ctype('unsigned char*', 'INOUT_BLITTABLE_ARRAY', 'output') %>       // ReadAlignedBytes
 
 %import "../RakNet30Beta/Source/Export.h"
 %include "../RakNet30Beta/Source/BitStream.h"
@@ -97,11 +90,11 @@ namespace RakNet {
     ]
     %>
     
-    <%= type_mapper.apply_to_creftypes('OUTPUT') %>  // for specialize
+    <%= @type_mapper.apply_to_creftypes('OUTPUT') %>  // for specialize
     <%= DirectiveHelper::member_template_specialize_in(TypeHelper::FP_TYPES, bs_template_functions_of_fp_types.grep(/(Write)|(Read)\w*/)) %>
     <%= DirectiveHelper::member_template_specialize_in(TypeHelper::CTYPES, bs_template_functions_of_ctypes.grep(/(Write)|(Read)\w*/)) %>
     
-    <%= type_mapper.apply_to_creftypes('INOUT') %>   // for specialize
+    <%= @type_mapper.apply_to_creftypes('INOUT') %>   // for specialize
     <%= DirectiveHelper::member_template_specialize_in(TypeHelper::FP_TYPES, bs_template_functions_of_fp_types.grep(/Serialize\w*/)) %>
     <%= DirectiveHelper::member_template_specialize_in(TypeHelper::CTYPES, bs_template_functions_of_ctypes.grep(/Serialize\w*/)) %>
     
@@ -109,7 +102,7 @@ namespace RakNet {
   }
 }
 
-<%= type_mapper.end_scope %>
+<%= @type_mapper.end_scope %>
 
 
 %include "../RakNet30Beta/Source/MessageIdentifiers.h"
@@ -117,17 +110,17 @@ namespace RakNet {
 %include "../RakNet30Beta/Source/PacketPriority.h"
 
 
-<%= type_mapper.start_scope('RakNetTypes') %>
+<%= @type_mapper.start_scope('RakNetTypes') %>
 // RPCParameters input
-<%= type_mapper.typemap_csvarout_blittable_array('unsigned char*', 'CSVAROUT_RPC_PARAMETERS_BLITTABLE_ARRAY', 'byte', 'this.numberOfBitsOfData/8') %>
-<%= type_mapper.apply_same_ctype('unsigned char*', 'CSVAROUT_RPC_PARAMETERS_BLITTABLE_ARRAY', 'input') %>
+<%= @type_mapper.typemap_csvarout_blittable_array('unsigned char*', 'CSVAROUT_RPC_PARAMETERS_BLITTABLE_ARRAY', 'byte', 'this.numberOfBitsOfData/8') %>
+<%= @type_mapper.apply_same_ctype('unsigned char*', 'CSVAROUT_RPC_PARAMETERS_BLITTABLE_ARRAY', 'input') %>
 
 // Packet data
-<%= type_mapper.typemap_csvarout_blittable_array('unsigned char*', 'CSVAROUT_PACKET_BLITTABLE_ARRAY', 'byte', 'this.length') %>
-<%= type_mapper.apply_same_ctype('unsigned char*', 'CSVAROUT_PACKET_BLITTABLE_ARRAY', 'data') %>
+<%= @type_mapper.typemap_csvarout_blittable_array('unsigned char*', 'CSVAROUT_PACKET_BLITTABLE_ARRAY', 'byte', 'this.length') %>
+<%= @type_mapper.apply_same_ctype('unsigned char*', 'CSVAROUT_PACKET_BLITTABLE_ARRAY', 'data') %>
 
 // This matches GetDataPtr and GetInputPtr
-<%= type_mapper.apply_same_ctype('unsigned char*', 'VOID_PTR') %>
+<%= @type_mapper.apply_same_ctype('unsigned char*', 'VOID_PTR') %>
 
 %ignore SocketDescriptor;
 
@@ -143,7 +136,7 @@ namespace RakNet {
   }
 }
 
-<%= type_mapper.end_scope %>
+<%= @type_mapper.end_scope %>
 
 
 %include "../RakNet30Beta/Source/GetTime.h"
@@ -162,9 +155,9 @@ namespace DataStructures {
 }
 
 
-<%= type_mapper.start_scope('NetworkIDGenerator') %>
+<%= @type_mapper.start_scope('NetworkIDGenerator') %>
 // This matches GetParent, SetParent, GET_BASE_OBJECT_FROM_ID, GET_OBJECT_FROM_ID
-<%= type_mapper.apply_same_ctype('void*', 'VOID_PTR') %>
+<%= @type_mapper.apply_same_ctype('void*', 'VOID_PTR') %>
 
 %feature("director") NetworkIDGenerator;
 %rename NetworkIDNode::object NetworkedObject;
@@ -215,25 +208,25 @@ namespace DataStructures {
 %include "../RakNet30Beta/Source/NetworkIDGenerator.h"
 %include "ServerNetworkIDGenerator.h"
 
-<%= type_mapper.end_scope %>
+<%= @type_mapper.end_scope %>
 
 
-<%= type_mapper.start_scope('RakPeerInterface') %>
-<%= type_mapper.apply('char*', '', 'unsigned char*', 'input') %>                      // GenerateTreeFromStrings
+<%= @type_mapper.start_scope('RakPeerInterface') %>
+<%= @type_mapper.apply('char*', '', 'unsigned char*', 'input') %>                      // GenerateTreeFromStrings
 
 %include "../RakNet30Beta/Source/StringCompressor.h"
 
-<%= type_mapper.end_scope %>
+<%= @type_mapper.end_scope %>
 
 
-<%= type_mapper.start_scope('RakPeerInterface') %>
-<%= type_mapper.apply_same_ctype('const char*', 'INPUT_BLITTABLE_ARRAY', 'data') %>   // Send
-<%= type_mapper.apply_same_ctype('const char*', 'INPUT_BLITTABLE_PTR', 'dataPtr') %>  // SendWithPtr
-<%= type_mapper.apply('unsigned char', '', 'char', 'orderingChannel') %>              // Send and RPC. unsigned char map to byte.
-<%= type_mapper.apply_same_ctype('unsigned int*', 'INPUT', 'includedTimestamp') %>    // RPC
+<%= @type_mapper.start_scope('RakPeerInterface') %>
+<%= @type_mapper.apply_same_ctype('const char*', 'INPUT_BLITTABLE_ARRAY', 'data') %>   // Send
+<%= @type_mapper.apply_same_ctype('const char*', 'INPUT_BLITTABLE_PTR', 'dataPtr') %>  // SendWithPtr
+<%= @type_mapper.apply('unsigned char', '', 'char', 'orderingChannel') %>              // Send and RPC. unsigned char map to byte.
+<%= @type_mapper.apply_same_ctype('unsigned int*', 'INPUT', 'includedTimestamp') %>    // RPC
 
-<%= type_mapper.typemap_input_blittable('SocketDescriptor *', 'INPUT_BLITTABLE_ARRAY', 'SocketDescriptor[]') %>
-<%= type_mapper.apply_same_ctype('SocketDescriptor *', 'INPUT_BLITTABLE_ARRAY', 'socketDescriptors') %>  // Startup
+<%= @type_mapper.typemap_input_blittable('SocketDescriptor *', 'INPUT_BLITTABLE_ARRAY', 'SocketDescriptor[]') %>
+<%= @type_mapper.apply_same_ctype('SocketDescriptor *', 'INPUT_BLITTABLE_ARRAY', 'socketDescriptors') %>  // Startup
 
 %ignore RakPeerInterface::RegisterAsRemoteProcedureCall;
 %ignore RakPeerInterface::RegisterClassMemberRPC;
@@ -358,4 +351,4 @@ SWIGEXPORT void SWIGSTDCALL CSharp_RakPeerInterface_RegisterClassMemberRPC(void 
   } 
 }
 
-<%= type_mapper.end_scope %>
+<%= @type_mapper.end_scope %>

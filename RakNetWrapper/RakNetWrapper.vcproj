@@ -262,6 +262,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\swig-renderer.rb"
+			>
+		</File>
+		<File
 			RelativePath=".\type-mapper.rb"
 			>
 		</File>
