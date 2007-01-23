@@ -33,6 +33,9 @@ TODO: 余計なマーシャリングが起こらないようにする。何が余計かは使ってみないとわか
 #include "PacketLogger.h"
 #include "RakNetStatistics.h"
 #include "RakNetworkFactory.h"
+#include "ReplicaManager.h"
+#include "ReplicaEnums.h"
+#include "Replica.h"
 %}
 
 %include <typemaps.i>  // char*, const char* -> string
@@ -73,3 +76,7 @@ TODO: 余計なマーシャリングが起こらないようにする。何が余計かは使ってみないとわか
 %include "NetworkIDGenerator.i"
 %include "StringCompressor.i"
 %include "RakPeerInterface.i"
+
+%include "../RakNet30Beta/Source/ReplicaManager.h"
+%include "../RakNet30Beta/Source/ReplicaEnums.h"
+%include "../RakNet30Beta/Source/Replica.h"

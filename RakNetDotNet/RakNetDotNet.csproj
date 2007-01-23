@@ -77,6 +77,9 @@
     <Compile Include="RakPeerInterface.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Replica.cs" />
+    <Compile Include="ReplicaManager.cs" />
+    <Compile Include="ReplicaReturnResult.cs" />
     <Compile Include="RPCParameters.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -87,12 +90,16 @@
     <Compile Include="StringCompressor.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SWIGTYPE_p_bool.cs" />
     <Compile Include="SWIGTYPE_p_ConnectionGraph.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SWIGTYPE_p_ConsoleServer.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SWIGTYPE_p_f_p_RakNet__BitStream_SystemAddress_p_ReplicaManager_p_void__ReplicaReturnResult.cs" />
+    <Compile Include="SWIGTYPE_p_f_p_RakNet__BitStream_unsigned_int_NetworkID_p_Replica_SystemAddress_p_ReplicaManager_p_void__ReplicaReturnResult.cs" />
+    <Compile Include="SWIGTYPE_p_f_p_RakNet__BitStream_unsigned_int_SystemAddress_p_ReplicaManager_p_void__ReplicaReturnResult.cs" />
     <Compile Include="SWIGTYPE_p_int.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -108,6 +115,8 @@
     <Compile Include="SWIGTYPE_p_PacketFileLogger.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SWIGTYPE_p_PacketPriority.cs" />
+    <Compile Include="SWIGTYPE_p_PacketReliability.cs" />
     <Compile Include="SWIGTYPE_p_p_unsigned_char.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -117,9 +126,10 @@
     <Compile Include="SWIGTYPE_p_RakNetTransport.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SWIGTYPE_p_ReplicaManager.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="SWIGTYPE_p_ReplicaManager__CommandStruct.cs" />
+    <Compile Include="SWIGTYPE_p_ReplicaManager__ParticipantStruct.cs" />
+    <Compile Include="SWIGTYPE_p_ReplicaManager__RegisteredReplica.cs" />
+    <Compile Include="SWIGTYPE_p_ReplicaManager__RemoteObject.cs" />
     <Compile Include="SWIGTYPE_p_Router.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -138,6 +148,7 @@
     <Compile Include="SWIGTYPE_p_unsigned_short.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SWIGTYPE_p_void.cs" />
     <Compile Include="SystemAddress.cs">
       <SubType>Code</SubType>
     </Compile>
