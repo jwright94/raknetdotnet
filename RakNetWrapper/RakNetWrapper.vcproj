@@ -258,6 +258,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\DS_BinarySearchTree.ri"
+			>
+		</File>
+		<File
 			RelativePath=".\NetworkIDGenerator.ri"
 			>
 		</File>
@@ -275,6 +279,10 @@
 		</File>
 		<File
 			RelativePath=".\RakPeerInterface.ri"
+			>
+		</File>
+		<File
+			RelativePath=".\StringCompressor.ri"
 			>
 		</File>
 		<File

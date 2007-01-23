@@ -33,7 +33,6 @@ TODO: 余計なマーシャリングが起こらないようにする。何が余計かは使ってみないとわか
 #include "PacketLogger.h"
 #include "RakNetStatistics.h"
 #include "RakNetworkFactory.h"
-#include "StringCompressor.h"
 %}
 
 %include <typemaps.i>  // char*, const char* -> string
@@ -70,21 +69,7 @@ TODO: 余計なマーシャリングが起こらないようにする。何が余計かは使ってみないとわか
 %include "../RakNet30Beta/Source/RakNetStatistics.h"
 %include "../RakNet30Beta/Source/RakNetworkFactory.h"
 
-%ignore DataStructures::BinarySearchTree::Height;
-%ignore DataStructures::BinarySearchTree::Add;
-%ignore DataStructures::BinarySearchTree::Del;
-%ignore DataStructures::BinarySearchTree::IsIn;  // Why does not find 'find'?
-%include "../RakNet30Beta/Source/DS_BinarySearchTree.h"
-namespace DataStructures {
-  %template(NetworkIDNodeBinarySearchTree)            BinarySearchTree<NetworkIDNode>;
-  %template(NetworkIDNodeAVLBalancedBinarySearchTree) AVLBalancedBinarySearchTree<NetworkIDNode>;
-}
-
+%include "DS_BinarySearchTree.i"
 %include "NetworkIDGenerator.i"
-
-<%= @type_mapper.start_scope('StringCompressor') %>
-<%= @type_mapper.apply('char*', '', 'unsigned char*', 'input') %>                      // GenerateTreeFromStrings
-%include "../RakNet30Beta/Source/StringCompressor.h"
-<%= @type_mapper.end_scope %>
-
+%include "StringCompressor.i"
 %include "RakPeerInterface.i"

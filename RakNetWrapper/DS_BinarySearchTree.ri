@@ -1,0 +1,13 @@
+%{
+#include "DS_BinarySearchTree.h"
+%}
+
+%ignore DataStructures::BinarySearchTree::Height;
+%ignore DataStructures::BinarySearchTree::Add;
+%ignore DataStructures::BinarySearchTree::Del;
+%ignore DataStructures::BinarySearchTree::IsIn;  // Why does not find 'find'?
+%include "../RakNet30Beta/Source/DS_BinarySearchTree.h"
+namespace DataStructures {
+  %template(NetworkIDNodeBinarySearchTree)            BinarySearchTree<NetworkIDNode>;
+  %template(NetworkIDNodeAVLBalancedBinarySearchTree) AVLBalancedBinarySearchTree<NetworkIDNode>;
+}
