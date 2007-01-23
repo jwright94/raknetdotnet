@@ -1076,27 +1076,6 @@ class RakNetPINVOKE {
   [DllImport("RakNetWrapper", EntryPoint="CSharp_UNDEFINED_RPC_INDEX_get")]
   public static extern int UNDEFINED_RPC_INDEX_get();
 
-  [DllImport("RakNetWrapper", EntryPoint="CSharp_new_SocketDescriptor__SWIG_0")]
-  public static extern IntPtr new_SocketDescriptor__SWIG_0();
-
-  [DllImport("RakNetWrapper", EntryPoint="CSharp_new_SocketDescriptor__SWIG_1")]
-  public static extern IntPtr new_SocketDescriptor__SWIG_1(ushort jarg1, string jarg2);
-
-  [DllImport("RakNetWrapper", EntryPoint="CSharp_SocketDescriptor_port_set")]
-  public static extern void SocketDescriptor_port_set(HandleRef jarg1, ushort jarg2);
-
-  [DllImport("RakNetWrapper", EntryPoint="CSharp_SocketDescriptor_port_get")]
-  public static extern ushort SocketDescriptor_port_get(HandleRef jarg1);
-
-  [DllImport("RakNetWrapper", EntryPoint="CSharp_SocketDescriptor_hostAddress_set")]
-  public static extern void SocketDescriptor_hostAddress_set(HandleRef jarg1, string jarg2);
-
-  [DllImport("RakNetWrapper", EntryPoint="CSharp_SocketDescriptor_hostAddress_get")]
-  public static extern string SocketDescriptor_hostAddress_get(HandleRef jarg1);
-
-  [DllImport("RakNetWrapper", EntryPoint="CSharp_delete_SocketDescriptor")]
-  public static extern void delete_SocketDescriptor(HandleRef jarg1);
-
   [DllImport("RakNetWrapper", EntryPoint="CSharp_SystemAddress_binaryAddress_set")]
   public static extern void SystemAddress_binaryAddress_set(HandleRef jarg1, uint jarg2);
 
@@ -1780,7 +1759,7 @@ class RakNetPINVOKE {
   public static extern void delete_RakPeerInterface(HandleRef jarg1);
 
   [DllImport("RakNetWrapper", EntryPoint="CSharp_RakPeerInterface_Startup")]
-  public static extern bool RakPeerInterface_Startup(HandleRef jarg1, ushort jarg2, int jarg3, HandleRef jarg4, uint jarg5);
+  public static extern bool RakPeerInterface_Startup(HandleRef jarg1, ushort jarg2, int jarg3, SocketDescriptor[] jarg4, uint jarg5);
 
   [DllImport("RakNetWrapper", EntryPoint="CSharp_RakPeerInterface_InitializeSecurity")]
   public static extern void RakPeerInterface_InitializeSecurity(HandleRef jarg1, string jarg2, string jarg3, string jarg4, string jarg5);

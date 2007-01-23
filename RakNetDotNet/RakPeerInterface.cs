@@ -113,8 +113,8 @@ public class RakPeerInterface : IDisposable {
     rpcFunctions.Clear();
   }
 
-  public virtual bool Startup(ushort maxConnections, int _threadSleepTimer, SocketDescriptor socketDescriptors, uint socketDescriptorCount) {
-    bool ret = RakNetPINVOKE.RakPeerInterface_Startup(swigCPtr, maxConnections, _threadSleepTimer, SocketDescriptor.getCPtr(socketDescriptors), socketDescriptorCount);
+  public virtual bool Startup(ushort maxConnections, int _threadSleepTimer, SocketDescriptor[] socketDescriptors, uint socketDescriptorCount) {
+    bool ret = RakNetPINVOKE.RakPeerInterface_Startup(swigCPtr, maxConnections, _threadSleepTimer, socketDescriptors, socketDescriptorCount);
     return ret;
   }
 

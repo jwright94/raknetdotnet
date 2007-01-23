@@ -17,7 +17,6 @@
     erb -P RakNet.ri
   を実行すれば.i相当が得られる。
 
-TODO: RakPeerInterface.StartupのSocketDescriptorの追加に対応する
 TODO: 余計なマーシャリングが起こらないようにする。何が余計かは使ってみないとわからないだろう。
 TODO: SWIG interfaceの分割。まず名前空間で、続いてクラス。
 %>
@@ -276,6 +275,8 @@ namespace RakNet {
 // This matches GetDataPtr and GetInputPtr
 <%= type_mapper.apply_same_ctype('unsigned char*', 'VOID_PTR') %>
 
+%ignore SocketDescriptor;
+
 %include "../RakNet30Beta/Source/RakNetTypes.h"
 %extend Packet {
   unsigned char* GetDataPtr() {
@@ -376,6 +377,9 @@ namespace DataStructures {
 <%= type_mapper.apply_same_ctype('const char*', 'INPUT_BLITTABLE_PTR', 'dataPtr') %>  // SendWithPtr
 <%= type_mapper.apply('unsigned char', '', 'char', 'orderingChannel') %>              // Send and RPC. unsigned char map to byte.
 <%= type_mapper.apply_same_ctype('unsigned int*', 'INPUT', 'includedTimestamp') %>    // RPC
+
+<%= type_mapper.typemap_input_blittable('SocketDescriptor *', 'INPUT_BLITTABLE_ARRAY', 'SocketDescriptor[]') %>
+<%= type_mapper.apply_same_ctype('SocketDescriptor *', 'INPUT_BLITTABLE_ARRAY', 'socketDescriptors') %>  // Startup
 
 %ignore RakPeerInterface::RegisterAsRemoteProcedureCall;
 %ignore RakPeerInterface::RegisterClassMemberRPC;

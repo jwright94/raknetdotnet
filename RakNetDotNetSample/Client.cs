@@ -37,7 +37,8 @@ namespace RakNetDotNetSample
         /// </summary>
         public void Connect()
         {
-            client.Startup(1, 30, new SocketDescriptor(), 1);
+            SocketDescriptor[] socketDescriptors = new SocketDescriptor[] { new SocketDescriptor() };
+            client.Startup(1, 30, socketDescriptors, (uint)socketDescriptors.Length);
             if (this.client.Connect("127.0.0.1", 61160, null, 0))
                 Program.MainForm.ReceiveClientMessage("Connected." + Environment.NewLine);
             else
