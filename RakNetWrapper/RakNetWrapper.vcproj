@@ -254,11 +254,27 @@
 			</File>
 		</Filter>
 		<File
+			RelativePath=".\BitStream.ri"
+			>
+		</File>
+		<File
+			RelativePath=".\NetworkIDGenerator.ri"
+			>
+		</File>
+		<File
 			RelativePath=".\RakNet.i"
 			>
 		</File>
 		<File
 			RelativePath=".\RakNet.ri"
+			>
+		</File>
+		<File
+			RelativePath=".\RakNetTypes.ri"
+			>
+		</File>
+		<File
+			RelativePath=".\RakPeerInterface.ri"
 			>
 		</File>
 		<File

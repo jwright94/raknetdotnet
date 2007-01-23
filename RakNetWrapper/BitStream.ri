@@ -1,0 +1,44 @@
+%{
+#include "BitStream.h"
+%}
+
+<%= @type_mapper.start_scope('BitStream') %>
+
+<%= @type_mapper.apply_same_ctype('unsigned char*', 'INPUT_BLITTABLE_ARRAY', '_data') %>        // Ctor
+<%= @type_mapper.apply_same_ctype('const char*', 'INPUT_BLITTABLE_ARRAY', 'input') %>           // Write
+<%= @type_mapper.apply_same_ctype('const unsigned char*', 'INPUT_BLITTABLE_ARRAY', 'input') %>  // WriteAlignedBytes
+
+<%= @type_mapper.apply_same_ctype('char*', 'INOUT_BLITTABLE_ARRAY', 'output') %>                // Read
+<%= @type_mapper.apply_same_ctype('unsigned char*', 'INOUT_BLITTABLE_ARRAY', 'output') %>       // ReadAlignedBytes
+
+%import "../RakNet30Beta/Source/Export.h"
+%include "../RakNet30Beta/Source/BitStream.h"
+
+namespace RakNet {
+  %extend BitStream {
+    <%
+    bs_template_functions_of_fp_types = [
+      'WriteVector', 'WriteNormVector', 'WriteNormQuat', 'WriteOrthMatrix', 
+      'ReadVector', 'ReadNormVector', 'ReadNormQuat', 'ReadOrthMatrix',
+      'SerializeVector', 'SerializeNormVector', 'SerializeNormQuat', 'SerializeOrthMatrix'
+    ] 
+    bs_template_functions_of_ctypes = [
+      'Write', 'WriteDelta', 'WriteCompressed', 'WriteCompressedDelta', 
+      'Read', 'ReadDelta', 'ReadCompressed', 'ReadCompressedDelta',
+      'Serialize', 'SerializeDelta', 'SerializeCompressed', 'SerializeCompressedDelta'
+    ]
+    %>
+    
+    <%= @type_mapper.apply_to_creftypes('OUTPUT') %>  // for specialize
+    <%= DirectiveHelper::member_template_specialize_in(TypeHelper::FP_TYPES, bs_template_functions_of_fp_types.grep(/(Write)|(Read)\w*/)) %>
+    <%= DirectiveHelper::member_template_specialize_in(TypeHelper::CTYPES, bs_template_functions_of_ctypes.grep(/(Write)|(Read)\w*/)) %>
+    
+    <%= @type_mapper.apply_to_creftypes('INOUT') %>   // for specialize
+    <%= DirectiveHelper::member_template_specialize_in(TypeHelper::FP_TYPES, bs_template_functions_of_fp_types.grep(/Serialize\w*/)) %>
+    <%= DirectiveHelper::member_template_specialize_in(TypeHelper::CTYPES, bs_template_functions_of_ctypes.grep(/Serialize\w*/)) %>
+    
+    <%= DirectiveHelper::member_template_specialize_in(['NetworkID'], ['Write', 'Read', 'Serialize']) %>
+  }
+}
+
+<%= @type_mapper.end_scope %>

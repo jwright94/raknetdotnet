@@ -1,0 +1,59 @@
+%{
+#include "NetworkIDGenerator.h"
+#include "ServerNetworkIDGenerator.h"
+%}
+
+<%= @type_mapper.start_scope('NetworkIDGenerator') %>
+// This matches GetParent, SetParent, GET_BASE_OBJECT_FROM_ID, GET_OBJECT_FROM_ID
+<%= @type_mapper.apply_same_ctype('void*', 'VOID_PTR') %>
+
+%feature("director") NetworkIDGenerator;
+%rename NetworkIDNode::object NetworkedObject;
+%csmethodmodifiers NetworkIDGenerator::SetParent "private";
+%csmethodmodifiers NetworkIDGenerator::GetParent "private";
+%csmethodmodifiers NetworkIDGenerator::GET_OBJECT_FROM_ID "private";
+%rename NetworkIDGenerator::GET_OBJECT_FROM_ID GET_OBJECT_FROM_IDImpl;
+
+%typemap(csdestruct, methodname="Dispose", methodmodifiers="public") NetworkIDGenerator {
+    lock(this) {
+      Parent = null;
+      if(swigCPtr.Handle != IntPtr.Zero && swigCMemOwn) {
+        swigCMemOwn = false;
+        $imcall;
+      }
+      swigCPtr = new HandleRef(null, IntPtr.Zero);
+      GC.SuppressFinalize(this);
+    }
+  }
+
+%typemap(cscode) NetworkIDGenerator %{
+  public object Parent {
+    get {
+      IntPtr parent = GetParent();
+      if (parent == IntPtr.Zero) return null;
+      return GCHandle.FromIntPtr(parent).Target;
+    }
+    set {
+      if (value != null) {
+        GCHandle gch = GCHandle.Alloc(value);
+        SetParent(GCHandle.ToIntPtr(gch));
+      } else {
+        IntPtr parent = GetParent();
+        if (parent == IntPtr.Zero) return;
+        SetParent(IntPtr.Zero);
+        GCHandle.FromIntPtr(parent).Free();
+      }
+    }
+  }
+  
+  public static object GET_OBJECT_FROM_ID(NetworkID x) {
+    IntPtr parent = GET_OBJECT_FROM_IDImpl(x);
+    if (parent == IntPtr.Zero) return null;
+    return GCHandle.FromIntPtr(parent).Target;
+  }
+%}
+
+%include "../RakNet30Beta/Source/NetworkIDGenerator.h"
+%include "ServerNetworkIDGenerator.h"
+
+<%= @type_mapper.end_scope %>

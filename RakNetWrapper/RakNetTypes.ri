@@ -1,0 +1,31 @@
+%{
+#include "RakNetTypes.h"
+%}
+
+<%= @type_mapper.start_scope('RakNetTypes') %>
+// RPCParameters input
+<%= @type_mapper.typemap_csvarout_blittable_array('unsigned char*', 'CSVAROUT_RPC_PARAMETERS_BLITTABLE_ARRAY', 'byte', 'this.numberOfBitsOfData/8') %>
+<%= @type_mapper.apply_same_ctype('unsigned char*', 'CSVAROUT_RPC_PARAMETERS_BLITTABLE_ARRAY', 'input') %>
+
+// Packet data
+<%= @type_mapper.typemap_csvarout_blittable_array('unsigned char*', 'CSVAROUT_PACKET_BLITTABLE_ARRAY', 'byte', 'this.length') %>
+<%= @type_mapper.apply_same_ctype('unsigned char*', 'CSVAROUT_PACKET_BLITTABLE_ARRAY', 'data') %>
+
+// This matches GetDataPtr and GetInputPtr
+<%= @type_mapper.apply_same_ctype('unsigned char*', 'VOID_PTR') %>
+
+%ignore SocketDescriptor;
+
+%include "../RakNet30Beta/Source/RakNetTypes.h"
+%extend Packet {
+  unsigned char* GetDataPtr() {
+    return self->data;
+  } 
+}
+%extend RPCParameters {
+  unsigned char* GetInputPtr() {
+    return self->input;
+  }
+}
+
+<%= @type_mapper.end_scope %>

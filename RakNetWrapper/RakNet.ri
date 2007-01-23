@@ -18,7 +18,6 @@
   を実行すれば.i相当が得られる。
 
 TODO: 余計なマーシャリングが起こらないようにする。何が余計かは使ってみないとわからないだろう。
-TODO: SWIG interfaceの分割。まず名前空間で、続いてクラス。
 %>
 
 <%# ↓は.i用のコメント。間違えないようにね。 %>
@@ -27,19 +26,14 @@ TODO: SWIG interfaceの分割。まず名前空間で、続いてクラス。
 
 %module(directors="1") RakNet
 %{
-#include "BitStream.h"
 #include "MessageIdentifiers.h"
 #include "PacketPriority.h"
 #include "PluginInterface.h"
-#include "NetworkIDGenerator.h"
-#include "ServerNetworkIDGenerator.h"
-#include "RakNetTypes.h"
 #include "GetTime.h"
 #include "PacketLogger.h"
 #include "RakNetStatistics.h"
 #include "RakNetworkFactory.h"
 #include "StringCompressor.h"
-#include "RakPeerInterface.h"
 %}
 
 %include <typemaps.i>  // char*, const char* -> string
@@ -63,81 +57,13 @@ TODO: SWIG interfaceの分割。まず名前空間で、続いてクラス。
 // add more types.
 
 
-<%= @type_mapper.start_scope('BitStream') %>
-
-<%= @type_mapper.apply_same_ctype('unsigned char*', 'INPUT_BLITTABLE_ARRAY', '_data') %>        // Ctor
-<%= @type_mapper.apply_same_ctype('const char*', 'INPUT_BLITTABLE_ARRAY', 'input') %>           // Write
-<%= @type_mapper.apply_same_ctype('const unsigned char*', 'INPUT_BLITTABLE_ARRAY', 'input') %>  // WriteAlignedBytes
-
-<%= @type_mapper.apply_same_ctype('char*', 'INOUT_BLITTABLE_ARRAY', 'output') %>                // Read
-<%= @type_mapper.apply_same_ctype('unsigned char*', 'INOUT_BLITTABLE_ARRAY', 'output') %>       // ReadAlignedBytes
-
-%import "../RakNet30Beta/Source/Export.h"
-%include "../RakNet30Beta/Source/BitStream.h"
-
-namespace RakNet {
-  %extend BitStream {
-    <%
-    bs_template_functions_of_fp_types = [
-      'WriteVector', 'WriteNormVector', 'WriteNormQuat', 'WriteOrthMatrix', 
-      'ReadVector', 'ReadNormVector', 'ReadNormQuat', 'ReadOrthMatrix',
-      'SerializeVector', 'SerializeNormVector', 'SerializeNormQuat', 'SerializeOrthMatrix'
-    ] 
-    bs_template_functions_of_ctypes = [
-      'Write', 'WriteDelta', 'WriteCompressed', 'WriteCompressedDelta', 
-      'Read', 'ReadDelta', 'ReadCompressed', 'ReadCompressedDelta',
-      'Serialize', 'SerializeDelta', 'SerializeCompressed', 'SerializeCompressedDelta'
-    ]
-    %>
-    
-    <%= @type_mapper.apply_to_creftypes('OUTPUT') %>  // for specialize
-    <%= DirectiveHelper::member_template_specialize_in(TypeHelper::FP_TYPES, bs_template_functions_of_fp_types.grep(/(Write)|(Read)\w*/)) %>
-    <%= DirectiveHelper::member_template_specialize_in(TypeHelper::CTYPES, bs_template_functions_of_ctypes.grep(/(Write)|(Read)\w*/)) %>
-    
-    <%= @type_mapper.apply_to_creftypes('INOUT') %>   // for specialize
-    <%= DirectiveHelper::member_template_specialize_in(TypeHelper::FP_TYPES, bs_template_functions_of_fp_types.grep(/Serialize\w*/)) %>
-    <%= DirectiveHelper::member_template_specialize_in(TypeHelper::CTYPES, bs_template_functions_of_ctypes.grep(/Serialize\w*/)) %>
-    
-    <%= DirectiveHelper::member_template_specialize_in(['NetworkID'], ['Write', 'Read', 'Serialize']) %>
-  }
-}
-
-<%= @type_mapper.end_scope %>
-
+%include "BitStream.i"
 
 %include "../RakNet30Beta/Source/MessageIdentifiers.h"
 %include "../RakNet30Beta/Source/PluginInterface.h"
 %include "../RakNet30Beta/Source/PacketPriority.h"
 
-
-<%= @type_mapper.start_scope('RakNetTypes') %>
-// RPCParameters input
-<%= @type_mapper.typemap_csvarout_blittable_array('unsigned char*', 'CSVAROUT_RPC_PARAMETERS_BLITTABLE_ARRAY', 'byte', 'this.numberOfBitsOfData/8') %>
-<%= @type_mapper.apply_same_ctype('unsigned char*', 'CSVAROUT_RPC_PARAMETERS_BLITTABLE_ARRAY', 'input') %>
-
-// Packet data
-<%= @type_mapper.typemap_csvarout_blittable_array('unsigned char*', 'CSVAROUT_PACKET_BLITTABLE_ARRAY', 'byte', 'this.length') %>
-<%= @type_mapper.apply_same_ctype('unsigned char*', 'CSVAROUT_PACKET_BLITTABLE_ARRAY', 'data') %>
-
-// This matches GetDataPtr and GetInputPtr
-<%= @type_mapper.apply_same_ctype('unsigned char*', 'VOID_PTR') %>
-
-%ignore SocketDescriptor;
-
-%include "../RakNet30Beta/Source/RakNetTypes.h"
-%extend Packet {
-  unsigned char* GetDataPtr() {
-    return self->data;
-  } 
-}
-%extend RPCParameters {
-  unsigned char* GetInputPtr() {
-    return self->input;
-  }
-}
-
-<%= @type_mapper.end_scope %>
-
+%include "RakNetTypes.i"
 
 %include "../RakNet30Beta/Source/GetTime.h"
 %include "../RakNet30Beta/Source/PacketLogger.h"
@@ -154,201 +80,11 @@ namespace DataStructures {
   %template(NetworkIDNodeAVLBalancedBinarySearchTree) AVLBalancedBinarySearchTree<NetworkIDNode>;
 }
 
+%include "NetworkIDGenerator.i"
 
-<%= @type_mapper.start_scope('NetworkIDGenerator') %>
-// This matches GetParent, SetParent, GET_BASE_OBJECT_FROM_ID, GET_OBJECT_FROM_ID
-<%= @type_mapper.apply_same_ctype('void*', 'VOID_PTR') %>
-
-%feature("director") NetworkIDGenerator;
-%rename NetworkIDNode::object NetworkedObject;
-%csmethodmodifiers NetworkIDGenerator::SetParent "private";
-%csmethodmodifiers NetworkIDGenerator::GetParent "private";
-%csmethodmodifiers NetworkIDGenerator::GET_OBJECT_FROM_ID "private";
-%rename NetworkIDGenerator::GET_OBJECT_FROM_ID GET_OBJECT_FROM_IDImpl;
-
-%typemap(csdestruct, methodname="Dispose", methodmodifiers="public") NetworkIDGenerator {
-    lock(this) {
-      Parent = null;
-      if(swigCPtr.Handle != IntPtr.Zero && swigCMemOwn) {
-        swigCMemOwn = false;
-        $imcall;
-      }
-      swigCPtr = new HandleRef(null, IntPtr.Zero);
-      GC.SuppressFinalize(this);
-    }
-  }
-
-%typemap(cscode) NetworkIDGenerator %{
-  public object Parent {
-    get {
-      IntPtr parent = GetParent();
-      if (parent == IntPtr.Zero) return null;
-      return GCHandle.FromIntPtr(parent).Target;
-    }
-    set {
-      if (value != null) {
-        GCHandle gch = GCHandle.Alloc(value);
-        SetParent(GCHandle.ToIntPtr(gch));
-      } else {
-        IntPtr parent = GetParent();
-        if (parent == IntPtr.Zero) return;
-        SetParent(IntPtr.Zero);
-        GCHandle.FromIntPtr(parent).Free();
-      }
-    }
-  }
-  
-  public static object GET_OBJECT_FROM_ID(NetworkID x) {
-    IntPtr parent = GET_OBJECT_FROM_IDImpl(x);
-    if (parent == IntPtr.Zero) return null;
-    return GCHandle.FromIntPtr(parent).Target;
-  }
-%}
-
-%include "../RakNet30Beta/Source/NetworkIDGenerator.h"
-%include "ServerNetworkIDGenerator.h"
-
-<%= @type_mapper.end_scope %>
-
-
-<%= @type_mapper.start_scope('RakPeerInterface') %>
+<%= @type_mapper.start_scope('StringCompressor') %>
 <%= @type_mapper.apply('char*', '', 'unsigned char*', 'input') %>                      // GenerateTreeFromStrings
-
 %include "../RakNet30Beta/Source/StringCompressor.h"
-
 <%= @type_mapper.end_scope %>
 
-
-<%= @type_mapper.start_scope('RakPeerInterface') %>
-<%= @type_mapper.apply_same_ctype('const char*', 'INPUT_BLITTABLE_ARRAY', 'data') %>   // Send
-<%= @type_mapper.apply_same_ctype('const char*', 'INPUT_BLITTABLE_PTR', 'dataPtr') %>  // SendWithPtr
-<%= @type_mapper.apply('unsigned char', '', 'char', 'orderingChannel') %>              // Send and RPC. unsigned char map to byte.
-<%= @type_mapper.apply_same_ctype('unsigned int*', 'INPUT', 'includedTimestamp') %>    // RPC
-
-<%= @type_mapper.typemap_input_blittable('SocketDescriptor *', 'INPUT_BLITTABLE_ARRAY', 'SocketDescriptor[]') %>
-<%= @type_mapper.apply_same_ctype('SocketDescriptor *', 'INPUT_BLITTABLE_ARRAY', 'socketDescriptors') %>  // Startup
-
-%ignore RakPeerInterface::RegisterAsRemoteProcedureCall;
-%ignore RakPeerInterface::RegisterClassMemberRPC;
-
-%csmethodmodifiers RakPeerInterface::UnregisterAsRemoteProcedureCall "private";
-%rename RakPeerInterface::UnregisterAsRemoteProcedureCall UnregisterAsRemoteProcedureCallImpl;
-
-%csmethodmodifiers RakPeerInterface::Shutdown "private";
-%rename RakPeerInterface::Shutdown ShutdownImpl;
-
-%wrapper %{
-typedef void (__cdecl* RPI_Callback_RPCFunction)(void *);
-SWIGEXPORT void SWIGSTDCALL CSharp_RakPeerInterface_RegisterAsRemoteProcedureCall(void * jarg1, char * jarg2, RPI_Callback_RPCFunction jarg3) {
-  RakPeerInterface *arg1 = (RakPeerInterface *) 0 ;
-  char *arg2 = (char *) 0 ;
-  void (*arg3)(RPCParameters *) = (void (*)(RPCParameters *)) 0 ;
-  
-  arg1 = (RakPeerInterface *)jarg1; 
-  arg2 = (char *)jarg2; 
-  arg3 = (void (*)(RPCParameters *))jarg3; 
-  (arg1)->RegisterAsRemoteProcedureCall(arg2,arg3);
-}
-typedef void (__cdecl* RPI_Callback_ClassMemberRPCFunction)(void *, void *);
-SWIGEXPORT void SWIGSTDCALL CSharp_RakPeerInterface_RegisterClassMemberRPC(void * jarg1, char * jarg2, RPI_Callback_ClassMemberRPCFunction jarg3) {
-  RakPeerInterface *arg1 = (RakPeerInterface *) 0 ;
-  char *arg2 = (char *) 0 ;
-  void *arg3 = (void *) 0 ;
-  
-  arg1 = (RakPeerInterface *)jarg1; 
-  arg2 = (char *)jarg2; 
-  arg3 = (void *)jarg3; 
-  (arg1)->RegisterClassMemberRPC(arg2,arg3);
-}
-%}
-%pragma(csharp) imclasscode=%{
-  [DllImport("RakNetWrapper", EntryPoint="CSharp_RakPeerInterface_RegisterAsRemoteProcedureCall")]
-  public static extern void RakPeerInterface_RegisterAsRemoteProcedureCall(HandleRef jarg1, string jarg2, RakPeerInterface._RPI_Delegate_RPCFunction jarg3);
-  
-  [DllImport("RakNetWrapper", EntryPoint="CSharp_RakPeerInterface_RegisterClassMemberRPC")]
-  public static extern void RakPeerInterface_RegisterClassMemberRPC(HandleRef jarg1, string jarg2, RakPeerInterface._RPI_Delegate_ClassMemberRPCFunction jarg3);
-%}
-%typemap(cscode) RakPeerInterface %{
-  [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-  public delegate void _RPI_Delegate_RPCFunction( IntPtr rpcParams );
-
-  public delegate void RPI_Delegate_RPCFunction( RPCParameters rpcParams );
-  
-  class RPCFunctionAdapter {
-    private _RPI_Delegate_RPCFunction callDelegate;
-    public _RPI_Delegate_RPCFunction CallDelegate {
-      get { return callDelegate; }
-    }
-    
-    private RPI_Delegate_RPCFunction adaptee;
-    
-    public RPCFunctionAdapter(RPI_Delegate_RPCFunction adaptee) {
-      callDelegate = Call;
-      this.adaptee = adaptee;
-    }
-    
-    public void Call(IntPtr rpcParams) {
-      adaptee(new RPCParameters(rpcParams, false));
-    }
-  }
-
-  [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-  public delegate void _RPI_Delegate_ClassMemberRPCFunction( IntPtr _this, IntPtr rpcParams );
-  
-  class ClassMemberRPCAdapter {
-    private _RPI_Delegate_ClassMemberRPCFunction callDelegate;
-    public _RPI_Delegate_ClassMemberRPCFunction CallDelegate {
-      get { return callDelegate; }
-    }
-    
-    private System.Reflection.MethodInfo mi;
-    
-    public ClassMemberRPCAdapter(System.Reflection.MethodInfo mi) {
-      callDelegate = Call;
-      this.mi = mi;
-    }
-    
-    public void Call(IntPtr _this, IntPtr rpcParams) {
-      if (_this == IntPtr.Zero) return;
-      mi.Invoke(GCHandle.FromIntPtr(_this).Target, new object[] { new RPCParameters(rpcParams, false) });
-    }
-  }
-
-  private System.Collections.IDictionary rpcFunctions = new System.Collections.Specialized.HybridDictionary();  // avoid GC.
-
-  public virtual void RegisterAsRemoteProcedureCall(string uniqueID, RPI_Delegate_RPCFunction functionPointer) {
-    RPCFunctionAdapter adapter = new RPCFunctionAdapter(functionPointer);
-    rpcFunctions.Add(uniqueID, adapter);
-    RakNetPINVOKE.RakPeerInterface_RegisterAsRemoteProcedureCall(swigCPtr, uniqueID, adapter.CallDelegate);
-  }
-  
-  public virtual void RegisterClassMemberRPC(string uniqueID, System.Reflection.MethodInfo mi) {
-    ClassMemberRPCAdapter adapter = new ClassMemberRPCAdapter(mi);
-    rpcFunctions.Add(uniqueID, adapter);
-    RakNetPINVOKE.RakPeerInterface_RegisterClassMemberRPC(swigCPtr, uniqueID, adapter.CallDelegate);
-  }
-
-  public virtual void UnregisterAsRemoteProcedureCall(string uniqueID) {
-    UnregisterAsRemoteProcedureCallImpl(uniqueID);
-    rpcFunctions.Remove(uniqueID);
-  }
-  
-  public virtual void Shutdown(uint blockDuration, byte orderingChannel) {
-    ShutdownImpl(blockDuration, orderingChannel);
-    rpcFunctions.Clear();
-  }
-
-  public virtual void Shutdown(uint blockDuration) {
-    ShutdownImpl(blockDuration);
-    rpcFunctions.Clear();
-  }
-%}
-
-%include "../RakNet30Beta/Source/RakPeerInterface.h"
-%extend RakPeerInterface {
-  virtual bool SendWithPtr( const char *dataPtr, const int length, PacketPriority priority, PacketReliability reliability, unsigned char orderingChannel, SystemAddress systemAddress, bool broadcast ) {
-    return self->Send(dataPtr, length, priority, reliability, orderingChannel, systemAddress, broadcast);
-  } 
-}
-
-<%= @type_mapper.end_scope %>
+%include "RakPeerInterface.i"

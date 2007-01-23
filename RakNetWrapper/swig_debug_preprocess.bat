@@ -1,1 +1,0 @@
-..\swigwin-1.3.31\swig.exe -E -namespace RakNetDotNet -dllimport RakNetWrapper -c++ -csharp -o RakNet_wrap.cxx -outdir ..\RakNetDotNet RakNet.i

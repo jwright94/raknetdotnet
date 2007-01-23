@@ -1,0 +1,137 @@
+%{
+#include "RakPeerInterface.h"
+%}
+
+<%= @type_mapper.start_scope('RakPeerInterface') %>
+<%= @type_mapper.apply_same_ctype('const char*', 'INPUT_BLITTABLE_ARRAY', 'data') %>   // Send
+<%= @type_mapper.apply_same_ctype('const char*', 'INPUT_BLITTABLE_PTR', 'dataPtr') %>  // SendWithPtr
+<%= @type_mapper.apply('unsigned char', '', 'char', 'orderingChannel') %>              // Send and RPC. unsigned char map to byte.
+<%= @type_mapper.apply_same_ctype('unsigned int*', 'INPUT', 'includedTimestamp') %>    // RPC
+
+<%= @type_mapper.typemap_input_blittable('SocketDescriptor *', 'INPUT_BLITTABLE_ARRAY', 'SocketDescriptor[]') %>
+<%= @type_mapper.apply_same_ctype('SocketDescriptor *', 'INPUT_BLITTABLE_ARRAY', 'socketDescriptors') %>  // Startup
+
+%ignore RakPeerInterface::RegisterAsRemoteProcedureCall;
+%ignore RakPeerInterface::RegisterClassMemberRPC;
+
+%csmethodmodifiers RakPeerInterface::UnregisterAsRemoteProcedureCall "private";
+%rename RakPeerInterface::UnregisterAsRemoteProcedureCall UnregisterAsRemoteProcedureCallImpl;
+
+%csmethodmodifiers RakPeerInterface::Shutdown "private";
+%rename RakPeerInterface::Shutdown ShutdownImpl;
+
+%wrapper %{
+typedef void (__cdecl* RPI_Callback_RPCFunction)(void *);
+SWIGEXPORT void SWIGSTDCALL CSharp_RakPeerInterface_RegisterAsRemoteProcedureCall(void * jarg1, char * jarg2, RPI_Callback_RPCFunction jarg3) {
+  RakPeerInterface *arg1 = (RakPeerInterface *) 0 ;
+  char *arg2 = (char *) 0 ;
+  void (*arg3)(RPCParameters *) = (void (*)(RPCParameters *)) 0 ;
+  
+  arg1 = (RakPeerInterface *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (void (*)(RPCParameters *))jarg3; 
+  (arg1)->RegisterAsRemoteProcedureCall(arg2,arg3);
+}
+typedef void (__cdecl* RPI_Callback_ClassMemberRPCFunction)(void *, void *);
+SWIGEXPORT void SWIGSTDCALL CSharp_RakPeerInterface_RegisterClassMemberRPC(void * jarg1, char * jarg2, RPI_Callback_ClassMemberRPCFunction jarg3) {
+  RakPeerInterface *arg1 = (RakPeerInterface *) 0 ;
+  char *arg2 = (char *) 0 ;
+  void *arg3 = (void *) 0 ;
+  
+  arg1 = (RakPeerInterface *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (void *)jarg3; 
+  (arg1)->RegisterClassMemberRPC(arg2,arg3);
+}
+%}
+%pragma(csharp) imclasscode=%{
+  [DllImport("RakNetWrapper", EntryPoint="CSharp_RakPeerInterface_RegisterAsRemoteProcedureCall")]
+  public static extern void RakPeerInterface_RegisterAsRemoteProcedureCall(HandleRef jarg1, string jarg2, RakPeerInterface._RPI_Delegate_RPCFunction jarg3);
+  
+  [DllImport("RakNetWrapper", EntryPoint="CSharp_RakPeerInterface_RegisterClassMemberRPC")]
+  public static extern void RakPeerInterface_RegisterClassMemberRPC(HandleRef jarg1, string jarg2, RakPeerInterface._RPI_Delegate_ClassMemberRPCFunction jarg3);
+%}
+%typemap(cscode) RakPeerInterface %{
+  [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+  public delegate void _RPI_Delegate_RPCFunction( IntPtr rpcParams );
+
+  public delegate void RPI_Delegate_RPCFunction( RPCParameters rpcParams );
+  
+  class RPCFunctionAdapter {
+    private _RPI_Delegate_RPCFunction callDelegate;
+    public _RPI_Delegate_RPCFunction CallDelegate {
+      get { return callDelegate; }
+    }
+    
+    private RPI_Delegate_RPCFunction adaptee;
+    
+    public RPCFunctionAdapter(RPI_Delegate_RPCFunction adaptee) {
+      callDelegate = Call;
+      this.adaptee = adaptee;
+    }
+    
+    public void Call(IntPtr rpcParams) {
+      adaptee(new RPCParameters(rpcParams, false));
+    }
+  }
+
+  [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+  public delegate void _RPI_Delegate_ClassMemberRPCFunction( IntPtr _this, IntPtr rpcParams );
+  
+  class ClassMemberRPCAdapter {
+    private _RPI_Delegate_ClassMemberRPCFunction callDelegate;
+    public _RPI_Delegate_ClassMemberRPCFunction CallDelegate {
+      get { return callDelegate; }
+    }
+    
+    private System.Reflection.MethodInfo mi;
+    
+    public ClassMemberRPCAdapter(System.Reflection.MethodInfo mi) {
+      callDelegate = Call;
+      this.mi = mi;
+    }
+    
+    public void Call(IntPtr _this, IntPtr rpcParams) {
+      if (_this == IntPtr.Zero) return;
+      mi.Invoke(GCHandle.FromIntPtr(_this).Target, new object[] { new RPCParameters(rpcParams, false) });
+    }
+  }
+
+  private System.Collections.IDictionary rpcFunctions = new System.Collections.Specialized.HybridDictionary();  // avoid GC.
+
+  public virtual void RegisterAsRemoteProcedureCall(string uniqueID, RPI_Delegate_RPCFunction functionPointer) {
+    RPCFunctionAdapter adapter = new RPCFunctionAdapter(functionPointer);
+    rpcFunctions.Add(uniqueID, adapter);
+    RakNetPINVOKE.RakPeerInterface_RegisterAsRemoteProcedureCall(swigCPtr, uniqueID, adapter.CallDelegate);
+  }
+  
+  public virtual void RegisterClassMemberRPC(string uniqueID, System.Reflection.MethodInfo mi) {
+    ClassMemberRPCAdapter adapter = new ClassMemberRPCAdapter(mi);
+    rpcFunctions.Add(uniqueID, adapter);
+    RakNetPINVOKE.RakPeerInterface_RegisterClassMemberRPC(swigCPtr, uniqueID, adapter.CallDelegate);
+  }
+
+  public virtual void UnregisterAsRemoteProcedureCall(string uniqueID) {
+    UnregisterAsRemoteProcedureCallImpl(uniqueID);
+    rpcFunctions.Remove(uniqueID);
+  }
+  
+  public virtual void Shutdown(uint blockDuration, byte orderingChannel) {
+    ShutdownImpl(blockDuration, orderingChannel);
+    rpcFunctions.Clear();
+  }
+
+  public virtual void Shutdown(uint blockDuration) {
+    ShutdownImpl(blockDuration);
+    rpcFunctions.Clear();
+  }
+%}
+
+%include "../RakNet30Beta/Source/RakPeerInterface.h"
+%extend RakPeerInterface {
+  virtual bool SendWithPtr( const char *dataPtr, const int length, PacketPriority priority, PacketReliability reliability, unsigned char orderingChannel, SystemAddress systemAddress, bool broadcast ) {
+    return self->Send(dataPtr, length, priority, reliability, orderingChannel, systemAddress, broadcast);
+  } 
+}
+
+<%= @type_mapper.end_scope %>
