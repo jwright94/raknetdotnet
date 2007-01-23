@@ -93,9 +93,6 @@
     <Compile Include="SWIGTYPE_p_ConsoleServer.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SWIGTYPE_p_f_p_RPCParameters__void.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="SWIGTYPE_p_int.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -139,9 +136,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SWIGTYPE_p_unsigned_short.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SWIGTYPE_p_void.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SystemAddress.cs">
