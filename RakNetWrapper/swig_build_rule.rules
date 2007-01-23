@@ -20,6 +20,7 @@
 			DisplayName="SWIG ERB Preprocessor"
 			CommandLine="..\ruby\bin\erb -P $(InputFileName) &gt; $(InputName).i"
 			Outputs="$(InputName).i"
+			AdditionalDependencies="type-mapper.rb"
 			FileExtensions="*.ri"
 			ExecutionDescription="Generating SWIG interface..."
 			>

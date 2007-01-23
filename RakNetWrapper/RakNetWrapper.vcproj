@@ -261,6 +261,10 @@
 			RelativePath=".\RakNet.ri"
 			>
 		</File>
+		<File
+			RelativePath=".\type-mapper.rb"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>
