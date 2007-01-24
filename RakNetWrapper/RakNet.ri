@@ -36,6 +36,11 @@ TODO: 余計なマーシャリングが起こらないようにする。何が余計かは使ってみないとわか
 #include "ReplicaManager.h"
 #include "ReplicaEnums.h"
 #include "Replica.h"
+#include "ConsoleServer.h"
+#include "CommandParserInterface.h"
+#include "RakNetCommandParser.h"
+#include "TransportInterface.h"
+#include "RakNetTransport.h"
 %}
 
 %include <typemaps.i>  // char*, const char* -> string
@@ -79,3 +84,9 @@ TODO: 余計なマーシャリングが起こらないようにする。何が余計かは使ってみないとわか
 %include "../RakNet30Beta/Source/ReplicaManager.h"
 %include "../RakNet30Beta/Source/ReplicaEnums.h"
 %include "../RakNet30Beta/Source/Replica.h"
+
+%include "../RakNet30Beta/Source/ConsoleServer.h"
+%include "../RakNet30Beta/Source/CommandParserInterface.h"
+%include "../RakNet30Beta/Source/RakNetCommandParser.h"
+%include "../RakNet30Beta/Source/TransportInterface.h"
+%include "../RakNet30Beta/Source/RakNetTransport.h"

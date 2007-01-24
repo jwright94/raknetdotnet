@@ -36,6 +36,8 @@
     <Compile Include="BitStream.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="CommandParserInterface.cs" />
+    <Compile Include="ConsoleServer.cs" />
     <Compile Include="NetworkID.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -65,18 +67,22 @@
     <Compile Include="RakNet.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="RakNetCommandParser.cs" />
     <Compile Include="RakNetPINVOKE.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="RakNetStatisticsStruct.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="RakNetTransport.cs" />
+    <Compile Include="RakNetTransportCommandParser.cs" />
     <Compile Include="RakNetworkFactory.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="RakPeerInterface.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="RegisteredCommand.cs" />
     <Compile Include="Replica.cs" />
     <Compile Include="ReplicaManager.cs" />
     <Compile Include="ReplicaReturnResult.cs" />
@@ -91,10 +97,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SWIGTYPE_p_bool.cs" />
+    <Compile Include="SWIGTYPE_p_char.cs" />
     <Compile Include="SWIGTYPE_p_ConnectionGraph.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SWIGTYPE_p_ConsoleServer.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SWIGTYPE_p_f_p_RakNet__BitStream_SystemAddress_p_ReplicaManager_p_void__ReplicaReturnResult.cs" />
@@ -117,13 +121,8 @@
     </Compile>
     <Compile Include="SWIGTYPE_p_PacketPriority.cs" />
     <Compile Include="SWIGTYPE_p_PacketReliability.cs" />
+    <Compile Include="SWIGTYPE_p_p_char.cs" />
     <Compile Include="SWIGTYPE_p_p_unsigned_char.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SWIGTYPE_p_RakNetCommandParser.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SWIGTYPE_p_RakNetTransport.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SWIGTYPE_p_ReplicaManager__CommandStruct.cs" />
@@ -152,6 +151,7 @@
     <Compile Include="SystemAddress.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="TransportInterface.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RakNetWrapper\RakNetWrapper.vcproj">
