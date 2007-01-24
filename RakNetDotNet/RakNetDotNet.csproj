@@ -38,6 +38,7 @@
     </Compile>
     <Compile Include="CommandParserInterface.cs" />
     <Compile Include="ConsoleServer.cs" />
+    <Compile Include="LogCommandParser.cs" />
     <Compile Include="NetworkID.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -151,6 +152,7 @@
     <Compile Include="SystemAddress.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="TelnetTransport.cs" />
     <Compile Include="TransportInterface.cs" />
   </ItemGroup>
   <ItemGroup>

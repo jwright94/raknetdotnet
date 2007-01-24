@@ -17,6 +17,7 @@
     swig-renderer.rb RakNet.ri
   を実行すれば.i相当が得られる。
 
+TODO: 分割した.riがビルドされないときがある
 TODO: 余計なマーシャリングが起こらないようにする。何が余計かは使ってみないとわからないだろう。
 %>
 
@@ -39,7 +40,9 @@ TODO: 余計なマーシャリングが起こらないようにする。何が余計かは使ってみないとわか
 #include "ConsoleServer.h"
 #include "CommandParserInterface.h"
 #include "RakNetCommandParser.h"
+#include "LogCommandParser.h"
 #include "TransportInterface.h"
+#include "TelnetTransport.h"
 #include "RakNetTransport.h"
 %}
 
@@ -88,5 +91,7 @@ TODO: 余計なマーシャリングが起こらないようにする。何が余計かは使ってみないとわか
 %include "../RakNet30Beta/Source/ConsoleServer.h"
 %include "../RakNet30Beta/Source/CommandParserInterface.h"
 %include "../RakNet30Beta/Source/RakNetCommandParser.h"
+%include "../RakNet30Beta/Source/LogCommandParser.h"
 %include "../RakNet30Beta/Source/TransportInterface.h"
+%include "../RakNet30Beta/Source/TelnetTransport.h"
 %include "../RakNet30Beta/Source/RakNetTransport.h"
