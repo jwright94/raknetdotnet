@@ -266,6 +266,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\proxy-modifier.rb"
+			>
+		</File>
+		<File
 			RelativePath=".\RakNet.i"
 			>
 		</File>

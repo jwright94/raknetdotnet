@@ -58,7 +58,6 @@ TODO: 余計なマーシャリングが起こらないようにする。何が余計かは使ってみないとわか
 <%= @type_mapper.typemap_void_ptr('void*', 'VOID_PTR') %>
 // add more types.
 
-
 %include "BitStream.i"
 
 %include "../RakNet30Beta/Source/MessageIdentifiers.h"
