@@ -43,6 +43,9 @@ TODO: 余計なマーシャリングが起こらないようにする。何が余計かは使ってみないとわか
 #include "TransportInterface.h"
 #include "TelnetTransport.h"
 #include "RakNetTransport.h"
+#include "LightweightDatabaseCommon.h"
+#include "LightweightDatabaseClient.h"
+#include "LightweightDatabaseServer.h"
 %}
 
 %include <typemaps.i>  // char*, const char* -> string
@@ -97,3 +100,6 @@ TODO: 余計なマーシャリングが起こらないようにする。何が余計かは使ってみないとわか
 %include "../RakNet30Beta/Source/TransportInterface.h"
 %include "../RakNet30Beta/Source/TelnetTransport.h"
 %include "../RakNet30Beta/Source/RakNetTransport.h"
+%include "../RakNet30Beta/Source/LightweightDatabaseCommon.h"
+%include "../RakNet30Beta/Source/LightweightDatabaseClient.h"
+%include "../RakNet30Beta/Source/LightweightDatabaseServer.h"

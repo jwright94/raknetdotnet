@@ -38,6 +38,10 @@
     </Compile>
     <Compile Include="CommandParserInterface.cs" />
     <Compile Include="ConsoleServer.cs" />
+    <Compile Include="DatabaseCellUpdate.cs" />
+    <Compile Include="DatabaseFilter.cs" />
+    <Compile Include="LightweightDatabaseClient.cs" />
+    <Compile Include="LightweightDatabaseServer.cs" />
     <Compile Include="LogCommandParser.cs" />
     <Compile Include="NetworkID.cs">
       <SubType>Code</SubType>
@@ -87,6 +91,7 @@
     <Compile Include="Replica.cs" />
     <Compile Include="ReplicaManager.cs" />
     <Compile Include="ReplicaReturnResult.cs" />
+    <Compile Include="RowUpdateMode.cs" />
     <Compile Include="RPCParameters.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -102,6 +107,11 @@
     <Compile Include="SWIGTYPE_p_ConnectionGraph.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SWIGTYPE_p_DataStructures__PageTunsigned_int_DataStructures__Table__Row_p__TABLE_BPLUS_TREE_ORDER_t.cs" />
+    <Compile Include="SWIGTYPE_p_DataStructures__Table.cs" />
+    <Compile Include="SWIGTYPE_p_DataStructures__Table__Cell.cs" />
+    <Compile Include="SWIGTYPE_p_DataStructures__Table__ColumnType.cs" />
+    <Compile Include="SWIGTYPE_p_DataStructures__Table__FilterQueryType.cs" />
     <Compile Include="SWIGTYPE_p_f_p_RakNet__BitStream_SystemAddress_p_ReplicaManager_p_void__ReplicaReturnResult.cs" />
     <Compile Include="SWIGTYPE_p_f_p_RakNet__BitStream_unsigned_int_NetworkID_p_Replica_SystemAddress_p_ReplicaManager_p_void__ReplicaReturnResult.cs" />
     <Compile Include="SWIGTYPE_p_f_p_RakNet__BitStream_unsigned_int_SystemAddress_p_ReplicaManager_p_void__ReplicaReturnResult.cs" />
@@ -109,9 +119,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SWIGTYPE_p_InternalPacket.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SWIGTYPE_p_LogCommandParser.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SWIGTYPE_p_PacketConsoleLogger.cs">
@@ -134,9 +141,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SWIGTYPE_p_RouterInterface.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SWIGTYPE_p_TelnetTransport.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SWIGTYPE_p_unsigned_char.cs">
