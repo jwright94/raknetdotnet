@@ -40,7 +40,6 @@ TODO: 余計なマーシャリングが起こらないようにする。何が余計かは使ってみないとわか
 #include "ConsoleServer.h"
 #include "CommandParserInterface.h"
 #include "RakNetCommandParser.h"
-#include "LogCommandParser.h"
 #include "TransportInterface.h"
 #include "TelnetTransport.h"
 #include "RakNetTransport.h"
@@ -62,6 +61,7 @@ TODO: 余計なマーシャリングが起こらないようにする。何が余計かは使ってみないとわか
 <%= @type_mapper.typemap_inout_blittable('unsigned char*', 'INOUT_BLITTABLE_ARRAY', 'byte[]') %>
 // add more types.
 
+<%= @type_mapper.typemap_void_ptr('const char*', 'VOID_PTR') %>
 <%= @type_mapper.typemap_void_ptr('unsigned char*', 'VOID_PTR') %>
 <%= @type_mapper.typemap_void_ptr('void*', 'VOID_PTR') %>
 // add more types.
@@ -91,7 +91,9 @@ TODO: 余計なマーシャリングが起こらないようにする。何が余計かは使ってみないとわか
 %include "../RakNet30Beta/Source/ConsoleServer.h"
 %include "../RakNet30Beta/Source/CommandParserInterface.h"
 %include "../RakNet30Beta/Source/RakNetCommandParser.h"
-%include "../RakNet30Beta/Source/LogCommandParser.h"
+
+%include "LogCommandParser.i"
+
 %include "../RakNet30Beta/Source/TransportInterface.h"
 %include "../RakNet30Beta/Source/TelnetTransport.h"
 %include "../RakNet30Beta/Source/RakNetTransport.h"

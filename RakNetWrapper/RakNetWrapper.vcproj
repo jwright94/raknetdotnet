@@ -262,6 +262,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\LogCommandParser.ri"
+			>
+		</File>
+		<File
 			RelativePath=".\NetworkIDGenerator.ri"
 			>
 		</File>

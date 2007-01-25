@@ -20,19 +20,20 @@ namespace StressTest
             LogCommandParser lcp = new LogCommandParser();
             uint lastlog = 0;
             RakPeerInterface rakPeer = RakNetworkFactory.GetRakPeerInterface();
+            IntPtr testChannel = System.Runtime.InteropServices.Marshal.StringToHGlobalAnsi("TestChannel");  // you must call FreeHGlobal
 
             consoleServer.AddCommandParser(rcp);
             consoleServer.AddCommandParser(lcp);
             consoleServer.SetTransportProvider(ti, port);
             rcp.SetRakPeerInterface(rakPeer);
-            lcp.AddChannel("TestChannel");
+            lcp.AddChannel(testChannel);
             while (true)
             {
                 consoleServer.Update();
 
                 if (RakNetDotNet.RakNet.GetTime() > lastlog + 4000)
                 {
-                    lcp.WriteLog("TestChannel", "Test of logger");
+                    lcp.WriteLog(testChannel, "Test of logger");
                     lastlog = RakNetDotNet.RakNet.GetTime();
                 }
 
