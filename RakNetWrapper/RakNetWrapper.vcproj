@@ -213,7 +213,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\RakNet_wrap.cxx"
+				RelativePath=".\RakNetBindings_wrap.cxx"
 				>
 			</File>
 		</Filter>
@@ -223,7 +223,7 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\RakNet_wrap.h"
+				RelativePath=".\RakNetBindings_wrap.h"
 				>
 			</File>
 			<File
@@ -274,11 +274,11 @@
 			>
 		</File>
 		<File
-			RelativePath=".\RakNet.i"
+			RelativePath=".\RakNetBindings.i"
 			>
 		</File>
 		<File
-			RelativePath=".\RakNet.ri"
+			RelativePath=".\RakNetBindings.ri"
 			>
 		</File>
 		<File

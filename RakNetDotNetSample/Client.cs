@@ -65,16 +65,16 @@ namespace RakNetDotNetSample
         {
             if (message.StartsWith("serverrpc"))
             {
-                client.RPC("ServerRPC", new byte[0], 0, PacketPriority.HIGH_PRIORITY, PacketReliability.RELIABLE, 0, RakNetDotNet.RakNet.UNASSIGNED_SYSTEM_ADDRESS, true, 0, RakNetDotNet.RakNet.UNASSIGNED_NETWORK_ID, null);
+                client.RPC("ServerRPC", new byte[0], 0, PacketPriority.HIGH_PRIORITY, PacketReliability.RELIABLE, 0, RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS, true, 0, RakNetBindings.UNASSIGNED_NETWORK_ID, null);
             }
             else if (message.StartsWith("objectmemberrpc"))
             {
-                client.RPC("Apple_Func1", new byte[0], 0, PacketPriority.HIGH_PRIORITY, PacketReliability.RELIABLE_ORDERED, 0, RakNetDotNet.RakNet.UNASSIGNED_SYSTEM_ADDRESS, true, 0, Program.apple.GetNetworkID(), null);
+                client.RPC("Apple_Func1", new byte[0], 0, PacketPriority.HIGH_PRIORITY, PacketReliability.RELIABLE_ORDERED, 0, RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS, true, 0, Program.apple.GetNetworkID(), null);
             }
             else
             {
                 byte[] data = Encoding.Unicode.GetBytes(message);
-                client.Send(data, data.Length, PacketPriority.HIGH_PRIORITY, PacketReliability.RELIABLE_ORDERED, 0, RakNetDotNet.RakNet.UNASSIGNED_SYSTEM_ADDRESS, true);
+                client.Send(data, data.Length, PacketPriority.HIGH_PRIORITY, PacketReliability.RELIABLE_ORDERED, 0, RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS, true);
             }
         }
         #endregion

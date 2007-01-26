@@ -30,7 +30,7 @@ namespace StressTest
             byte[] dummyData = new byte[querySize];
             Random r = new Random();
             r.NextBytes(dummyData);
-            dummyData[0] = (byte)RakNetDotNet.RakNet.ID_USER_PACKET_ENUM;
+            dummyData[0] = (byte)RakNetBindings.ID_USER_PACKET_ENUM;
             List<SystemAddress> incomingConnections = new List<SystemAddress>(maxNumberOfClients);
             Console.WriteLine("(S)erver or (C)lient?");
             ch = Console.ReadKey(true).KeyChar;
@@ -79,12 +79,12 @@ namespace StressTest
                         BitStream inBitStream = new BitStream(p, false);
                         byte packetIdentifier;
                         inBitStream.Read(out packetIdentifier);
-                        if (packetIdentifier == RakNetDotNet.RakNet.ID_NEW_INCOMING_CONNECTION)
+                        if (packetIdentifier == RakNetBindings.ID_NEW_INCOMING_CONNECTION)
                         {
                             Console.WriteLine("ID_NEW_INCOMING_CONNECTION");
                             //incomingConnections.Add(p.systemAddress);
                         }
-                        else if (packetIdentifier == RakNetDotNet.RakNet.ID_USER_PACKET_ENUM)
+                        else if (packetIdentifier == RakNetBindings.ID_USER_PACKET_ENUM)
                         {
                             serverRakPeer.Send(inBitStream, PacketPriority.HIGH_PRIORITY, PacketReliability.RELIABLE_ORDERED, 0, p.systemAddress, false);
                         }
@@ -92,15 +92,15 @@ namespace StressTest
                     }
 
                     SystemAddress systemAddress = serverRakPeer.GetSystemAddressFromIndex(0);
-                    //if (systemAddress.binaryAddress != RakNetDotNet.RakNet.UNASSIGNED_SYSTEM_ADDRESS.binaryAddress &&
-                    //    systemAddress.port != RakNetDotNet.RakNet.UNASSIGNED_SYSTEM_ADDRESS.port)
-                    if(!systemAddress.Equals(RakNetDotNet.RakNet.UNASSIGNED_SYSTEM_ADDRESS))
+                    //if (systemAddress.binaryAddress != RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS.binaryAddress &&
+                    //    systemAddress.port != RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS.port)
+                    if(!systemAddress.Equals(RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS))
                     {
                         RakNetStatisticsStruct rss = serverRakPeer.GetStatistics(systemAddress);
-                        if (RakNetDotNet.RakNet.GetTime() > lastLog + 4000)
+                        if (RakNetBindings.GetTime() > lastLog + 4000)
                         {
                             Console.WriteLine("Packets sent:\t\t\t\t{0:D}", rss.packetsSent);
-                            lastLog = RakNetDotNet.RakNet.GetTime();
+                            lastLog = RakNetBindings.GetTime();
                         }
                     }
                 }
@@ -114,7 +114,7 @@ namespace StressTest
                             BitStream inBitStream = new BitStream(p, false);
                             byte packetIdentifier;
                             inBitStream.Read(out packetIdentifier);
-                            if (packetIdentifier == RakNetDotNet.RakNet.ID_CONNECTION_REQUEST_ACCEPTED)
+                            if (packetIdentifier == RakNetBindings.ID_CONNECTION_REQUEST_ACCEPTED)
                             {
                                 Console.WriteLine("ID_CONNECTION_REQUEST_ACCEPTED");
                                 clientConnection.ConnectionCompleted = true;
@@ -124,7 +124,7 @@ namespace StressTest
 
                         if (clientConnection.ConnectionCompleted)
                         {
-                            clientConnection.RakPeer.Send(dummyData, querySize, PacketPriority.HIGH_PRIORITY, PacketReliability.RELIABLE_ORDERED, 0, RakNetDotNet.RakNet.UNASSIGNED_SYSTEM_ADDRESS, true);
+                            clientConnection.RakPeer.Send(dummyData, querySize, PacketPriority.HIGH_PRIORITY, PacketReliability.RELIABLE_ORDERED, 0, RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS, true);
                         }
                     }
                 }
@@ -159,10 +159,10 @@ namespace StressTest
             {
                 consoleServer.Update();
 
-                if (RakNetDotNet.RakNet.GetTime() > lastlog + 4000)
+                if (RakNetBindings.GetTime() > lastlog + 4000)
                 {
                     lcp.WriteLog(testChannel, "Test of logger");
-                    lastlog = RakNetDotNet.RakNet.GetTime();
+                    lastlog = RakNetBindings.GetTime();
                 }
 
                 System.Threading.Thread.Sleep(30);

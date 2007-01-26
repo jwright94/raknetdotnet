@@ -89,7 +89,7 @@ namespace RakNetDotNetSample
         public void SendMessage(string message)
         {
             byte[] data = Encoding.Unicode.GetBytes(message);
-            this.server.Send(data, data.Length, PacketPriority.HIGH_PRIORITY, PacketReliability.RELIABLE_ORDERED, 0, RakNetDotNet.RakNet.UNASSIGNED_SYSTEM_ADDRESS, true);
+            this.server.Send(data, data.Length, PacketPriority.HIGH_PRIORITY, PacketReliability.RELIABLE_ORDERED, 0, RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS, true);
         }
         #endregion
 

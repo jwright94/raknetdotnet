@@ -7,7 +7,7 @@
 		<CustomBuildRule
 			Name="SWIG_csharp"
 			DisplayName="SWIG C#"
-			CommandLine="..\swigwin\swig.exe -namespace RakNetDotNet -dllimport $(ProjectName) -c++ -csharp -o $(InputName)_wrap.cxx -outdir ..\RakNetDotNet &quot;$(InputPath)&quot;&#x0D;&#x0A;..\ruby\bin\ruby proxy-modifier.rb ..\RakNetDotNet\RakNetPINVOKE.cs"
+			CommandLine="..\swigwin\swig.exe -namespace RakNetDotNet -dllimport $(ProjectName) -c++ -csharp -o $(InputName)_wrap.cxx -outdir ..\RakNetDotNet &quot;$(InputPath)&quot;&#x0D;&#x0A;..\ruby\bin\ruby proxy-modifier.rb ..\RakNetDotNet\RakNetBindingsPINVOKE.cs"
 			Outputs="$(InputName)_wrap.cxx;$(InputName)_wrap.h"
 			FileExtensions="*.i"
 			ExecutionDescription="Generating SWIG wrapper..."

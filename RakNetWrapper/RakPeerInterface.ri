@@ -102,13 +102,13 @@ SWIGEXPORT void SWIGSTDCALL CSharp_RakPeerInterface_RegisterClassMemberRPC(void 
   public virtual void RegisterAsRemoteProcedureCall(string uniqueID, RPI_Delegate_RPCFunction functionPointer) {
     RPCFunctionAdapter adapter = new RPCFunctionAdapter(functionPointer);
     rpcFunctions.Add(uniqueID, adapter);
-    RakNetPINVOKE.RakPeerInterface_RegisterAsRemoteProcedureCall(swigCPtr, uniqueID, adapter.CallDelegate);
+    RakNetBindingsPINVOKE.RakPeerInterface_RegisterAsRemoteProcedureCall(swigCPtr, uniqueID, adapter.CallDelegate);
   }
   
   public virtual void RegisterClassMemberRPC(string uniqueID, System.Reflection.MethodInfo mi) {
     ClassMemberRPCAdapter adapter = new ClassMemberRPCAdapter(mi);
     rpcFunctions.Add(uniqueID, adapter);
-    RakNetPINVOKE.RakPeerInterface_RegisterClassMemberRPC(swigCPtr, uniqueID, adapter.CallDelegate);
+    RakNetBindingsPINVOKE.RakPeerInterface_RegisterClassMemberRPC(swigCPtr, uniqueID, adapter.CallDelegate);
   }
 
   public virtual void UnregisterAsRemoteProcedureCall(string uniqueID) {
