@@ -79,14 +79,15 @@ namespace StressTest
                         BitStream inBitStream = new BitStream(p, false);
                         byte packetIdentifier;
                         inBitStream.Read(out packetIdentifier);
-                        if (packetIdentifier == RakNetBindings.ID_NEW_INCOMING_CONNECTION)
+                        switch (packetIdentifier)
                         {
-                            Console.WriteLine("ID_NEW_INCOMING_CONNECTION");
-                            //incomingConnections.Add(p.systemAddress);
-                        }
-                        else if (packetIdentifier == RakNetBindings.ID_USER_PACKET_ENUM)
-                        {
-                            serverRakPeer.Send(inBitStream, PacketPriority.HIGH_PRIORITY, PacketReliability.RELIABLE_ORDERED, 0, p.systemAddress, false);
+                            case RakNetBindings.ID_NEW_INCOMING_CONNECTION:
+                                Console.WriteLine("ID_NEW_INCOMING_CONNECTION");
+                                //incomingConnections.Add(p.systemAddress);
+                                break;
+                            case RakNetBindings.ID_USER_PACKET_ENUM:
+                                serverRakPeer.Send(inBitStream, PacketPriority.HIGH_PRIORITY, PacketReliability.RELIABLE_ORDERED, 0, p.systemAddress, false);
+                                break;
                         }
                         serverRakPeer.DeallocatePacket(p);
                     }
@@ -114,10 +115,12 @@ namespace StressTest
                             BitStream inBitStream = new BitStream(p, false);
                             byte packetIdentifier;
                             inBitStream.Read(out packetIdentifier);
-                            if (packetIdentifier == RakNetBindings.ID_CONNECTION_REQUEST_ACCEPTED)
+                            switch (packetIdentifier)
                             {
-                                Console.WriteLine("ID_CONNECTION_REQUEST_ACCEPTED");
-                                clientConnection.ConnectionCompleted = true;
+                                case RakNetBindings.ID_CONNECTION_REQUEST_ACCEPTED:
+                                    Console.WriteLine("ID_CONNECTION_REQUEST_ACCEPTED");
+                                    clientConnection.ConnectionCompleted = true;
+                                    break;
                             }
                             clientConnection.RakPeer.DeallocatePacket(p);
                         }

@@ -53,6 +53,8 @@ TODO: 余計なマーシャリングが起こらないようにする。何が余計かは使ってみないとわか
 
 
 // globals
+%csconst(1);
+
 <%= @type_mapper.typemap_input_blittable('char*', 'INPUT_BLITTABLE_ARRAY', 'byte[]') %>
 <%= @type_mapper.typemap_input_blittable('const char*', 'INPUT_BLITTABLE_ARRAY', 'byte[]') %>
 <%= @type_mapper.typemap_input_blittable('unsigned char*', 'INPUT_BLITTABLE_ARRAY', 'byte[]') %>
@@ -68,6 +70,7 @@ TODO: 余計なマーシャリングが起こらないようにする。何が余計かは使ってみないとわか
 <%= @type_mapper.typemap_void_ptr('unsigned char*', 'VOID_PTR') %>
 <%= @type_mapper.typemap_void_ptr('void*', 'VOID_PTR') %>
 // add more types.
+
 
 %include "BitStream.i"
 
