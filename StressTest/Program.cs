@@ -76,7 +76,9 @@ namespace StressTest
                     Packet p = serverRakPeer.Receive();
                     if (p != null)
                     {
-                        byte packetIdentifier = GetPacketIdentifier(p);
+                        BitStream inBitStream = new BitStream(p, false);
+                        byte packetIdentifier;
+                        inBitStream.Read(out packetIdentifier);
                         if (packetIdentifier == RakNetDotNet.RakNet.ID_NEW_INCOMING_CONNECTION)
                         {
                             Console.WriteLine("ID_NEW_INCOMING_CONNECTION");
@@ -84,7 +86,7 @@ namespace StressTest
                         }
                         else if (packetIdentifier == RakNetDotNet.RakNet.ID_USER_PACKET_ENUM)
                         {
-                            serverRakPeer.Send(p.data, (int)p.length, PacketPriority.HIGH_PRIORITY, PacketReliability.RELIABLE_ORDERED, 0, p.systemAddress, false);
+                            serverRakPeer.Send(inBitStream, PacketPriority.HIGH_PRIORITY, PacketReliability.RELIABLE_ORDERED, 0, p.systemAddress, false);
                         }
                         serverRakPeer.DeallocatePacket(p);
                     }
@@ -109,7 +111,9 @@ namespace StressTest
                         Packet p = clientConnection.RakPeer.Receive();
                         if (p != null)
                         {
-                            byte packetIdentifier = GetPacketIdentifier(p);
+                            BitStream inBitStream = new BitStream(p, false);
+                            byte packetIdentifier;
+                            inBitStream.Read(out packetIdentifier);
                             if (packetIdentifier == RakNetDotNet.RakNet.ID_CONNECTION_REQUEST_ACCEPTED)
                             {
                                 Console.WriteLine("ID_CONNECTION_REQUEST_ACCEPTED");
@@ -136,11 +140,6 @@ namespace StressTest
             //TelnetTransport tt = new TelnetTransport();
             //RakPeerInterface rakPeer = RakNetworkFactory.GetRakPeerInterface();
             //TestCommandServer(tt, 23, rakPeer);
-        }
-
-        static byte GetPacketIdentifier(Packet p)
-        {
-            return p.data[0];
         }
 
         static void TestCommandServer(TransportInterface ti, ushort port, RakPeerInterface rakPeer)
