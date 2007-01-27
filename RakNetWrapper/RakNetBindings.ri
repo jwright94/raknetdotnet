@@ -17,8 +17,6 @@
     swig-renderer.rb RakNet.ri
   を実行すれば.i相当が得られる。
 
-TODO: 分割した.riがビルドされないときがある。.iが存在しないと発生?
-TODO: リビルドするとBitStream.riなどがビルドされる前にRakNetBindings.iがビルドされてしまう。
 TODO: 余計なマーシャリングが起こらないようにする。何が余計かは使ってみないとわからないだろう。
 %>
 

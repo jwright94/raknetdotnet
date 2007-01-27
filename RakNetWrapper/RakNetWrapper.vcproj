@@ -243,16 +243,40 @@
 				>
 			</File>
 		</Filter>
-		<File
-			RelativePath=".\BitStream.i"
+		<Filter
+			Name="SWIG interfaces"
 			>
-		</File>
+			<File
+				RelativePath=".\BitStream.i"
+				>
+			</File>
+			<File
+				RelativePath=".\DS_BinarySearchTree.i"
+				>
+			</File>
+			<File
+				RelativePath=".\LogCommandParser.i"
+				>
+			</File>
+			<File
+				RelativePath=".\NetworkIDGenerator.i"
+				>
+			</File>
+			<File
+				RelativePath=".\RakNetTypes.i"
+				>
+			</File>
+			<File
+				RelativePath=".\RakPeerInterface.i"
+				>
+			</File>
+			<File
+				RelativePath=".\StringCompressor.i"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath=".\BitStream.ri"
-			>
-		</File>
-		<File
-			RelativePath=".\DS_BinarySearchTree.i"
 			>
 		</File>
 		<File
@@ -260,15 +284,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\LogCommandParser.i"
-			>
-		</File>
-		<File
 			RelativePath=".\LogCommandParser.ri"
-			>
-		</File>
-		<File
-			RelativePath=".\NetworkIDGenerator.i"
 			>
 		</File>
 		<File
@@ -308,23 +324,11 @@
 			>
 		</File>
 		<File
-			RelativePath=".\RakNetTypes.i"
-			>
-		</File>
-		<File
 			RelativePath=".\RakNetTypes.ri"
 			>
 		</File>
 		<File
-			RelativePath=".\RakPeerInterface.i"
-			>
-		</File>
-		<File
 			RelativePath=".\RakPeerInterface.ri"
-			>
-		</File>
-		<File
-			RelativePath=".\StringCompressor.i"
 			>
 		</File>
 		<File
