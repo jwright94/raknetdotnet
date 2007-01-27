@@ -21,24 +21,16 @@ TODO: 余計なマーシャリングが起こらないようにする。何が余計かは使ってみないとわか
 %>
 
 <%
+raknet_home = '../RakNet30Beta/Source'
+
 swig_interfaces_no_ext = Dir.glob('*.ri') - ['RakNetBindings.ri']  # Oneself is excluded
 swig_interfaces_no_ext.map! do |filename|
   filename[/.ri$/] = ''
   filename
 end
 
-raknet_home = '../RakNet30Beta/Source'
-raknet_header_files_no_ext = Dir.glob("#{raknet_home}/*.h").map! do |filename|
-  File.basename(filename, '.h')
-end
-
-as_is_header_files_no_ext = raknet_header_files_no_ext - swig_interfaces_no_ext
-
 # in dependence order
 including_files_no_ext = [
-#  'BigTypes',
-#  'Types',
-#  'RSACrypt',
   'Export',
   'RakNetTypes',
   'PluginInterface',
@@ -65,7 +57,6 @@ including_files_no_ext = [
   'DS_ByteQueue',
   'DS_Heap',
   'DS_HuffmanEncodingTree',
-#  'DS_HuffmanEncodingTreeFactory',
   'DS_HuffmanEncodingTreeNode',
   'DS_LinkedList',
   'DS_List',
@@ -76,7 +67,6 @@ including_files_no_ext = [
   'DS_Queue',
   'DS_QueueLinkedList',
   'DS_RangeList',
-#  'DS_Table',
   'DS_Tree',
   'DS_WeightedGraph',
   'EmailSender',
@@ -105,44 +95,53 @@ including_files_no_ext = [
   'RakNetStatistics',
   'RakNetTransport',
   'RakNetworkFactory',
-#  'rakpeer',
   'RakSleep',
   'Rand',
-#  'ReliabilityLayer',
   'Replica',
   'ReplicaEnums',
   'ReplicaManager',
-#  'rijndael-boxes',
-#  'rijndael',
-#  'Router',
   'RPCMap',
   'RPCNode',
   'SHA1',
   'SimpleMutex',
-#  'SimpleTCPServer',
   'SingleProducerConsumer',
-#  'SocketLayer',
   'StringTable',
   'SystemAddressList',
   'TableSerializer',
-#  'TCPInterface',
   'TelnetTransport',
   'ThreadPool',
-#  'ThreadsafePacketLogger',
   '_findfirst',
   'BitStream',
   'DS_BinarySearchTree',
   'StringCompressor',
+#  'Types',
+#  'BigTypes',
+#  'RSACrypt',
+#  'DS_HuffmanEncodingTreeFactory',
+#  'DS_Table',
+#  'rakpeer',
+#  'ReliabilityLayer',
+#  'rijndael',
+#  'rijndael-boxes',
+#  'Router',
+#  'SimpleTCPServer',
+#  'TCPInterface',
+#  'SocketLayer',
+#  'ThreadsafePacketLogger',
 ]
 %>
 
-<%# generate array code %>
-<%# for tes in as_is_header_files_no_ext %>
-<%#= "'#{tes}'," %>
+<%# generate array code 
+raknet_header_files_no_ext = Dir.glob("#{raknet_home}/*.h").map! do |filename|
+  File.basename(filename, '.h')
+end
+as_is_header_files_no_ext = raknet_header_files_no_ext - swig_interfaces_no_ext
+%>
+<%# for f in as_is_header_files_no_ext %>
+<%#= "'#{f}'," %>
 <%# end %>
-
-<%# for tes1 in swig_interfaces_no_ext %>
-<%#= "'#{tes1}'," %>
+<%# for f in swig_interfaces_no_ext %>
+<%#= "'#{f}'," %>
 <%# end %>
 
 %module(directors="1") RakNetBindings
