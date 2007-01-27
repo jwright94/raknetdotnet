@@ -6,7 +6,12 @@ using RakNetDotNet;
 
 namespace RakNetDotNetSample
 {
-    class Apple
+    interface IApple
+    {
+        void Func1(RPCParameters rpcParams);
+    }
+
+    class Apple : IApple
     {
         ServerNetworkIDGenerator gen;
         public Apple()
@@ -44,8 +49,8 @@ namespace RakNetDotNetSample
         public Server()
         {
             server = RakNetworkFactory.GetRakPeerInterface();
-            server.RegisterAsRemoteProcedureCall("ServerRPC", ServerRPC);
-            server.RegisterClassMemberRPC("Apple_Func1", typeof(Apple).GetMethod("Func1"));
+            server.RegisterAsRemoteProcedureCall(typeof(Server).GetMethod("ServerRPC"));
+            server.RegisterClassMemberRPC(typeof(IApple).GetMethod("Func1"));
         }
         #endregion
 

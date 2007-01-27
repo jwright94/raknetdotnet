@@ -65,11 +65,11 @@ namespace RakNetDotNetSample
         {
             if (message.StartsWith("serverrpc"))
             {
-                client.RPC("ServerRPC", new byte[0], 0, PacketPriority.HIGH_PRIORITY, PacketReliability.RELIABLE, 0, RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS, true, 0, RakNetBindings.UNASSIGNED_NETWORK_ID, null);
+                client.RPC("RakNetDotNetSample.Server.ServerRPC", new byte[0], 0, PacketPriority.HIGH_PRIORITY, PacketReliability.RELIABLE, 0, RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS, true, 0, RakNetBindings.UNASSIGNED_NETWORK_ID, null);
             }
             else if (message.StartsWith("objectmemberrpc"))
             {
-                client.RPC("Apple_Func1", new byte[0], 0, PacketPriority.HIGH_PRIORITY, PacketReliability.RELIABLE_ORDERED, 0, RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS, true, 0, Program.apple.GetNetworkID(), null);
+                client.RPC(typeof(IApple).GetMethod("Func1"), new byte[0], 0, PacketPriority.HIGH_PRIORITY, PacketReliability.RELIABLE_ORDERED, 0, RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS, true, 0, Program.apple.GetNetworkID(), null);
             }
             else
             {

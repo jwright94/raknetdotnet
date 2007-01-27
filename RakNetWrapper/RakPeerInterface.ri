@@ -51,34 +51,19 @@ SWIGEXPORT void SWIGSTDCALL CSharp_RakPeerInterface_RegisterClassMemberRPC(void 
   [DllImport("RakNetWrapper", EntryPoint="CSharp_RakPeerInterface_RegisterClassMemberRPC")]
   public static extern void RakPeerInterface_RegisterClassMemberRPC(HandleRef jarg1, string jarg2, RakPeerInterface._RPI_Delegate_ClassMemberRPCFunction jarg3);
 %}
-%typemap(cscode) RakPeerInterface %{
+%typemap(cscode) RakPeerInterface %{  
   [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
   public delegate void _RPI_Delegate_RPCFunction( IntPtr rpcParams );
-
-  public delegate void RPI_Delegate_RPCFunction( RPCParameters rpcParams );
-  
-  class RPCFunctionAdapter {
-    private _RPI_Delegate_RPCFunction callDelegate;
-    public _RPI_Delegate_RPCFunction CallDelegate {
-      get { return callDelegate; }
-    }
-    
-    private RPI_Delegate_RPCFunction adaptee;
-    
-    public RPCFunctionAdapter(RPI_Delegate_RPCFunction adaptee) {
-      callDelegate = Call;
-      this.adaptee = adaptee;
-    }
-    
-    public void Call(IntPtr rpcParams) {
-      adaptee(new RPCParameters(rpcParams, false));
-    }
-  }
 
   [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
   public delegate void _RPI_Delegate_ClassMemberRPCFunction( IntPtr _this, IntPtr rpcParams );
   
   class ClassMemberRPCAdapter {
+    private _RPI_Delegate_RPCFunction callStaticDelegate;
+    public _RPI_Delegate_RPCFunction CallStaticDelegate {
+      get { return callStaticDelegate; }
+    }
+  
     private _RPI_Delegate_ClassMemberRPCFunction callDelegate;
     public _RPI_Delegate_ClassMemberRPCFunction CallDelegate {
       get { return callDelegate; }
@@ -87,22 +72,43 @@ SWIGEXPORT void SWIGSTDCALL CSharp_RakPeerInterface_RegisterClassMemberRPC(void 
     private System.Reflection.MethodInfo mi;
     
     public ClassMemberRPCAdapter(System.Reflection.MethodInfo mi) {
-      callDelegate = Call;
+      if (mi.IsStatic) {
+        callStaticDelegate = CallStatic;
+      } else {
+        callDelegate = Call;
+      }
       this.mi = mi;
     }
     
-    public void Call(IntPtr _this, IntPtr rpcParams) {
+    void Call(IntPtr _this, IntPtr rpcParams) {
       if (_this == IntPtr.Zero) return;
       mi.Invoke(GCHandle.FromIntPtr(_this).Target, new object[] { new RPCParameters(rpcParams, false) });
+    }
+    
+    void CallStatic(IntPtr rpcParams) {
+      mi.Invoke(null, new object[] { new RPCParameters(rpcParams, false) });
     }
   }
 
   private System.Collections.IDictionary rpcFunctions = new System.Collections.Specialized.HybridDictionary();  // avoid GC.
 
-  public virtual void RegisterAsRemoteProcedureCall(string uniqueID, RPI_Delegate_RPCFunction functionPointer) {
-    RPCFunctionAdapter adapter = new RPCFunctionAdapter(functionPointer);
+  private string ClassMemberId(System.Reflection.MemberInfo mi) {
+    return string.Format("{0}.{1}", mi.DeclaringType, mi.Name);
+  }
+
+  public virtual void RegisterAsRemoteProcedureCall(System.Reflection.MethodInfo mi) {
+    RegisterAsRemoteProcedureCall(ClassMemberId(mi), mi);
+  }
+
+  public virtual void RegisterAsRemoteProcedureCall(string uniqueID, System.Reflection.MethodInfo mi) {
+    System.Diagnostics.Debug.Assert(mi.IsStatic, "You can use static method only.");
+    ClassMemberRPCAdapter adapter = new ClassMemberRPCAdapter(mi);
     rpcFunctions.Add(uniqueID, adapter);
-    RakNetBindingsPINVOKE.RakPeerInterface_RegisterAsRemoteProcedureCall(swigCPtr, uniqueID, adapter.CallDelegate);
+    RakNetBindingsPINVOKE.RakPeerInterface_RegisterAsRemoteProcedureCall(swigCPtr, uniqueID, adapter.CallStaticDelegate);
+  }
+  
+  public virtual void RegisterClassMemberRPC(System.Reflection.MethodInfo mi) {
+    RegisterClassMemberRPC(ClassMemberId(mi), mi);
   }
   
   public virtual void RegisterClassMemberRPC(string uniqueID, System.Reflection.MethodInfo mi) {
@@ -111,9 +117,21 @@ SWIGEXPORT void SWIGSTDCALL CSharp_RakPeerInterface_RegisterClassMemberRPC(void 
     RakNetBindingsPINVOKE.RakPeerInterface_RegisterClassMemberRPC(swigCPtr, uniqueID, adapter.CallDelegate);
   }
 
+  public virtual void UnregisterAsRemoteProcedureCall(System.Reflection.MethodInfo mi) {
+    UnregisterAsRemoteProcedureCall(ClassMemberId(mi));
+  }
+
   public virtual void UnregisterAsRemoteProcedureCall(string uniqueID) {
     UnregisterAsRemoteProcedureCallImpl(uniqueID);
     rpcFunctions.Remove(uniqueID);
+  }
+  
+  public virtual bool RPC(System.Reflection.MethodInfo mi, byte[] data, uint bitLength, PacketPriority priority, PacketReliability reliability, byte orderingChannel, SystemAddress systemAddress, bool broadcast, uint includedTimestamp, NetworkID networkID, BitStream replyFromTarget) {
+    return RPC(ClassMemberId(mi), data, bitLength, priority, reliability, orderingChannel, systemAddress, broadcast, includedTimestamp, networkID, replyFromTarget);
+  }
+
+  public virtual bool RPC(System.Reflection.MethodInfo mi, BitStream bitStream, PacketPriority priority, PacketReliability reliability, byte orderingChannel, SystemAddress systemAddress, bool broadcast, uint includedTimestamp, NetworkID networkID, BitStream replyFromTarget) {
+    return RPC(ClassMemberId(mi), bitStream, priority, reliability, orderingChannel, systemAddress, broadcast, includedTimestamp, networkID, replyFromTarget);
   }
   
   public virtual void Shutdown(uint blockDuration, byte orderingChannel) {

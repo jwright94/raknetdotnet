@@ -254,16 +254,96 @@
 			</File>
 		</Filter>
 		<File
+			RelativePath=".\BitStream.i"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="SWIG_csharp"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="SWIG_csharp"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
 			RelativePath=".\BitStream.ri"
 			>
+		</File>
+		<File
+			RelativePath=".\DS_BinarySearchTree.i"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="SWIG_csharp"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="SWIG_csharp"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\DS_BinarySearchTree.ri"
 			>
 		</File>
 		<File
+			RelativePath=".\LogCommandParser.i"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="SWIG_csharp"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="SWIG_csharp"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
 			RelativePath=".\LogCommandParser.ri"
 			>
+		</File>
+		<File
+			RelativePath=".\NetworkIDGenerator.i"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="SWIG_csharp"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="SWIG_csharp"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\NetworkIDGenerator.ri"
@@ -282,12 +362,72 @@
 			>
 		</File>
 		<File
+			RelativePath=".\RakNetTypes.i"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="SWIG_csharp"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="SWIG_csharp"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
 			RelativePath=".\RakNetTypes.ri"
 			>
 		</File>
 		<File
+			RelativePath=".\RakPeerInterface.i"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="SWIG_csharp"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="SWIG_csharp"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
 			RelativePath=".\RakPeerInterface.ri"
 			>
+		</File>
+		<File
+			RelativePath=".\StringCompressor.i"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="SWIG_csharp"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="SWIG_csharp"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\StringCompressor.ri"
