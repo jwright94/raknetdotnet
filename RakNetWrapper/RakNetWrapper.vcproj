@@ -30,13 +30,11 @@
 				Name="VCPreBuildEventTool"
 			/>
 			<Tool
-				Name="SWIG_csharp"
+				Name="ERB"
+				ExecutionBucket="2"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="ERB"
 			/>
 			<Tool
 				Name="VCXMLDataGeneratorTool"
@@ -68,6 +66,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				ExecutionBucket="11"
 				AdditionalDependencies="ws2_32.lib $(NOINHERIT)"
 				OutputFile="$(OutDir)\$(ProjectName).dll"
 				LinkIncremental="2"
@@ -78,28 +77,36 @@
 			/>
 			<Tool
 				Name="VCALinkTool"
+				ExecutionBucket="12"
 			/>
 			<Tool
 				Name="VCManifestTool"
+				ExecutionBucket="13"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
+				ExecutionBucket="14"
 			/>
 			<Tool
 				Name="VCBscMakeTool"
+				ExecutionBucket="15"
 			/>
 			<Tool
 				Name="VCFxCopTool"
+				ExecutionBucket="16"
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+				ExecutionBucket="17"
 			/>
 			<Tool
 				Name="VCWebDeploymentTool"
+				ExecutionBucket="18"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
 				CommandLine="copy &quot;$(TargetPath)&quot; &quot;$(ProjectDir)..\Bin\$(ConfigurationName)&quot;"
+				ExecutionBucket="19"
 			/>
 		</Configuration>
 		<Configuration
@@ -115,13 +122,11 @@
 				Name="VCPreBuildEventTool"
 			/>
 			<Tool
-				Name="SWIG_csharp"
+				Name="ERB"
+				ExecutionBucket="2"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="ERB"
 			/>
 			<Tool
 				Name="VCXMLDataGeneratorTool"
@@ -152,6 +157,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				ExecutionBucket="11"
 				AdditionalDependencies="ws2_32.lib $(NOINHERIT)"
 				OutputFile="$(OutDir)\$(ProjectName).dll"
 				LinkIncremental="1"
@@ -161,28 +167,36 @@
 			/>
 			<Tool
 				Name="VCALinkTool"
+				ExecutionBucket="12"
 			/>
 			<Tool
 				Name="VCManifestTool"
+				ExecutionBucket="13"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
+				ExecutionBucket="14"
 			/>
 			<Tool
 				Name="VCBscMakeTool"
+				ExecutionBucket="15"
 			/>
 			<Tool
 				Name="VCFxCopTool"
+				ExecutionBucket="16"
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+				ExecutionBucket="17"
 			/>
 			<Tool
 				Name="VCWebDeploymentTool"
+				ExecutionBucket="18"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
 				CommandLine="copy &quot;$(TargetPath)&quot; &quot;$(ProjectDir)..\Bin\$(ConfigurationName)&quot;"
+				ExecutionBucket="19"
 			/>
 		</Configuration>
 	</Configurations>
@@ -232,22 +246,6 @@
 		<File
 			RelativePath=".\BitStream.i"
 			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				ExcludedFromBuild="true"
-				>
-				<Tool
-					Name="SWIG_csharp"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				ExcludedFromBuild="true"
-				>
-				<Tool
-					Name="SWIG_csharp"
-				/>
-			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\BitStream.ri"
@@ -256,22 +254,6 @@
 		<File
 			RelativePath=".\DS_BinarySearchTree.i"
 			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				ExcludedFromBuild="true"
-				>
-				<Tool
-					Name="SWIG_csharp"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				ExcludedFromBuild="true"
-				>
-				<Tool
-					Name="SWIG_csharp"
-				/>
-			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\DS_BinarySearchTree.ri"
@@ -280,22 +262,6 @@
 		<File
 			RelativePath=".\LogCommandParser.i"
 			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				ExcludedFromBuild="true"
-				>
-				<Tool
-					Name="SWIG_csharp"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				ExcludedFromBuild="true"
-				>
-				<Tool
-					Name="SWIG_csharp"
-				/>
-			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\LogCommandParser.ri"
@@ -304,22 +270,6 @@
 		<File
 			RelativePath=".\NetworkIDGenerator.i"
 			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				ExcludedFromBuild="true"
-				>
-				<Tool
-					Name="SWIG_csharp"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				ExcludedFromBuild="true"
-				>
-				<Tool
-					Name="SWIG_csharp"
-				/>
-			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\NetworkIDGenerator.ri"
@@ -332,6 +282,26 @@
 		<File
 			RelativePath=".\RakNetBindings.i"
 			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Generating SWIG wrapper..."
+					CommandLine="..\swigwin\swig.exe -namespace RakNetDotNet -dllimport $(ProjectName) -c++ -csharp -o $(InputName)_wrap.cxx -outdir ..\RakNetDotNet &quot;$(InputPath)&quot;&#x0D;&#x0A;..\ruby\bin\ruby proxy-modifier.rb ..\RakNetDotNet\RakNetBindingsPINVOKE.cs&#x0D;&#x0A;"
+					Outputs="$(InputName)_wrap.cxx;$(InputName)_wrap.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Generating SWIG wrapper..."
+					CommandLine="..\swigwin\swig.exe -namespace RakNetDotNet -dllimport $(ProjectName) -c++ -csharp -o $(InputName)_wrap.cxx -outdir ..\RakNetDotNet &quot;$(InputPath)&quot;&#x0D;&#x0A;..\ruby\bin\ruby proxy-modifier.rb ..\RakNetDotNet\RakNetBindingsPINVOKE.cs&#x0D;&#x0A;"
+					Outputs="$(InputName)_wrap.cxx;$(InputName)_wrap.h"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\RakNetBindings.ri"
@@ -340,22 +310,6 @@
 		<File
 			RelativePath=".\RakNetTypes.i"
 			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				ExcludedFromBuild="true"
-				>
-				<Tool
-					Name="SWIG_csharp"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				ExcludedFromBuild="true"
-				>
-				<Tool
-					Name="SWIG_csharp"
-				/>
-			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\RakNetTypes.ri"
@@ -364,22 +318,6 @@
 		<File
 			RelativePath=".\RakPeerInterface.i"
 			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				ExcludedFromBuild="true"
-				>
-				<Tool
-					Name="SWIG_csharp"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				ExcludedFromBuild="true"
-				>
-				<Tool
-					Name="SWIG_csharp"
-				/>
-			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\RakPeerInterface.ri"
@@ -388,22 +326,6 @@
 		<File
 			RelativePath=".\StringCompressor.i"
 			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				ExcludedFromBuild="true"
-				>
-				<Tool
-					Name="SWIG_csharp"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				ExcludedFromBuild="true"
-				>
-				<Tool
-					Name="SWIG_csharp"
-				/>
-			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\StringCompressor.ri"
