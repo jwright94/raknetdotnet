@@ -1,7 +1,3 @@
-%{
-#include "BitStream.h"
-%}
-
 <%= @type_mapper.start_scope('BitStream') %>
 
 <%= @type_mapper.apply_same_ctype('unsigned char*', 'INPUT_BLITTABLE_ARRAY', '_data') %>        // Ctor
@@ -11,7 +7,6 @@
 <%= @type_mapper.apply_same_ctype('char*', 'INOUT_BLITTABLE_ARRAY', 'output') %>                // Read
 <%= @type_mapper.apply_same_ctype('unsigned char*', 'INOUT_BLITTABLE_ARRAY', 'output') %>       // ReadAlignedBytes
 
-%import "../RakNet30Beta/Source/Export.h"
 %include "../RakNet30Beta/Source/BitStream.h"
 
 namespace RakNet {

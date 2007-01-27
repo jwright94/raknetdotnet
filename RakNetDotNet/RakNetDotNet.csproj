@@ -33,25 +33,121 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="AutopatcherRepositoryInterface.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="BitStream.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="CommandParserInterface.cs" />
-    <Compile Include="ConsoleServer.cs" />
-    <Compile Include="DatabaseCellUpdate.cs" />
-    <Compile Include="DatabaseFilter.cs" />
-    <Compile Include="LightweightDatabaseClient.cs" />
-    <Compile Include="LightweightDatabaseServer.cs" />
-    <Compile Include="LogCommandParser.cs" />
+    <Compile Include="ByteQueue.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CheckSum.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CommandParserInterface.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ConnectionGraph.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ConsoleServer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CSHA1.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CSHA1_SHA1_WORKSPACE_BLOCK.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DatabaseCellUpdate.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DatabaseFilter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DataBlockEncryptor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DataCompressor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DirectoryDeltaTransfer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EmailSender.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FileList.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FileListNode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FileListTransfer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FileListTransferCBInterface.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FilteredSystem.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FilterSet.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FullyConnectedMesh.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="HuffmanEncodingTree.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="HuffmanEncodingTreeNode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="InternalPacket.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="InternalPacketPool.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="LightweightDatabaseClient.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="LightweightDatabaseServer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="LogCommandParser.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MessageFilter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="NatPunchthrough.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="NetworkID.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="NetworkIDGenerator.cs" />
-    <Compile Include="NetworkIDNode.cs" />
-    <Compile Include="NetworkIDNodeAVLBalancedBinarySearchTree.cs" />
-    <Compile Include="NetworkIDNodeBinarySearchTree.cs" />
+    <Compile Include="NetworkIDGenerator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="NetworkIDNode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="NetworkIDNodeAVLBalancedBinarySearchTree.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="NetworkIDNodeBinarySearchTree.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Packet.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PacketConsoleLogger.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PacketFileLogger.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="PacketLogger.cs">
@@ -63,80 +159,167 @@
     <Compile Include="PacketReliability.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="PatchContext.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="PluginInterface.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="PluginReceiveResult.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="RakNetBindings.cs" />
-    <Compile Include="RakNetBindingsPINVOKE.cs" />
-    <Compile Include="RakNetCommandParser.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Custom\SocketDescriptor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="RakNetBindings.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="RakNetBindingsPINVOKE.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="RakNetCommandParser.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="RakNetStatisticsStruct.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="RakNetTransport.cs" />
-    <Compile Include="RakNetTransportCommandParser.cs" />
+    <Compile Include="RakNetTransport.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="RakNetTransportCommandParser.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="RakNetworkFactory.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="RakPeerInterface.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="RegisteredCommand.cs" />
-    <Compile Include="Replica.cs" />
-    <Compile Include="ReplicaManager.cs" />
-    <Compile Include="ReplicaReturnResult.cs" />
-    <Compile Include="RowUpdateMode.cs" />
+    <Compile Include="RegisteredCommand.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Replica.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ReplicaManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ReplicaReturnResult.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="RouterInterface.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="RowUpdateMode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="RPCMap.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="RPCNode.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="RPCParameters.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ServerNetworkIDGenerator.cs" />
-    <Compile Include="Custom\SocketDescriptor.cs">
+    <Compile Include="ServerNetworkIDGenerator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SimpleMutex.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="StrAndBool.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="StringCompressor.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SWIGTYPE_p_bool.cs" />
-    <Compile Include="SWIGTYPE_p_char.cs" />
-    <Compile Include="SWIGTYPE_p_ConnectionGraph.cs">
+    <Compile Include="StringTable.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SWIGTYPE_p_DataStructures__PageTunsigned_int_DataStructures__Table__Row_p__TABLE_BPLUS_TREE_ORDER_t.cs" />
-    <Compile Include="SWIGTYPE_p_DataStructures__Table.cs" />
-    <Compile Include="SWIGTYPE_p_DataStructures__Table__Cell.cs" />
-    <Compile Include="SWIGTYPE_p_DataStructures__Table__ColumnType.cs" />
-    <Compile Include="SWIGTYPE_p_DataStructures__Table__FilterQueryType.cs" />
-    <Compile Include="SWIGTYPE_p_f_p_RakNet__BitStream_SystemAddress_p_ReplicaManager_p_void__ReplicaReturnResult.cs" />
-    <Compile Include="SWIGTYPE_p_f_p_RakNet__BitStream_unsigned_int_NetworkID_p_Replica_SystemAddress_p_ReplicaManager_p_void__ReplicaReturnResult.cs" />
-    <Compile Include="SWIGTYPE_p_f_p_RakNet__BitStream_unsigned_int_SystemAddress_p_ReplicaManager_p_void__ReplicaReturnResult.cs" />
+    <Compile Include="SWIGTYPE_p_bool.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SWIGTYPE_p_char.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SWIGTYPE_p_DataStructures__ListTDataStructures__Table__ColumnDescriptor_t.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SWIGTYPE_p_DataStructures__ListTFileListNode_t.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SWIGTYPE_p_DataStructures__ListTSystemAddress_t.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SWIGTYPE_p_DataStructures__OrderedListTchar_p_char_p_MessageFilterStrComp_t.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SWIGTYPE_p_DataStructures__PageTunsigned_int_DataStructures__Table__Row_p__TABLE_BPLUS_TREE_ORDER_t.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SWIGTYPE_p_DataStructures__Table.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SWIGTYPE_p_DataStructures__Table__Cell.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SWIGTYPE_p_DataStructures__Table__ColumnType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SWIGTYPE_p_DataStructures__Table__FilterQueryType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SWIGTYPE_p_DataStructures__Table__Row.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SWIGTYPE_p_DataStructures__WeightedGraphTConnectionGraph__SystemAddressAndGroupId_unsigned_short_false_t.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SWIGTYPE_p_f_p_RakNet__BitStream_SystemAddress_p_ReplicaManager_p_void__ReplicaReturnResult.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SWIGTYPE_p_f_p_RakNet__BitStream_unsigned_int_NetworkID_p_Replica_SystemAddress_p_ReplicaManager_p_void__ReplicaReturnResult.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SWIGTYPE_p_f_p_RakNet__BitStream_unsigned_int_SystemAddress_p_ReplicaManager_p_void__ReplicaReturnResult.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SWIGTYPE_p_f_p_RakPeerInterface_SystemAddress_int_p_void_unsigned_char__void.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SWIGTYPE_p_f_p_RakPeerInterface_SystemAddress_int_p_void__void.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SWIGTYPE_p_int.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SWIGTYPE_p_InternalPacket.cs">
+    <Compile Include="SWIGTYPE_p_PacketPriority.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SWIGTYPE_p_PacketConsoleLogger.cs">
+    <Compile Include="SWIGTYPE_p_PacketReliability.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SWIGTYPE_p_PacketFileLogger.cs">
+    <Compile Include="SWIGTYPE_p_p_char.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SWIGTYPE_p_PacketPriority.cs" />
-    <Compile Include="SWIGTYPE_p_PacketReliability.cs" />
-    <Compile Include="SWIGTYPE_p_p_char.cs" />
     <Compile Include="SWIGTYPE_p_p_unsigned_char.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SWIGTYPE_p_ReplicaManager__CommandStruct.cs" />
-    <Compile Include="SWIGTYPE_p_ReplicaManager__ParticipantStruct.cs" />
-    <Compile Include="SWIGTYPE_p_ReplicaManager__RegisteredReplica.cs" />
-    <Compile Include="SWIGTYPE_p_ReplicaManager__RemoteObject.cs" />
-    <Compile Include="SWIGTYPE_p_Router.cs">
+    <Compile Include="SWIGTYPE_p_ReplicaManager__CommandStruct.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SWIGTYPE_p_RouterInterface.cs">
+    <Compile Include="SWIGTYPE_p_ReplicaManager__ParticipantStruct.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SWIGTYPE_p_ReplicaManager__RegisteredReplica.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SWIGTYPE_p_ReplicaManager__RemoteObject.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SWIGTYPE_p_Router.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SWIGTYPE_p_unsigned_char.cs">
@@ -148,12 +331,24 @@
     <Compile Include="SWIGTYPE_p_unsigned_short.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SWIGTYPE_p_void.cs" />
+    <Compile Include="SWIGTYPE_p_void.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SystemAddress.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="TelnetTransport.cs" />
-    <Compile Include="TransportInterface.cs" />
+    <Compile Include="SystemAddressList.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TableSerializer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TelnetTransport.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TransportInterface.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

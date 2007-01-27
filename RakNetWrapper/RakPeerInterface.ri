@@ -1,7 +1,3 @@
-%{
-#include "RakPeerInterface.h"
-%}
-
 <%= @type_mapper.start_scope('RakPeerInterface') %>
 <%= @type_mapper.apply_same_ctype('const char*', 'INPUT_BLITTABLE_ARRAY', 'data') %>   // Send
 <%= @type_mapper.apply_same_ctype('const char*', 'INPUT_BLITTABLE_PTR', 'dataPtr') %>  // SendWithPtr

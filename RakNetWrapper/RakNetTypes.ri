@@ -1,7 +1,3 @@
-%{
-#include "RakNetTypes.h"
-%}
-
 <%= @type_mapper.start_scope('RakNetTypes') %>
 // RPCParameters input
 <%= @type_mapper.typemap_csvarout_blittable_array('unsigned char*', 'CSVAROUT_RPC_PARAMETERS_BLITTABLE_ARRAY', 'byte', 'this.numberOfBitsOfData/8') %>

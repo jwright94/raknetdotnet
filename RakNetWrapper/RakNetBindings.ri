@@ -14,37 +14,142 @@
   ラッパーのコードを生成するのだけれど、そもそもルールの定義がめんどくさい。swigの開発者はマクロ使いなさいといってる。
   なので最初はBoost.Preprocessorを使って、マクロだけでメタプログラミングしようとしたけど、swigのマクロサポートはコンパイラほどではなかった。
   で、インタフェースファイルも生成してしまうことにした。ERB(Ruby)で。.riはrubyな(swig)interfaceということ。
-    swig-renderer.rb RakNet.ri
+    swig-renderer.rb ???.ri
   を実行すれば.i相当が得られる。
 
 TODO: 余計なマーシャリングが起こらないようにする。何が余計かは使ってみないとわからないだろう。
 %>
 
-<%# ↓は.i用のコメント。間違えないようにね。 %>
-// WARNING: このファイル(*.i)はコードジェネレーターにより作成されました。
-// このファイルを書き換えないでください。必要ならソースファイル(*.ri)を修正してください。
+<%
+swig_interfaces_no_ext = Dir.glob('*.ri') - ['RakNetBindings.ri']  # Oneself is excluded
+swig_interfaces_no_ext.map! do |filename|
+  filename[/.ri$/] = ''
+  filename
+end
+
+raknet_home = '../RakNet30Beta/Source'
+raknet_header_files_no_ext = Dir.glob("#{raknet_home}/*.h").map! do |filename|
+  File.basename(filename, '.h')
+end
+
+as_is_header_files_no_ext = raknet_header_files_no_ext - swig_interfaces_no_ext
+
+# in dependence order
+including_files_no_ext = [
+#  'BigTypes',
+#  'Types',
+#  'RSACrypt',
+  'Export',
+  'RakNetTypes',
+  'PluginInterface',
+  'PacketLogger',
+  'PacketConsoleLogger',
+  'PacketFileLogger',
+  'AutopatcherRepositoryInterface',
+  'AutopatcherPatchContext',
+  'TransportInterface',
+  'CommandParserInterface',
+  'LogCommandParser',
+  'RakPeerInterface',
+  'RouterInterface',
+  'NetworkIDGenerator',
+  'AsynchronousFileIO',
+  'CheckSum',
+  'ClientContextStruct',
+  'ConnectionGraph',
+  'ConsoleServer',
+  'DataBlockEncryptor',
+  'DataCompressor',
+  'DirectoryDeltaTransfer',
+  'ds_bplustree',
+  'DS_ByteQueue',
+  'DS_Heap',
+  'DS_HuffmanEncodingTree',
+#  'DS_HuffmanEncodingTreeFactory',
+  'DS_HuffmanEncodingTreeNode',
+  'DS_LinkedList',
+  'DS_List',
+  'DS_Map',
+  'DS_MemoryPool',
+  'DS_OrderedChannelHeap',
+  'DS_OrderedList',
+  'DS_Queue',
+  'DS_QueueLinkedList',
+  'DS_RangeList',
+#  'DS_Table',
+  'DS_Tree',
+  'DS_WeightedGraph',
+  'EmailSender',
+  'ExtendedOverlappedPool',
+  'FileList',
+  'FileListTransfer',
+  'FileListTransferCBInterface',
+  'FileOperations',
+  'FullyConnectedMesh',
+  'GetTime',
+  'InternalPacket',
+  'InternalPacketPool',
+  'LightweightDatabaseClient',
+  'LightweightDatabaseCommon',
+  'LightweightDatabaseServer',
+  'LinuxStrings',
+  'MessageFilter',
+  'MessageIdentifiers',
+  'MTUSize',
+  'NatPunchthrough',
+  'PacketPool',
+  'PacketPriority',
+  'RakAssert',
+  'RakNetCommandParser',
+  'RakNetDefines',
+  'RakNetStatistics',
+  'RakNetTransport',
+  'RakNetworkFactory',
+#  'rakpeer',
+  'RakSleep',
+  'Rand',
+#  'ReliabilityLayer',
+  'Replica',
+  'ReplicaEnums',
+  'ReplicaManager',
+#  'rijndael-boxes',
+#  'rijndael',
+#  'Router',
+  'RPCMap',
+  'RPCNode',
+  'SHA1',
+  'SimpleMutex',
+#  'SimpleTCPServer',
+  'SingleProducerConsumer',
+#  'SocketLayer',
+  'StringTable',
+  'SystemAddressList',
+  'TableSerializer',
+#  'TCPInterface',
+  'TelnetTransport',
+  'ThreadPool',
+#  'ThreadsafePacketLogger',
+  '_findfirst',
+  'BitStream',
+  'DS_BinarySearchTree',
+  'StringCompressor',
+]
+%>
+
+<%# generate array code %>
+<%# for tes in as_is_header_files_no_ext %>
+<%#= "'#{tes}'," %>
+<%# end %>
+
+<%# for tes1 in swig_interfaces_no_ext %>
+<%#= "'#{tes1}'," %>
+<%# end %>
 
 %module(directors="1") RakNetBindings
 %{
-#include "MessageIdentifiers.h"
-#include "PacketPriority.h"
-#include "PluginInterface.h"
-#include "GetTime.h"
-#include "PacketLogger.h"
-#include "RakNetStatistics.h"
-#include "RakNetworkFactory.h"
-#include "ReplicaManager.h"
-#include "ReplicaEnums.h"
-#include "Replica.h"
-#include "ConsoleServer.h"
-#include "CommandParserInterface.h"
-#include "RakNetCommandParser.h"
-#include "TransportInterface.h"
-#include "TelnetTransport.h"
-#include "RakNetTransport.h"
-#include "LightweightDatabaseCommon.h"
-#include "LightweightDatabaseClient.h"
-#include "LightweightDatabaseServer.h"
+<% for header in including_files_no_ext %>
+<%= "#include <#{header}.h>" %>
+<% end %>
 %}
 
 %include <typemaps.i>  // char*, const char* -> string
@@ -70,38 +175,12 @@ TODO: 余計なマーシャリングが起こらないようにする。何が余計かは使ってみないとわか
 <%= @type_mapper.typemap_void_ptr('void*', 'VOID_PTR') %>
 // add more types.
 
-
-%include "BitStream.i"
-
-%include "../RakNet30Beta/Source/MessageIdentifiers.h"
-%include "../RakNet30Beta/Source/PluginInterface.h"
-%include "../RakNet30Beta/Source/PacketPriority.h"
-
-%include "RakNetTypes.i"
-
-%include "../RakNet30Beta/Source/GetTime.h"
-%include "../RakNet30Beta/Source/PacketLogger.h"
-%include "../RakNet30Beta/Source/RakNetStatistics.h"
-%include "../RakNet30Beta/Source/RakNetworkFactory.h"
-
-%include "DS_BinarySearchTree.i"
-%include "NetworkIDGenerator.i"
-%include "StringCompressor.i"
-%include "RakPeerInterface.i"
-
-%include "../RakNet30Beta/Source/ReplicaManager.h"
-%include "../RakNet30Beta/Source/ReplicaEnums.h"
-%include "../RakNet30Beta/Source/Replica.h"
-
-%include "../RakNet30Beta/Source/ConsoleServer.h"
-%include "../RakNet30Beta/Source/CommandParserInterface.h"
-%include "../RakNet30Beta/Source/RakNetCommandParser.h"
-
-%include "LogCommandParser.i"
-
-%include "../RakNet30Beta/Source/TransportInterface.h"
-%include "../RakNet30Beta/Source/TelnetTransport.h"
-%include "../RakNet30Beta/Source/RakNetTransport.h"
-%include "../RakNet30Beta/Source/LightweightDatabaseCommon.h"
-%include "../RakNet30Beta/Source/LightweightDatabaseClient.h"
-%include "../RakNet30Beta/Source/LightweightDatabaseServer.h"
+<% 
+for interface in including_files_no_ext
+  if swig_interfaces_no_ext.include?(interface) %>
+    <%= "%include \"#{interface}.i\"" %><% 
+  else %>
+    <%= "%include \"#{raknet_home}/#{interface}.h\"" %><%
+  end
+end 
+%>

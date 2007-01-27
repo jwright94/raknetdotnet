@@ -1,7 +1,3 @@
-%{
-#include "LogCommandParser.h"
-%}
-
 <%= @type_mapper.start_scope('LogCommandParser') %>
 <%= @type_mapper.apply_same_ctype('const char*', 'VOID_PTR', 'channelName') %>
 

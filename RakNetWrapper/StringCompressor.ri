@@ -1,7 +1,3 @@
-%{
-#include "StringCompressor.h"
-%}
-
 <%= @type_mapper.start_scope('StringCompressor') %>
 <%= @type_mapper.apply('char*', '', 'unsigned char*', 'input') %>                      // GenerateTreeFromStrings
 

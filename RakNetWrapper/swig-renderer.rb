@@ -28,6 +28,10 @@ class Main
   def write(srcname, results)
     destname = "#{File.dirname(srcname)}/#{File.basename(srcname, '.ri')}.i"
     destfile = File.open(destname,'w')
+    destfile.puts <<EOS
+// WARNING: このファイル(#{destname})はコードジェネレーターにより作成されました。
+// このファイルを書き換えないでください。必要ならソースファイル(#{srcname})を修正してください。
+EOS
     destfile.puts results
     destfile.close
   end

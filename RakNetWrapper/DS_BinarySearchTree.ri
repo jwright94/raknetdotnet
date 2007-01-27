@@ -1,7 +1,3 @@
-%{
-#include "DS_BinarySearchTree.h"
-%}
-
 %ignore DataStructures::BinarySearchTree::Height;
 %ignore DataStructures::BinarySearchTree::Add;
 %ignore DataStructures::BinarySearchTree::Del;

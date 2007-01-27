@@ -1,5 +1,4 @@
 %{
-#include "NetworkIDGenerator.h"
 #include "ServerNetworkIDGenerator.h"
 %}
 
