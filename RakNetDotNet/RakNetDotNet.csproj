@@ -155,12 +155,6 @@
     <Compile Include="TelnetTransport.cs" />
     <Compile Include="TransportInterface.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\RakNetWrapper\RakNetWrapper.vcproj">
-      <Project>{0720617B-A599-4B72-9C7E-03A7A39ED774}</Project>
-      <Name>RakNetWrapper</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -169,4 +163,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(TargetPath)" "$(ProjectDir)..\Bin\$(ConfigurationName)"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

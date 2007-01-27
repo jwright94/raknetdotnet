@@ -41,10 +41,6 @@
       <Project>{F078BA68-B214-46E7-AB72-F3B99DF589B2}</Project>
       <Name>RakNetDotNet</Name>
     </ProjectReference>
-    <ProjectReference Include="..\RakNetWrapper\RakNetWrapper.vcproj">
-      <Project>{0720617B-A599-4B72-9C7E-03A7A39ED774}</Project>
-      <Name>RakNetWrapper</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -54,4 +50,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(TargetPath)" "$(ProjectDir)..\Bin\$(ConfigurationName)"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

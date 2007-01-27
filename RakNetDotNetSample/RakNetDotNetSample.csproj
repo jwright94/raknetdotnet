@@ -71,10 +71,6 @@
     <Compile Include="Server.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RakNetWrapper\RakNetWrapper.vcproj">
-      <Project>{0720617B-A599-4B72-9C7E-03A7A39ED774}</Project>
-      <Name>RakNetWrapper</Name>
-    </ProjectReference>
     <ProjectReference Include="..\RakNetDotNet\RakNetDotNet.csproj">
       <Project>{F078BA68-B214-46E7-AB72-F3B99DF589B2}</Project>
       <Name>RakNetDotNet</Name>
@@ -88,4 +84,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(TargetPath)" "$(ProjectDir)..\Bin\$(ConfigurationName)"</PostBuildEvent>
+  </PropertyGroup>
 </Project>
