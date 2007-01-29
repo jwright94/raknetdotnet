@@ -1,0 +1,6 @@
+<%= @type_mapper.start_scope('DataCompressor') %>
+<%= @type_mapper.apply_same_ctype('unsigned char*', 'INPUT_BLITTABLE_ARRAY', 'userData') %>  // Compress
+
+%include "../RakNet30Beta/Source/DataCompressor.h"
+
+<%= @type_mapper.end_scope %>

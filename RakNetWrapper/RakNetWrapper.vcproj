@@ -280,6 +280,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\DataCompressor.ri"
+			>
+		</File>
+		<File
 			RelativePath=".\DS_BinarySearchTree.ri"
 			>
 		</File>
