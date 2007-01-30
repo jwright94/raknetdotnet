@@ -1,6 +1,6 @@
 <%= @type_mapper.start_scope('StringCompressor') %>
 <%= @type_mapper.apply('char*', '', 'unsigned char*', 'input') %>                      // GenerateTreeFromStrings
 
-%include "../RakNet30Beta/Source/StringCompressor.h"
+%include "<%= @raknet_home %>/StringCompressor.h"
 
 <%= @type_mapper.end_scope %>

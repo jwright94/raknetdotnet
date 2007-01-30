@@ -12,7 +12,7 @@
 
 %ignore SocketDescriptor;
 
-%include "../RakNet30Beta/Source/RakNetTypes.h"
+%include "<%= @raknet_home %>/RakNetTypes.h"
 %extend Packet {
   unsigned char* GetDataPtr() {
     return self->data;

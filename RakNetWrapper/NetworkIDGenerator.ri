@@ -52,7 +52,7 @@
   }
 %}
 
-%include "../RakNet30Beta/Source/NetworkIDGenerator.h"
+%include "<%= @raknet_home %>/NetworkIDGenerator.h"
 %include "ServerNetworkIDGenerator.h"
 
 <%= @type_mapper.end_scope %>

@@ -17,6 +17,7 @@ end
 class Main
   def initialize
     @type_mapper = TypeMapper.new
+    @raknet_home = '../RakNet30Beta/Source'
   end
   
   def run(srcname)

@@ -336,6 +336,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\ReplicaManager.ri"
+			>
+		</File>
+		<File
 			RelativePath=".\StringCompressor.ri"
 			>
 		</File>

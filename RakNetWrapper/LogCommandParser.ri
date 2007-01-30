@@ -1,6 +1,6 @@
 <%= @type_mapper.start_scope('LogCommandParser') %>
 <%= @type_mapper.apply_same_ctype('const char*', 'VOID_PTR', 'channelName') %>
 
-%include "../RakNet30Beta/Source/LogCommandParser.h"
+%include "<%= @raknet_home %>/LogCommandParser.h"
 
 <%= @type_mapper.end_scope %>

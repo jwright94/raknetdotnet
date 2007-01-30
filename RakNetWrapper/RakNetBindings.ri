@@ -21,8 +21,6 @@ TODO: 余計なマーシャリングが起こらないようにする。何が余計かは使ってみないとわか
 %>
 
 <%
-raknet_home = '../RakNet30Beta/Source'
-
 swig_interfaces_no_ext = Dir.glob('*.ri') - ['RakNetBindings.ri']  # Oneself is excluded
 swig_interfaces_no_ext.map! do |filename|
   filename[/.ri$/] = ''
@@ -132,7 +130,7 @@ including_files_no_ext = [
 %>
 
 <%# generate array code 
-raknet_header_files_no_ext = Dir.glob("#{raknet_home}/*.h").map! do |filename|
+raknet_header_files_no_ext = Dir.glob("#{@raknet_home}/*.h").map! do |filename|
   File.basename(filename, '.h')
 end
 as_is_header_files_no_ext = raknet_header_files_no_ext - swig_interfaces_no_ext
@@ -179,7 +177,7 @@ for interface in including_files_no_ext
   if swig_interfaces_no_ext.include?(interface) %>
     <%= "%include \"#{interface}.i\"" %><% 
   else %>
-    <%= "%include \"#{raknet_home}/#{interface}.h\"" %><%
+    <%= "%include \"#{@raknet_home}/#{interface}.h\"" %><%
   end
 end 
 %>

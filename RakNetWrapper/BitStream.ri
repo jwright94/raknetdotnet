@@ -7,7 +7,7 @@
 <%= @type_mapper.apply_same_ctype('char*', 'INOUT_BLITTABLE_ARRAY', 'output') %>                // Read
 <%= @type_mapper.apply_same_ctype('unsigned char*', 'INOUT_BLITTABLE_ARRAY', 'output') %>       // ReadAlignedBytes
 
-%include "../RakNet30Beta/Source/BitStream.h"
+%include "<%= @raknet_home %>/BitStream.h"
 
 namespace RakNet {
   %extend BitStream {
