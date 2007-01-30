@@ -1,5 +1,4 @@
 <%= @type_mapper.start_scope('DataCompressor') %>
-<%= @type_mapper.apply_same_ctype('unsigned char*', 'INPUT_BLITTABLE_ARRAY', 'userData') %>  // Compress
 
 %include "<%= @raknet_home %>/DataCompressor.h"
 

@@ -1,5 +1,4 @@
 <%= @type_mapper.start_scope('ReplicaManager') %>
-<%= @type_mapper.apply_same_ctype('void*', 'VOID_PTR', '_constructionUserData') %>  // SetReceiveConstructionCB
 
 %include "<%= @raknet_home %>/ReplicaManager.h"
 

@@ -3,8 +3,6 @@
 %}
 
 <%= @type_mapper.start_scope('NetworkIDGenerator') %>
-// This matches GetParent, SetParent, GET_BASE_OBJECT_FROM_ID, GET_OBJECT_FROM_ID
-<%= @type_mapper.apply_same_ctype('void*', 'VOID_PTR') %>
 
 %feature("director") NetworkIDGenerator;
 %rename NetworkIDNode::object NetworkedObject;

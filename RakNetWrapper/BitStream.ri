@@ -1,8 +1,6 @@
 <%= @type_mapper.start_scope('BitStream') %>
 
-<%= @type_mapper.apply_same_ctype('unsigned char*', 'INPUT_BLITTABLE_ARRAY', '_data') %>        // Ctor
 <%= @type_mapper.apply_same_ctype('const char*', 'INPUT_BLITTABLE_ARRAY', 'input') %>           // Write
-<%= @type_mapper.apply_same_ctype('const unsigned char*', 'INPUT_BLITTABLE_ARRAY', 'input') %>  // WriteAlignedBytes
 
 <%= @type_mapper.apply_same_ctype('char*', 'INOUT_BLITTABLE_ARRAY', 'output') %>                // Read
 <%= @type_mapper.apply_same_ctype('unsigned char*', 'INOUT_BLITTABLE_ARRAY', 'output') %>       // ReadAlignedBytes
