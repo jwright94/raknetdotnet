@@ -1,0 +1,6 @@
+<%= @type_mapper.start_scope('Replica') %>
+<%= @type_mapper.apply_same_ctype('bool*', 'OUTPUT', 'includeTimestamp') %>  // SendConstruction, SendDestruction, SendScopeChange
+
+%include "<%= @raknet_home %>/Replica.h"
+
+<%= @type_mapper.end_scope %>
