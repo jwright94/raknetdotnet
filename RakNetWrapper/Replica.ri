@@ -1,4 +1,6 @@
 <%= @type_mapper.start_scope('Replica') %>
+
+//%feature("director") Replica;
 <%= @type_mapper.apply_same_ctype('bool*', 'OUTPUT', 'includeTimestamp') %>  // SendConstruction, SendDestruction, SendScopeChange
 <%= @type_mapper.apply_same_ctype('unsigned int&', 'INOUT', 'flags') %>
 
