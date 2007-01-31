@@ -55,6 +55,17 @@ EOS
 %typemap(csin)   #{ctype_and_name} "$csinput"
 EOS
   end
+
+  def typemap_ref_blittable(ctype, name, cstype)
+    ctype_and_name = concat ctype, name
+    <<EOS
+%typemap(ctype)  #{ctype_and_name} "#{ctype}"
+%typemap(imtype) #{ctype_and_name} "ref #{cstype}"
+%typemap(cstype) #{ctype_and_name} "ref #{cstype}"
+%typemap(in)     #{ctype_and_name} %{$1 = ($1_ltype)$input;%}
+%typemap(csin)   #{ctype_and_name} "ref $csinput"
+EOS
+  end
   
   def typemap_void_ptr(ctype, name)
     ctype_and_name = concat ctype, name

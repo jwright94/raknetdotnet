@@ -159,25 +159,28 @@ as_is_header_files_no_ext = raknet_header_files_no_ext - swig_interfaces_no_ext
 // globals
 %csconst(1);
 
+<%= @type_mapper.typemap_void_ptr('void*', 'VOID_PTR') %>
+<%= @type_mapper.typemap_void_ptr('const char*', 'VOID_PTR') %>
+<%= @type_mapper.typemap_void_ptr('unsigned char*', 'VOID_PTR') %>
+
 <%= @type_mapper.typemap_input_blittable('char*', 'INPUT_BLITTABLE_ARRAY', 'byte[]') %>
 <%= @type_mapper.typemap_input_blittable('const char*', 'INPUT_BLITTABLE_ARRAY', 'byte[]') %>
 <%= @type_mapper.typemap_input_blittable('unsigned char*', 'INPUT_BLITTABLE_ARRAY', 'byte[]') %>
 <%= @type_mapper.typemap_input_blittable('const unsigned char*', 'INPUT_BLITTABLE_ARRAY', 'byte[]') %>
-// add more types.
 
 <%= @type_mapper.typemap_inout_blittable('char*', 'INOUT_BLITTABLE_ARRAY', 'byte[]') %>
 <%= @type_mapper.typemap_inout_blittable('unsigned char*', 'INOUT_BLITTABLE_ARRAY', 'byte[]') %>
-// add more types.
 
-<%= @type_mapper.typemap_void_ptr('void*', 'VOID_PTR') %>
-<%= @type_mapper.typemap_void_ptr('const char*', 'VOID_PTR') %>
-<%= @type_mapper.typemap_void_ptr('unsigned char*', 'VOID_PTR') %>
+<%= @type_mapper.typemap_ref_blittable('PacketPriority*', 'REF_BLITTABLE', 'PacketPriority') %>
+<%= @type_mapper.typemap_ref_blittable('PacketReliability*', 'REF_BLITTABLE', 'PacketReliability') %>
 // add more types.
 
 // apply directives
 <%= @type_mapper.apply_same_ctype('void*', 'VOID_PTR') %>
 <%= @type_mapper.apply_same_ctype('unsigned char*', 'INPUT_BLITTABLE_ARRAY') %>
 <%= @type_mapper.apply_same_ctype('const unsigned char*', 'INPUT_BLITTABLE_ARRAY') %>
+<%= @type_mapper.apply_same_ctype('PacketPriority*', 'REF_BLITTABLE') %>
+<%= @type_mapper.apply_same_ctype('PacketReliability*', 'REF_BLITTABLE') %>
 
 <% 
 for interface in including_files_no_ext
