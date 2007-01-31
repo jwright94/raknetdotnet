@@ -1,5 +1,5 @@
 <%= @type_mapper.start_scope('ReplicaManager') %>
-
+/*
 %ignore ReplicaManager::SetReceiveConstructionCB;
 
 %wrapper %{
@@ -41,6 +41,7 @@ SWIGEXPORT void SWIGSTDCALL CSharp_ReplicaManager_SetReceiveConstructionCB(void 
 
   private RM_Delegate_Construction constructionDelegate;
 %}
+*/
 
 %include "<%= @raknet_home %>/ReplicaManager.h"
 
