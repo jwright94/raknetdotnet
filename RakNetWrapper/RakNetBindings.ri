@@ -98,7 +98,8 @@ including_files_no_ext = [
   'Rand',
   'Replica',
   'ReplicaEnums',
-  'ReplicaManager',
+#  'ReplicaManager',
+  'ReplicaManagerExt',
   'RPCMap',
   'RPCNode',
   'SHA1',
@@ -146,7 +147,7 @@ as_is_header_files_no_ext = raknet_header_files_no_ext - swig_interfaces_no_ext
 %module(directors="1") RakNetBindings
 %{
 <% for header in including_files_no_ext %>
-<%= "#include <#{header}.h>" %>
+<%= "#include \"#{header}.h\"" %>
 <% end %>
 %}
 

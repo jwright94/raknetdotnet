@@ -202,9 +202,7 @@
     <Compile Include="Replica.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ReplicaManager.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="ReplicaManagerExt.cs" />
     <Compile Include="ReplicaReturnResult.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -277,15 +275,6 @@
     <Compile Include="SWIGTYPE_p_DataStructures__WeightedGraphTConnectionGraph__SystemAddressAndGroupId_unsigned_short_false_t.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SWIGTYPE_p_f_p_RakNet__BitStream_SystemAddress_p_ReplicaManager_p_void__ReplicaReturnResult.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SWIGTYPE_p_f_p_RakNet__BitStream_unsigned_int_NetworkID_p_Replica_SystemAddress_p_ReplicaManager_p_void__ReplicaReturnResult.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SWIGTYPE_p_f_p_RakNet__BitStream_unsigned_int_SystemAddress_p_ReplicaManager_p_void__ReplicaReturnResult.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="SWIGTYPE_p_f_p_RakPeerInterface_SystemAddress_int_p_void_unsigned_char__void.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -307,18 +296,7 @@
     <Compile Include="SWIGTYPE_p_p_unsigned_char.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SWIGTYPE_p_ReplicaManager__CommandStruct.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SWIGTYPE_p_ReplicaManager__ParticipantStruct.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SWIGTYPE_p_ReplicaManager__RegisteredReplica.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SWIGTYPE_p_ReplicaManager__RemoteObject.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="SWIGTYPE_p_ReplicaManager.cs" />
     <Compile Include="SWIGTYPE_p_Router.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -329,9 +307,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SWIGTYPE_p_unsigned_short.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SWIGTYPE_p_void.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SystemAddress.cs">

@@ -1,0 +1,96 @@
+<%= @type_mapper.start_scope('ReplicaManagerExt') %>
+
+%ignore ReplicaManagerExt::SetReceiveConstructionCB;
+%ignore ReplicaManagerExt::SetDownloadCompleteCB;
+
+%wrapper %{
+SWIGEXPORT void SWIGSTDCALL CSharp_ReplicaManagerExt_SetReceiveConstructionCB(void * jarg1, void* jarg2, RME_FP_ConstructionCB jarg3) {
+  ReplicaManagerExt *arg1 = (ReplicaManagerExt *)jarg1; 
+  void *arg2 = (void *)jarg2;
+  RME_FP_ConstructionCB arg3 = jarg3; 
+  (arg1)->SetReceiveConstructionCB(arg2,arg3);
+}
+SWIGEXPORT void SWIGSTDCALL CSharp_ReplicaManagerExt_SetDownloadCompleteCB(void * jarg1, void* jarg2, RME_FP_SendDownloadCompleteCB jarg3, void* jarg4, RME_FP_ReceiveDownloadCompleteCB jarg5) {
+  ReplicaManagerExt *arg1 = (ReplicaManagerExt *) 0 ;
+  void *arg2 = (void *) 0 ;
+  RME_FP_SendDownloadCompleteCB arg3 = (RME_FP_SendDownloadCompleteCB) 0 ;
+  void *arg4 = (void *) 0 ;
+  RME_FP_ReceiveDownloadCompleteCB arg5 = (RME_FP_ReceiveDownloadCompleteCB) 0 ;
+  
+  arg1 = (ReplicaManagerExt *)jarg1; 
+  arg2 = (void *)jarg2;
+  arg3 = (RME_FP_SendDownloadCompleteCB)jarg3; 
+  arg4 = (void *)jarg4;
+  arg5 = (RME_FP_ReceiveDownloadCompleteCB)jarg5; 
+  (arg1)->SetDownloadCompleteCB(arg2,arg3,arg4,arg5);
+}
+%}
+%pragma(csharp) imclasscode=%{
+  [DllImport("RakNetWrapper", EntryPoint="CSharp_ReplicaManagerExt_SetReceiveConstructionCB")]
+  public static extern void ReplicaManagerExt_SetReceiveConstructionCB(HandleRef jarg1, IntPtr jarg2, ReplicaManagerExt._RME_Delegate_Construction jarg3);
+  [DllImport("RakNetWrapper", EntryPoint="CSharp_ReplicaManagerExt_SetDownloadCompleteCB")]
+  public static extern void ReplicaManagerExt_SetDownloadCompleteCB(HandleRef jarg1, IntPtr jarg2, ReplicaManagerExt._RME_Delegate_SendDownloadComplete jarg3, IntPtr jarg4, ReplicaManagerExt._RME_Delegate_ReceiveDownloadComplete jarg5);
+%}
+%typemap(cscode) ReplicaManagerExt %{
+  [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+  public delegate ReplicaReturnResult _RME_Delegate_Construction(IntPtr inBitStream, uint timestamp, IntPtr new_networkID, IntPtr existingReplica, IntPtr new_senderId, IntPtr caller, IntPtr userData);
+  [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+  public delegate ReplicaReturnResult _RME_Delegate_SendDownloadComplete(IntPtr outBitStream, uint currentTime, IntPtr new_senderId, IntPtr caller, IntPtr userData);
+  [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+  public delegate ReplicaReturnResult _RME_Delegate_ReceiveDownloadComplete(IntPtr inBitStream, IntPtr new_senderId, IntPtr caller, IntPtr userData);
+
+  public delegate ReplicaReturnResult RME_Delegate_Construction(BitStream inBitStream, uint timestamp, NetworkID networkID, Replica existingReplica, SystemAddress senderId, ReplicaManagerExt caller, IntPtr userData);
+  public delegate ReplicaReturnResult RME_Delegate_SendDownloadComplete(BitStream inBitStream, uint timestamp, SystemAddress senderId, ReplicaManagerExt caller, IntPtr userData);
+  public delegate ReplicaReturnResult RME_Delegate_ReceiveDownloadComplete(BitStream inBitStream, SystemAddress senderId, ReplicaManagerExt caller, IntPtr userData);
+
+  public void SetReceiveConstructionCB(IntPtr _constructionUserData, RME_Delegate_Construction constructionDelegate) {
+    IntPtr arg2 = IntPtr.Zero;
+	_RME_Delegate_Construction arg3 = null;
+	
+    this.constructionDelegate = constructionDelegate;
+    if (constructionDelegate != null) {
+      arg2 = _constructionUserData;
+      arg3 = ConstructionAdapter;
+    }
+	RakNetBindingsPINVOKE.ReplicaManagerExt_SetReceiveConstructionCB(swigCPtr, arg2, arg3);
+  }
+  public void SetDownloadCompleteCB(IntPtr _sendDownloadCompleteUserData, RME_Delegate_SendDownloadComplete sendDownloadCompleteDelegate, IntPtr _receiveDownloadCompleteUserData, RME_Delegate_ReceiveDownloadComplete receiveDownloadCompleteDelegate) {
+    IntPtr arg2 = IntPtr.Zero;
+    _RME_Delegate_SendDownloadComplete arg3 = null;
+    IntPtr arg4 = IntPtr.Zero;    
+    _RME_Delegate_ReceiveDownloadComplete arg5 = null;
+    
+    this.sendDownloadCompleteDelegate = sendDownloadCompleteDelegate;
+    if (sendDownloadCompleteDelegate != null) {
+      arg2 = _sendDownloadCompleteUserData;
+      arg3 = SendDownloadCompleteAdapter;
+    }   
+    this.receiveDownloadCompleteDelegate = receiveDownloadCompleteDelegate;
+	if (receiveDownloadCompleteDelegate != null) {	
+	  arg4 = _receiveDownloadCompleteUserData;
+	  arg5 = ReceiveDownloadCompleteAdapter;
+	}
+    RakNetBindingsPINVOKE.ReplicaManagerExt_SetDownloadCompleteCB(swigCPtr, arg2, arg3, arg4, arg5);
+  }
+
+  private ReplicaReturnResult ConstructionAdapter(IntPtr inBitStream, uint timestamp, IntPtr new_networkID, IntPtr existingReplica, IntPtr new_senderId, IntPtr caller, IntPtr userData) {
+    System.Diagnostics.Debug.Assert(constructionDelegate != null);
+    return constructionDelegate(new BitStream(inBitStream, false), timestamp, new NetworkID(new_networkID, true), new Replica(existingReplica, false), new SystemAddress(new_senderId, true), new ReplicaManagerExt(caller, false), userData);
+  }
+  private ReplicaReturnResult SendDownloadCompleteAdapter(IntPtr outBitStream, uint currentTime, IntPtr new_senderId, IntPtr caller, IntPtr userData) {
+    System.Diagnostics.Debug.Assert(sendDownloadCompleteDelegate != null);
+    return sendDownloadCompleteDelegate(new BitStream(outBitStream, false), currentTime, new SystemAddress(new_senderId, true), new ReplicaManagerExt(caller, false), userData);
+  }
+  private ReplicaReturnResult ReceiveDownloadCompleteAdapter(IntPtr inBitStream, IntPtr new_senderId, IntPtr caller, IntPtr userData) {
+    System.Diagnostics.Debug.Assert(receiveDownloadCompleteDelegate != null);
+    return receiveDownloadCompleteDelegate(new BitStream(inBitStream, false), new SystemAddress(new_senderId, true), new ReplicaManagerExt(caller, false), userData);
+  }
+
+  private RME_Delegate_Construction constructionDelegate;
+  private RME_Delegate_SendDownloadComplete sendDownloadCompleteDelegate;
+  private RME_Delegate_ReceiveDownloadComplete receiveDownloadCompleteDelegate;
+%}
+
+%include "ReplicaManagerExt.h"
+
+<%= @type_mapper.end_scope %>
