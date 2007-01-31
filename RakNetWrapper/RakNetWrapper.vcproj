@@ -324,7 +324,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Generating SWIG wrapper..."
-					CommandLine="..\swigwin\swig.exe -namespace RakNetDotNet -dllimport $(ProjectName) -c++ -csharp -o $(InputName)_wrap.cxx -outdir ..\RakNetDotNet &quot;$(InputPath)&quot;&#x0D;&#x0A;..\ruby\bin\ruby proxy-modifier.rb ..\RakNetDotNet\RakNetBindingsPINVOKE.cs&#x0D;&#x0A;"
+					CommandLine="..\swigwin\swig.exe -namespace RakNetDotNet -dllimport $(ProjectName) -c++ -csharp -o $(InputName)_wrap.cxx -outdir ..\RakNetDotNet &quot;$(InputPath)&quot;&#x0D;&#x0A;rem ..\ruby\bin\ruby proxy-modifier.rb ..\RakNetDotNet\RakNetBindingsPINVOKE.cs&#x0D;&#x0A;"
 					Outputs="$(InputName)_wrap.cxx;$(InputName)_wrap.h"
 				/>
 			</FileConfiguration>
@@ -334,7 +334,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Generating SWIG wrapper..."
-					CommandLine="..\swigwin\swig.exe -namespace RakNetDotNet -dllimport $(ProjectName) -c++ -csharp -o $(InputName)_wrap.cxx -outdir ..\RakNetDotNet &quot;$(InputPath)&quot;&#x0D;&#x0A;..\ruby\bin\ruby proxy-modifier.rb ..\RakNetDotNet\RakNetBindingsPINVOKE.cs&#x0D;&#x0A;"
+					CommandLine="..\swigwin\swig.exe -namespace RakNetDotNet -dllimport $(ProjectName) -c++ -csharp -o $(InputName)_wrap.cxx -outdir ..\RakNetDotNet &quot;$(InputPath)&quot;&#x0D;&#x0A;rem ..\ruby\bin\ruby proxy-modifier.rb ..\RakNetDotNet\RakNetBindingsPINVOKE.cs&#x0D;&#x0A;"
 					Outputs="$(InputName)_wrap.cxx;$(InputName)_wrap.h"
 				/>
 			</FileConfiguration>

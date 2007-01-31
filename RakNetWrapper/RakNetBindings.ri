@@ -158,6 +158,7 @@ as_is_header_files_no_ext = raknet_header_files_no_ext - swig_interfaces_no_ext
 
 // globals
 %csconst(1);
+%pragma(csharp) imclassclassmodifiers="[System.Security.SuppressUnmanagedCodeSecurity()] public class"  // We stopped using proxy-modifier.rb
 
 <%= @type_mapper.typemap_void_ptr('void*', 'VOID_PTR') %>
 <%= @type_mapper.typemap_void_ptr('const char*', 'VOID_PTR') %>
