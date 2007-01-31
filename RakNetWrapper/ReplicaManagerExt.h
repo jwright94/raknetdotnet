@@ -25,6 +25,13 @@ class ReplicaManagerExt : public PluginInterface
 public:
 	ReplicaManagerExt() 
 	{
+		_constructionCB = 0;
+		_sendDownloadCompleteCB = 0;
+		_receiveDownloadCompleteCB = 0;
+		receiveDownloadCompleteUserData = 0;
+		sendDownloadCompleteUserData = 0;
+		constructionUserData = 0;
+
 		myOBJ.SetReceiveConstructionCB(this, CallConstructionCB);
 		myOBJ.SetDownloadCompleteCB(this, CallSendDownloadCompleteCB, this, CallReceiveDownloadCompleteCB);
 	}
