@@ -15,12 +15,12 @@
 %include "<%= @raknet_home %>/RakNetTypes.h"
 %extend Packet {
   unsigned char* GetDataPtr() {
-    return self->data;
+    return $self->data;
   } 
 }
 %extend RPCParameters {
   unsigned char* GetInputPtr() {
-    return self->input;
+    return $self->input;
   }
 }
 

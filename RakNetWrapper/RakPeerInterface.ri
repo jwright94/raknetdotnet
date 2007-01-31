@@ -144,7 +144,7 @@ SWIGEXPORT void SWIGSTDCALL CSharp_RakPeerInterface_RegisterClassMemberRPC(void 
 %include "<%= @raknet_home %>/RakPeerInterface.h"
 %extend RakPeerInterface {
   virtual bool SendWithPtr( const char *dataPtr, const int length, PacketPriority priority, PacketReliability reliability, unsigned char orderingChannel, SystemAddress systemAddress, bool broadcast ) {
-    return self->Send(dataPtr, length, priority, reliability, orderingChannel, systemAddress, broadcast);
+    return $self->Send(dataPtr, length, priority, reliability, orderingChannel, systemAddress, broadcast);
   } 
 }
 
