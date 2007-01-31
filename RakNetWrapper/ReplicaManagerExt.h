@@ -57,6 +57,7 @@ public:
 	void DereferencePointer(Replica *replica) { myOBJ.DereferencePointer(replica); }
 	void SetScope(Replica *replica, bool inScope, SystemAddress systemAddress, bool broadcast) { myOBJ.SetScope(replica, inScope, systemAddress, broadcast); }
 	void SignalSerializeNeeded(Replica *replica, SystemAddress systemAddress, bool broadcast) { myOBJ.SignalSerializeNeeded(replica, systemAddress, broadcast); }
+	// hooks these methods
 	//void SetReceiveConstructionCB(void *_constructionUserData, ReplicaReturnResult (* constructionCB)(RakNet::BitStream *inBitStream, RakNetTime timestamp, NetworkID networkID, Replica *existingReplica, SystemAddress senderId, ReplicaManager *caller, void *userData)) { myOBJ.SetReceiveConstructionCB(_constructionUserData, constructionCB); }
 	//void SetDownloadCompleteCB(void *_sendDownloadCompleteUserData, ReplicaReturnResult (* sendDownloadCompleteCB)(RakNet::BitStream *outBitStream, RakNetTime currentTime, SystemAddress senderId, ReplicaManager *caller, void *userData),
 	//	void *_receiveDownloadCompleteUserData, ReplicaReturnResult (* receiveDownloadCompleteCB)(RakNet::BitStream *inBitStream, SystemAddress senderId, ReplicaManager *caller, void *userData)) { myOBJ.SetDownloadCompleteCB(_sendDownloadCompleteUserData, sendDownloadCompleteCB, _receiveDownloadCompleteUserData, receiveDownloadCompleteCB); }
