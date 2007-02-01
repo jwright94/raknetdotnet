@@ -6,8 +6,8 @@
 
 %feature("director") NetworkIDGenerator;
 %rename NetworkIDNode::object NetworkedObject;
-%csmethodmodifiers NetworkIDGenerator::SetParent "private";
-%csmethodmodifiers NetworkIDGenerator::GetParent "private";
+%csmethodmodifiers NetworkIDGenerator::SetParent "protected";
+%csmethodmodifiers NetworkIDGenerator::GetParent "protected";
 %csmethodmodifiers NetworkIDGenerator::GET_OBJECT_FROM_ID "private";
 %rename NetworkIDGenerator::GET_OBJECT_FROM_ID GET_OBJECT_FROM_IDImpl;
 
