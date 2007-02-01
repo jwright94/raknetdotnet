@@ -172,16 +172,13 @@ as_is_header_files_no_ext = raknet_header_files_no_ext - swig_interfaces_no_ext
 <%= @type_mapper.typemap_inout_blittable('char*', 'INOUT_BLITTABLE_ARRAY', 'byte[]') %>
 <%= @type_mapper.typemap_inout_blittable('unsigned char*', 'INOUT_BLITTABLE_ARRAY', 'byte[]') %>
 
-<%= @type_mapper.typemap_ref_blittable('PacketPriority*', 'REF_BLITTABLE', 'PacketPriority') %>
-<%= @type_mapper.typemap_ref_blittable('PacketReliability*', 'REF_BLITTABLE', 'PacketReliability') %>
+<%= @type_mapper.typemap_ref_blittable('bool*', 'REF_BLITTABLE', 'bool') %>
 // add more types.
 
 // apply directives
 <%= @type_mapper.apply_same_ctype('void*', 'VOID_PTR') %>
 <%= @type_mapper.apply_same_ctype('unsigned char*', 'INPUT_BLITTABLE_ARRAY') %>
 <%= @type_mapper.apply_same_ctype('const unsigned char*', 'INPUT_BLITTABLE_ARRAY') %>
-<%= @type_mapper.apply_same_ctype('PacketPriority*', 'REF_BLITTABLE') %>
-<%= @type_mapper.apply_same_ctype('PacketReliability*', 'REF_BLITTABLE') %>
 
 <% 
 for interface in including_files_no_ext
