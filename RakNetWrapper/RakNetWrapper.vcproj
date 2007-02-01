@@ -239,10 +239,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ReplicaExt.h"
-				>
-			</File>
-			<File
 				RelativePath=".\ReplicaManagerExt.h"
 				>
 			</File>
