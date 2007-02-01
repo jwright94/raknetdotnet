@@ -112,6 +112,7 @@
     <Compile Include="InternalPacketPool.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Custom\IReplicaListener.cs" />
     <Compile Include="LightweightDatabaseClient.cs">
       <SubType>Code</SubType>
     </Compile>
