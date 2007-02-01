@@ -284,12 +284,6 @@
     <Compile Include="SWIGTYPE_p_int.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SWIGTYPE_p_PacketPriority.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SWIGTYPE_p_PacketReliability.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="SWIGTYPE_p_p_char.cs">
       <SubType>Code</SubType>
     </Compile>
