@@ -139,37 +139,8 @@ namespace StressTest
             //    RakNetworkFactory.DestroyRakPeerInterface(clientRakPeer);
             //}
             //RakNetworkFactory.DestroyRakPeerInterface(serverRakPeer);
-
-            //TelnetTransport tt = new TelnetTransport();
-            //RakPeerInterface rakPeer = RakNetworkFactory.GetRakPeerInterface();
-            //TestCommandServer(tt, 23, rakPeer);
         }
 
-        static void TestCommandServer(TransportInterface ti, ushort port, RakPeerInterface rakPeer)
-        {
-            ConsoleServer consoleServer = new ConsoleServer();
-            RakNetCommandParser rcp = new RakNetCommandParser();
-            LogCommandParser lcp = new LogCommandParser();
-            uint lastlog = 0;
-            IntPtr testChannel = System.Runtime.InteropServices.Marshal.StringToHGlobalAnsi("TestChannel");  // you must call FreeHGlobal
 
-            consoleServer.AddCommandParser(rcp);
-            consoleServer.AddCommandParser(lcp);
-            consoleServer.SetTransportProvider(ti, port);
-            rcp.SetRakPeerInterface(rakPeer);
-            lcp.AddChannel(testChannel);
-            while (true)
-            {
-                consoleServer.Update();
-
-                if (RakNetBindings.GetTime() > lastlog + 4000)
-                {
-                    lcp.WriteLog(testChannel, "Test of logger");
-                    lastlog = RakNetBindings.GetTime();
-                }
-
-                System.Threading.Thread.Sleep(30);
-            }
-        }
     }
 }
