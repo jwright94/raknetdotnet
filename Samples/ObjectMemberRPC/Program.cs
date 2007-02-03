@@ -6,15 +6,7 @@ namespace ObjectMemberRPC
 {
     using RakNetDotNet;
 
-    // Please use interface if you want to call a method of a derivation class.
-    interface IApple
-    {
-        void func1(RPCParameters rpcParams);
-        void func2(RPCParameters rpcParams);
-        void func3(RPCParameters rpcParams);
-    }
-
-    class Apple : IApple
+    class Apple
     {
         public Apple()
         {
@@ -91,9 +83,9 @@ namespace ObjectMemberRPC
             rakPeer2.SetMaximumIncomingConnections(2);
             rakPeer1.Connect("127.0.0.1", 60001, string.Empty, 0);
 
-            rakPeer2.RegisterClassMemberRPC(typeof(IApple).GetMethod("func1"));
-            rakPeer2.RegisterClassMemberRPC(typeof(IApple).GetMethod("func2"));
-            rakPeer2.RegisterClassMemberRPC(typeof(IApple).GetMethod("func3"));
+            rakPeer2.RegisterClassMemberRPC(typeof(Apple).GetMethod("func1"));
+            rakPeer2.RegisterClassMemberRPC(typeof(Apple).GetMethod("func2"));
+            rakPeer2.RegisterClassMemberRPC(typeof(Apple).GetMethod("func3"));
 
             System.Threading.Thread.Sleep(250 * 4);  // Please wait slightly longer.
 
@@ -102,13 +94,13 @@ namespace ObjectMemberRPC
 
             Console.Write("Calling func1 of Apple base class with test string 1.\n");
             // You should use interface. Clients should not know server implements.
-            rakPeer1.RPC(typeof(IApple).GetMethod("func1"), GetBytes("test string 1"), (uint)(GetBytes("test string 1").Length * 8), PacketPriority.HIGH_PRIORITY, PacketReliability.RELIABLE_ORDERED, 0, RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS, true, 0, apple.GetNetworkID(), null);
+            rakPeer1.RPC(typeof(Apple).GetMethod("func1"), GetBytes("test string 1"), (uint)(GetBytes("test string 1").Length * 8), PacketPriority.HIGH_PRIORITY, PacketReliability.RELIABLE_ORDERED, 0, RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS, true, 0, apple.GetNetworkID(), null);
             // Or you can pass full method name.
-            // rakPeer1.RPC("ObjectMemberRPC.IApple.func1", GetBytes("test string 1"), (uint)(GetBytes("test string 1").Length * 8), PacketPriority.HIGH_PRIORITY, PacketReliability.RELIABLE_ORDERED, 0, RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS, true, 0, apple.GetNetworkID(), null);
+            // rakPeer1.RPC("ObjectMemberRPC.Apple.func1", GetBytes("test string 1"), (uint)(GetBytes("test string 1").Length * 8), PacketPriority.HIGH_PRIORITY, PacketReliability.RELIABLE_ORDERED, 0, RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS, true, 0, apple.GetNetworkID(), null);
             Console.Write("Calling func2 of Apple base class with test string 2.\n");
-            rakPeer1.RPC(typeof(IApple).GetMethod("func2"), GetBytes("test string 2"), (uint)(GetBytes("test string 2").Length * 8), PacketPriority.HIGH_PRIORITY, PacketReliability.RELIABLE_ORDERED, 0, RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS, true, 0, apple.GetNetworkID(), null);
+            rakPeer1.RPC(typeof(Apple).GetMethod("func2"), GetBytes("test string 2"), (uint)(GetBytes("test string 2").Length * 8), PacketPriority.HIGH_PRIORITY, PacketReliability.RELIABLE_ORDERED, 0, RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS, true, 0, apple.GetNetworkID(), null);
             Console.Write("Calling func3 of Apple base class with no test string.\n");
-            rakPeer1.RPC(typeof(IApple).GetMethod("func3"), new byte[0], 0, PacketPriority.HIGH_PRIORITY, PacketReliability.RELIABLE_ORDERED, 0, RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS, true, 0, apple.GetNetworkID(), null);
+            rakPeer1.RPC(typeof(Apple).GetMethod("func3"), new byte[0], 0, PacketPriority.HIGH_PRIORITY, PacketReliability.RELIABLE_ORDERED, 0, RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS, true, 0, apple.GetNetworkID(), null);
 
             while (RakNetBindings.GetTime() < time + 5000)
             {

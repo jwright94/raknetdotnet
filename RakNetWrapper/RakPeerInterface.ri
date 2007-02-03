@@ -78,7 +78,8 @@ SWIGEXPORT void SWIGSTDCALL CSharp_RakPeerInterface_RegisterClassMemberRPC(void 
     
     void Call(IntPtr _this, IntPtr rpcParams) {
       if (_this == IntPtr.Zero) return;
-      mi.Invoke(GCHandle.FromIntPtr(_this).Target, new object[] { new RPCParameters(rpcParams, false) });
+      object obj = GCHandle.FromIntPtr(_this).Target;
+      mi.Invoke(obj, System.Reflection.BindingFlags.InvokeMethod, null, new object[] { new RPCParameters(rpcParams, false) }, null);
     }
     
     void CallStatic(IntPtr rpcParams) {
