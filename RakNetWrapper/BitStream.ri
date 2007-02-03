@@ -1,5 +1,6 @@
 <%= @type_mapper.start_scope('BitStream') %>
 
+<%= @type_mapper.apply_same_ctype('unsigned char*', 'INPUT_BLITTABLE_ARRAY', '_data') %>        // Ctor
 <%= @type_mapper.apply_same_ctype('const char*', 'INPUT_BLITTABLE_ARRAY', 'input') %>           // Write
 
 <%= @type_mapper.apply_same_ctype('char*', 'INOUT_BLITTABLE_ARRAY', 'output') %>                // Read
@@ -34,6 +35,10 @@ namespace RakNet {
     
     BitStream(Packet* packet, bool copyData) {
       return new RakNet::BitStream(packet->data, packet->length, copyData);
+    }
+    
+    BitStream(RPCParameters* rpcParameters, bool copyData) {
+      return new RakNet::BitStream(rpcParameters->input, (rpcParameters->numberOfBitsOfData-1)/8+1, copyData);
     }
   }
 }
