@@ -6,7 +6,15 @@ namespace ObjectMemberRPC
 {
     using RakNetDotNet;
 
-    class Apple
+    // Please use interface if you want to call a method of a derivation class.
+    interface IApple
+    {
+        void func1(RPCParameters rpcParams);
+        void func2(RPCParameters rpcParams);
+        void func3(RPCParameters rpcParams);
+    }
+
+    class Apple : IApple
     {
         public Apple()
         {
@@ -15,43 +23,45 @@ namespace ObjectMemberRPC
 
         public virtual void func1(RPCParameters rpcParams)
         {
-            byte[] input = rpcParams.input;
-            if (0 < input.Length)
-                Console.Write("Base Apple func1: {0}\n", GetString(input));
+            if (0 < rpcParams.numberOfBitsOfData)
+                Console.Write("Base Apple func1: {0}\n", GetString(rpcParams.input));
             else
                 Console.Write("Base Apple func1\n");
         }
 
-        public virtual void func1(string blah)
-        {
-            Console.Write("Func1.  Does not match function signature and should never be called.\n");
-        }
+        // RakNetDotNet does not support this now.
+        //public virtual void func1(string blah)
+        //{
+        //    Console.Write("Func1.  Does not match function signature and should never be called.\n");
+        //}
 
         public virtual void func2(RPCParameters rpcParams)
         {
-            byte[] input = rpcParams.input;
-            if(0 < input.Length)
-                Console.Write("Base Apple func2: {0}\n", GetString(input));
+            if(0 < rpcParams.numberOfBitsOfData)
+                Console.Write("Base Apple func2: {0}\n", GetString(rpcParams.input));
             else
                 Console.Write("Base Apple func2\n");
         }
 
         public virtual void func3(RPCParameters rpcParams)
         {
-            byte[] input = rpcParams.input;
-            if(0 < input.Length)
-                Console.Write("Base Apple func3: {0}\n", GetString(input));
+            if(0 < rpcParams.numberOfBitsOfData)
+                Console.Write("Base Apple func3: {0}\n", GetString(rpcParams.input));
             else
                 Console.Write("Base Apple func3\n");
         }
 
-        protected string GetString(byte[] input)
+        public virtual NetworkID GetNetworkID()
         {
-            Encoding encoder = new UnicodeEncoding();
-            return encoder.GetString(input);
+            return gen.GetNetworkID();
         }
 
-        private ServerNetworkIDGenerator gen = new ServerNetworkIDGenerator();
+        protected string GetString(byte[] bytes)
+        {
+            return Encoding.Unicode.GetString(bytes);
+        }
+
+        protected ServerNetworkIDGenerator gen = new ServerNetworkIDGenerator();  // I recommend that your class does not inherit from NetworkIDGenerator.
     }
 
     class GrannySmith : Apple
@@ -81,22 +91,42 @@ namespace ObjectMemberRPC
             rakPeer2.SetMaximumIncomingConnections(2);
             rakPeer1.Connect("127.0.0.1", 60001, string.Empty, 0);
 
-            rakPeer2.RegisterClassMemberRPC(typeof(Apple).GetMethod("func1"));
-            rakPeer2.RegisterClassMemberRPC(typeof(Apple).GetMethod("func2"));
-            rakPeer2.RegisterClassMemberRPC(typeof(Apple).GetMethod("func3"));
+            rakPeer2.RegisterClassMemberRPC(typeof(IApple).GetMethod("func1"));
+            rakPeer2.RegisterClassMemberRPC(typeof(IApple).GetMethod("func2"));
+            rakPeer2.RegisterClassMemberRPC(typeof(IApple).GetMethod("func3"));
 
-            System.Threading.Thread.Sleep(250);
+            System.Threading.Thread.Sleep(250 * 4);  // Please wait slightly longer.
 
             Apple apple = new GrannySmith();
             time = RakNetBindings.GetTime();
 
-            //Console.Write("Calling func1 of Apple base class with test string 1.\n");
-            //rakPeer1.RPC(typeof(Apple).GetMethod("func1"), "test string 1", (int)(strlen("test string 1") + 1) * 8, HIGH_PRIORITY, RELIABLE_ORDERED, 0, UNASSIGNED_SYSTEM_ADDRESS, true, 0, apple->GetNetworkID(), 0);
-            //Console.Write("Calling func2 of Apple base class with test string 2.\n");
-            //rakPeer1.RPC(CLASS_MEMBER_ID(Apple, func2), "test string 2", (int)(strlen("test string 2") + 1) * 8, HIGH_PRIORITY, RELIABLE_ORDERED, 0, UNASSIGNED_SYSTEM_ADDRESS, true, 0, apple->GetNetworkID(), 0);
-            //Console.Write("Calling func3 of Apple base class with no test string.\n");
-            //rakPeer1.RPC(CLASS_MEMBER_ID(Apple, func3), 0, 0, HIGH_PRIORITY, RELIABLE_ORDERED, 0, UNASSIGNED_SYSTEM_ADDRESS, true, 0, apple->GetNetworkID(), 0);
+            Console.Write("Calling func1 of Apple base class with test string 1.\n");
+            // You should use interface. Clients should not know server implements.
+            rakPeer1.RPC(typeof(IApple).GetMethod("func1"), GetBytes("test string 1"), (uint)(GetBytes("test string 1").Length * 8), PacketPriority.HIGH_PRIORITY, PacketReliability.RELIABLE_ORDERED, 0, RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS, true, 0, apple.GetNetworkID(), null);
+            // Or you can pass full method name.
+            // rakPeer1.RPC("ObjectMemberRPC.IApple.func1", GetBytes("test string 1"), (uint)(GetBytes("test string 1").Length * 8), PacketPriority.HIGH_PRIORITY, PacketReliability.RELIABLE_ORDERED, 0, RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS, true, 0, apple.GetNetworkID(), null);
+            Console.Write("Calling func2 of Apple base class with test string 2.\n");
+            rakPeer1.RPC(typeof(IApple).GetMethod("func2"), GetBytes("test string 2"), (uint)(GetBytes("test string 2").Length * 8), PacketPriority.HIGH_PRIORITY, PacketReliability.RELIABLE_ORDERED, 0, RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS, true, 0, apple.GetNetworkID(), null);
+            Console.Write("Calling func3 of Apple base class with no test string.\n");
+            rakPeer1.RPC(typeof(IApple).GetMethod("func3"), new byte[0], 0, PacketPriority.HIGH_PRIORITY, PacketReliability.RELIABLE_ORDERED, 0, RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS, true, 0, apple.GetNetworkID(), null);
 
+            while (RakNetBindings.GetTime() < time + 5000)
+            {
+                rakPeer1.DeallocatePacket(rakPeer1.Receive());
+                rakPeer2.DeallocatePacket(rakPeer2.Receive());
+                System.Threading.Thread.Sleep(30);
+            }
+
+            Console.Write("Sample complete.  Press enter to quit.");
+            Console.ReadLine();
+
+            RakNetworkFactory.DestroyRakPeerInterface(rakPeer1);
+            RakNetworkFactory.DestroyRakPeerInterface(rakPeer2);
+        }
+
+        static byte[] GetBytes(string s)
+        {
+            return Encoding.Unicode.GetBytes(s);
         }
     }
 }

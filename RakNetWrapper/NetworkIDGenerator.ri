@@ -11,6 +11,9 @@
 %csmethodmodifiers NetworkIDGenerator::GET_OBJECT_FROM_ID "private";
 %rename NetworkIDGenerator::GET_OBJECT_FROM_ID GET_OBJECT_FROM_IDImpl;
 
+%typemap(csfinalize) ServerNetworkIDGenerator %{
+%}
+
 %typemap(csdestruct, methodname="Dispose", methodmodifiers="public") NetworkIDGenerator {
     lock(this) {
       Parent = null;
@@ -20,6 +23,13 @@
       }
       swigCPtr = new HandleRef(null, IntPtr.Zero);
       GC.SuppressFinalize(this);
+    }
+  }
+
+%typemap(csdestruct_derived, methodname="Dispose", methodmodifiers="public") ServerNetworkIDGenerator {
+    lock(this) {
+      swigCPtr = new HandleRef(null, IntPtr.Zero);
+      base.Dispose();
     }
   }
 
@@ -37,8 +47,10 @@
       } else {
         IntPtr parent = GetParent();
         if (parent == IntPtr.Zero) return;
-        SetParent(IntPtr.Zero);
-        GCHandle.FromIntPtr(parent).Free();
+        GCHandle gch = GCHandle.FromIntPtr(parent);
+        if (gch.IsAllocated) {
+          gch.Free();
+        }
       }
     }
   }
