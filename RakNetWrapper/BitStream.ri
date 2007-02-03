@@ -6,6 +6,32 @@
 <%= @type_mapper.apply_same_ctype('char*', 'INOUT_BLITTABLE_ARRAY', 'output') %>                // Read
 <%= @type_mapper.apply_same_ctype('unsigned char*', 'INOUT_BLITTABLE_ARRAY', 'output') %>       // ReadAlignedBytes
 
+%typemap(cscode) RakNet::BitStream %{
+  public bool Read(out string str) {
+    ushort length;
+    if (!Read(out length))
+    {
+      str = String.Empty;
+      return false;
+    }
+    byte[] bytes = new byte[length];
+    if (!Read(bytes, length))
+    {
+      str = String.Empty;
+      return false;
+    }
+    str = System.Text.Encoding.Unicode.GetString(bytes);
+    return true;
+  }
+  
+  public void Write(string str)
+  {
+    byte[] bytes = System.Text.Encoding.Unicode.GetBytes(str);
+    Write((ushort)bytes.Length);
+    Write(bytes, bytes.Length);
+  }
+%}
+
 %include "<%= @raknet_home %>/BitStream.h"
 
 namespace RakNet {
