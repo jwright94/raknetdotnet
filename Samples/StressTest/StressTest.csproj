@@ -37,7 +37,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RakNetDotNet\RakNetDotNet.csproj">
+    <ProjectReference Include="..\..\RakNetDotNet\RakNetDotNet.csproj">
       <Project>{F078BA68-B214-46E7-AB72-F3B99DF589B2}</Project>
       <Name>RakNetDotNet</Name>
     </ProjectReference>
@@ -51,6 +51,6 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetPath)" "$(ProjectDir)..\Bin\$(ConfigurationName)"</PostBuildEvent>
+    <PostBuildEvent>copy "$(TargetPath)" "$(ProjectDir)..\..\Bin\$(ConfigurationName)"</PostBuildEvent>
   </PropertyGroup>
 </Project>
