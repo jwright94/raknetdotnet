@@ -160,6 +160,9 @@ as_is_header_files_no_ext = raknet_header_files_no_ext - swig_interfaces_no_ext
 %csconst(1);
 %pragma(csharp) imclassclassmodifiers="[System.Security.SuppressUnmanagedCodeSecurity()] public class"  // We stopped using proxy-modifier.rb
 
+//%typemap(in) bool *OUTPUT, bool &OUTPUT
+//%{ $1 = ($1_ltype)$input; %}
+
 <%= @type_mapper.typemap_void_ptr('void*', 'VOID_PTR') %>
 <%= @type_mapper.typemap_void_ptr('const char*', 'VOID_PTR') %>
 <%= @type_mapper.typemap_void_ptr('unsigned char*', 'VOID_PTR') %>
@@ -172,7 +175,9 @@ as_is_header_files_no_ext = raknet_header_files_no_ext - swig_interfaces_no_ext
 <%= @type_mapper.typemap_inout_blittable('char*', 'INOUT_BLITTABLE_ARRAY', 'byte[]') %>
 <%= @type_mapper.typemap_inout_blittable('unsigned char*', 'INOUT_BLITTABLE_ARRAY', 'byte[]') %>
 
-<%= @type_mapper.typemap_ref_blittable('bool*', 'REF_BLITTABLE', 'bool') %>
+// This way is not good. SWIG usually treats bool as 4byte.
+<%= @type_mapper.typemap_ref_blittable('bool*', 'REF_BLITTABLE', 'bool', 
+      {:imtype_inattributes=>'[MarshalAs(UnmanagedType.U1)]', :imtype_outattributes=>'[return: MarshalAs(UnmanagedType.U1)]'}) %>
 // add more types.
 
 // apply directives

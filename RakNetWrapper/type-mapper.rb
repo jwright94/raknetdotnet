@@ -56,16 +56,16 @@ EOS
 EOS
   end
 
-  def typemap_ref_blittable(ctype, name, cstype)
+  def typemap_ref_blittable(ctype, name, cstype, options = {})
     ctype_and_name = concat ctype, name
     <<EOS
-%typemap(ctype)                                             #{ctype_and_name} "#{ctype}"
-%typemap(imtype, inattributes="ref ", out="ref #{cstype}")  #{ctype_and_name} "#{cstype}"
-%typemap(cstype, inattributes="ref ")                       #{ctype_and_name} "#{cstype}"
-%typemap(in)                                                #{ctype_and_name} %{$1 = ($1_ltype)$input;%}
-%typemap(directorin)                                        #{ctype_and_name} "$input = $1_name;"
-%typemap(csin)                                              #{ctype_and_name} "ref $csinput"
-%typemap(csdirectorin)                                      #{ctype_and_name} "ref $iminput"
+%typemap(ctype)                        #{ctype_and_name} "#{ctype}"
+%typemap(imtype, inattributes="#{options[:imtype_inattributes]} ref ", outattributes="#{options[:imtype_outattributes]}", out="ref #{cstype}") #{ctype_and_name} "#{cstype}"
+%typemap(cstype, inattributes="ref ")  #{ctype_and_name} "#{cstype}"
+%typemap(in)                           #{ctype_and_name} %{$1 = ($1_ltype)$input;%}
+%typemap(directorin)                   #{ctype_and_name} "$input = $1_name;"
+%typemap(csin)                         #{ctype_and_name} "ref $csinput"
+%typemap(csdirectorin)                 #{ctype_and_name} "ref $iminput"
 EOS
   end
   
