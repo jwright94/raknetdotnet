@@ -160,8 +160,18 @@ as_is_header_files_no_ext = raknet_header_files_no_ext - swig_interfaces_no_ext
 %csconst(1);
 %pragma(csharp) imclassclassmodifiers="[System.Security.SuppressUnmanagedCodeSecurity()] public class"  // We stopped using proxy-modifier.rb
 
-//%typemap(in) bool *OUTPUT, bool &OUTPUT
-//%{ $1 = ($1_ltype)$input; %}
+%typemap(in) bool *OUTPUT ($*1_ltype temp), 
+             bool &OUTPUT ($*1_ltype temp), 
+             bool *INOUT ($*1_ltype temp), 
+             bool &INOUT ($*1_ltype temp)
+%{ temp = *$input ? true : false; 
+   $1 = &temp; %}
+
+%typemap(argout) bool *OUTPUT, 
+                 bool &OUTPUT, 
+                 bool *INOUT, 
+                 bool &INOUT
+%{ *$input = temp$argnum ? 1 : 0; %}
 
 <%= @type_mapper.typemap_void_ptr('void*', 'VOID_PTR') %>
 <%= @type_mapper.typemap_void_ptr('const char*', 'VOID_PTR') %>
