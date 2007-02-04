@@ -8,32 +8,74 @@ namespace ReplicaManagerCS
 
     class Program
     {
-        static bool isServer;
+        public static bool isServer;
         static RakPeerInterface rakPeer;
 
-        static Monster monster;
-        static Player player;
+        public static ReplicaManagerExt replicaManager = new ReplicaManagerExt();
 
-        static ReplicaManagerExt replicaManager = new ReplicaManagerExt();
+        public static Monster monster;
+        public static Player player;
 
         static ReplicaReturnResult ConstructionCB(BitStream inBitStream, uint timestamp, NetworkID networkID, Replica existingReplica, SystemAddress senderId, ReplicaManagerExt caller, IntPtr userData)
         {
+            string output;
+
             if (isServer)
                 return ReplicaReturnResult.REPLICA_PROCESSING_DONE;
 
             //StringTable.Instance().DecodeString(
+            inBitStream.Read(out output);
+            if (output == "Player")
+            {
+                System.Diagnostics.Debug.Assert(player == null);
 
+                player = new Player();
+
+                player.replica.SetNetworkID(networkID);
+
+                if (!isServer)
+                {
+                    replicaManager.Construct(player.replica, true, senderId, false);
+
+                    replicaManager.SetScope(player.replica, true, senderId, false);
+                }
+
+                Console.Write("New player created\n");
+            }
+            else if (output == "Monster")
+            {
+                System.Diagnostics.Debug.Assert(monster == null);
+
+                monster = new Monster();
+
+                monster.replica.SetNetworkID(networkID);
+
+                if (!isServer)
+                {
+                    replicaManager.Construct(monster.replica, true, senderId, false);
+
+                    replicaManager.SetScope(monster.replica, true, senderId, false);
+                }
+
+                Console.Write("New monster created\n");
+            }
+            else
+            {
+                System.Diagnostics.Debug.Assert(false);
+            }
             return ReplicaReturnResult.REPLICA_PROCESSING_DONE;
         }
 
         static ReplicaReturnResult SendDownloadCompleteCB(BitStream inBitStream, uint timestamp, SystemAddress senderId, ReplicaManagerExt caller, IntPtr userData)
         {
-            return ReplicaReturnResult.REPLICA_CANCEL_PROCESS;
+            return ReplicaReturnResult.REPLICA_PROCESSING_DONE;
         }
 
         static ReplicaReturnResult ReceiveDownloadCompleteCB(BitStream inBitStream, SystemAddress senderId, ReplicaManagerExt caller, IntPtr userData)
         {
-            return ReplicaReturnResult.REPLICA_CANCEL_PROCESS;
+            if (!isServer)
+                Console.Write("Object downloads complete\n");
+            return ReplicaReturnResult.REPLICA_PROCESSING_DONE;
         }
 
         static int Main(string[] args)

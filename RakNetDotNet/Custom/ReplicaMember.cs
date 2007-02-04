@@ -46,5 +46,11 @@ namespace RakNetDotNet
             return listener.Serialize(sendTimestamp, outBitStream, lastSendTime, ref priority, ref reliability, currentTime, systemAddress, flags);
         }
         #endregion
+        #region NetworkIDGenerator Members
+        public override bool RequiresSetParent()
+        {
+            return true;
+        }
+        #endregion
     }
 }
