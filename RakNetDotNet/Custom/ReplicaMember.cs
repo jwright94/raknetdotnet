@@ -47,6 +47,10 @@ namespace RakNetDotNet
         }
         #endregion
         #region NetworkIDGenerator Members
+        public override bool IsNetworkIDAuthority()
+        {
+            return true;  // FIXME: maybe this is wrong.
+        }
         public override bool RequiresSetParent()
         {
             return true;
