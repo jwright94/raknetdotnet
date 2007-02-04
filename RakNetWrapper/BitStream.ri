@@ -49,13 +49,17 @@ namespace RakNet {
     ]
     %>
     
+    <%= @type_mapper.start_scope %>
     <%= @type_mapper.apply_to_creftypes('OUTPUT') %>  // for specialize
     <%= DirectiveHelper::member_template_specialize_in(TypeHelper::FP_TYPES, bs_template_functions_of_fp_types.grep(/(Write)|(Read)\w*/)) %>
     <%= DirectiveHelper::member_template_specialize_in(TypeHelper::CTYPES, bs_template_functions_of_ctypes.grep(/(Write)|(Read)\w*/)) %>
+    <%= @type_mapper.end_scope %>
     
+    <%= @type_mapper.start_scope %>
     <%= @type_mapper.apply_to_creftypes('INOUT') %>   // for specialize
     <%= DirectiveHelper::member_template_specialize_in(TypeHelper::FP_TYPES, bs_template_functions_of_fp_types.grep(/Serialize\w*/)) %>
     <%= DirectiveHelper::member_template_specialize_in(TypeHelper::CTYPES, bs_template_functions_of_ctypes.grep(/Serialize\w*/)) %>
+    <%= @type_mapper.end_scope %>
     
     <%= DirectiveHelper::member_template_specialize_in(['NetworkID'], ['Write', 'Read', 'Serialize']) %>
     
