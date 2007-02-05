@@ -1,0 +1,15 @@
+<%= @type_mapper.start_scope('ReplicaExt') %>
+
+%feature("director") ReplicaBoolMarshalAsUInt;
+
+<%= @type_mapper.typemap_ref_blittable('PacketPriority*', 'REF_BLITTABLE', 'PacketPriority') %>
+<%= @type_mapper.apply_same_ctype('PacketPriority*', 'REF_BLITTABLE') %>
+
+<%= @type_mapper.typemap_ref_blittable('PacketReliability*', 'REF_BLITTABLE', 'PacketReliability') %>
+<%= @type_mapper.apply_same_ctype('PacketReliability*', 'REF_BLITTABLE') %>
+
+<%#= @type_mapper.apply_same_ctype('bool*', 'REF_BOOL', 'includeTimestamp') %>  // SendConstruction, SendDestruction, SendScopeChange
+
+%include "ReplicaExt.h"
+
+<%= @type_mapper.end_scope %>

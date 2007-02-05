@@ -204,6 +204,7 @@
     <Compile Include="Replica.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ReplicaBoolMarshalAsUInt.cs" />
     <Compile Include="ReplicaManagerExt.cs" />
     <Compile Include="ReplicaReturnResult.cs">
       <SubType>Code</SubType>

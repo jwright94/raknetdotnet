@@ -239,6 +239,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ReplicaExt.h"
+				>
+			</File>
+			<File
 				RelativePath=".\ReplicaManagerExt.h"
 				>
 			</File>
@@ -283,6 +287,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ReplicaExt.i"
+				>
+			</File>
+			<File
 				RelativePath=".\ReplicaManagerExt.i"
 				>
 			</File>
@@ -324,7 +332,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Generating SWIG wrapper..."
-					CommandLine="..\swigwin\swig.exe -namespace RakNetDotNet -dllimport $(ProjectName) -c++ -csharp -o $(InputName)_wrap.cxx -outdir ..\RakNetDotNet &quot;$(InputPath)&quot;&#x0D;&#x0A;rem ..\ruby\bin\ruby proxy-modifier.rb -s ..\RakNetDotNet\RakNetBindingsPINVOKE.cs&#x0D;&#x0A;..\ruby\bin\ruby proxy-modifier.rb -r ..\RakNetDotNet\Replica.cs&#x0D;&#x0A;"
+					CommandLine="..\swigwin\swig.exe -namespace RakNetDotNet -dllimport $(ProjectName) -c++ -csharp -o $(InputName)_wrap.cxx -outdir ..\RakNetDotNet &quot;$(InputPath)&quot;&#x0D;&#x0A;rem ..\ruby\bin\ruby proxy-modifier.rb -s ..\RakNetDotNet\RakNetBindingsPINVOKE.cs&#x0D;&#x0A;..\ruby\bin\ruby proxy-modifier.rb -r ..\RakNetDotNet\ReplicaBoolMarshalAsUInt.cs&#x0D;&#x0A;"
 					Outputs="$(InputName)_wrap.cxx;$(InputName)_wrap.h"
 				/>
 			</FileConfiguration>
@@ -334,7 +342,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Generating SWIG wrapper..."
-					CommandLine="..\swigwin\swig.exe -namespace RakNetDotNet -dllimport $(ProjectName) -c++ -csharp -o $(InputName)_wrap.cxx -outdir ..\RakNetDotNet &quot;$(InputPath)&quot;&#x0D;&#x0A;rem ..\ruby\bin\ruby proxy-modifier.rb -s ..\RakNetDotNet\RakNetBindingsPINVOKE.cs&#x0D;&#x0A;..\ruby\bin\ruby proxy-modifier.rb -r ..\RakNetDotNet\Replica.cs&#x0D;&#x0A;"
+					CommandLine="..\swigwin\swig.exe -namespace RakNetDotNet -dllimport $(ProjectName) -c++ -csharp -o $(InputName)_wrap.cxx -outdir ..\RakNetDotNet &quot;$(InputPath)&quot;&#x0D;&#x0A;rem ..\ruby\bin\ruby proxy-modifier.rb -s ..\RakNetDotNet\RakNetBindingsPINVOKE.cs&#x0D;&#x0A;..\ruby\bin\ruby proxy-modifier.rb -r ..\RakNetDotNet\ReplicaBoolMarshalAsUInt.cs&#x0D;&#x0A;"
 					Outputs="$(InputName)_wrap.cxx;$(InputName)_wrap.h"
 				/>
 			</FileConfiguration>
@@ -353,6 +361,10 @@
 		</File>
 		<File
 			RelativePath=".\Replica.ri"
+			>
+		</File>
+		<File
+			RelativePath=".\ReplicaExt.ri"
 			>
 		</File>
 		<File

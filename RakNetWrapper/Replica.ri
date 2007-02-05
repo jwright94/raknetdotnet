@@ -1,14 +1,8 @@
 <%= @type_mapper.start_scope('Replica') %>
-
-%feature("director") Replica;
-
-<%= @type_mapper.typemap_ref_blittable('PacketPriority*', 'REF_BLITTABLE', 'PacketPriority') %>
-<%= @type_mapper.apply_same_ctype('PacketPriority*', 'REF_BLITTABLE') %>
-
-<%= @type_mapper.typemap_ref_blittable('PacketReliability*', 'REF_BLITTABLE', 'PacketReliability') %>
-<%= @type_mapper.apply_same_ctype('PacketReliability*', 'REF_BLITTABLE') %>
-
-<%#= @type_mapper.apply_same_ctype('bool*', 'REF_BOOL', 'includeTimestamp') %>  // SendConstruction, SendDestruction, SendScopeChange
+%ignore Replica::SendConstruction(RakNetTime, SystemAddress, RakNet::BitStream *, bool *);
+%ignore Replica::SendDestruction(RakNet::BitStream *, SystemAddress, bool *);
+%ignore Replica::SendScopeChange(bool, RakNet::BitStream *, RakNetTime, SystemAddress, bool *);
+%ignore Replica::Serialize(bool *, RakNet::BitStream *, RakNetTime, PacketPriority *, PacketReliability *, RakNetTime, SystemAddress, unsigned int &);
 
 %include "<%= @raknet_home %>/Replica.h"
 
