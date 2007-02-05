@@ -34,7 +34,7 @@
   }
 
 %typemap(cscode) NetworkIDGenerator %{
-  public object Parent {
+  public virtual object Parent {
     get {
       IntPtr parent = GetParent();
       if (parent == IntPtr.Zero) return null;

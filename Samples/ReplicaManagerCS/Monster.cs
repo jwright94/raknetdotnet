@@ -13,9 +13,9 @@ namespace ReplicaManagerCS
             position = 1;
             health = 2;
 
-            replica = new ReplicaMember(this);
+            replica = new ReplicaMember();
             // You must set a listener. By a method of to set constructor or to use parent member.
-            //replica.Parent = this;  // FIXME: This is broken.
+            replica.Listener = this;
 
             if (Program.isServer)
                 Program.replicaManager.Construct(replica, false, RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS, true);
