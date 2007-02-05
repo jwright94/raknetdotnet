@@ -1,6 +1,11 @@
 ﻿namespace RakNetDotNet
 {
-    public interface IReplicaListener
+    public interface INetworkIDGeneratorListener
+    {
+        bool IsNetworkIDAuthority();
+    }
+
+    public interface IReplicaListener : INetworkIDGeneratorListener
     {
         ReplicaReturnResult Deserialize(BitStream inBitStream, uint timestamp, uint lastDeserializeTime, SystemAddress systemAddress);
         ReplicaReturnResult ReceiveDestruction(BitStream inBitStream, SystemAddress systemAddress, uint timestamp);
@@ -28,6 +33,9 @@
         public void SendDestruction(BitStream outBitStream, SystemAddress systemAddress, ref bool includeTimestamp) { }
         public ReplicaReturnResult SendScopeChange(bool inScope, BitStream outBitStream, uint currentTime, SystemAddress systemAddress, ref bool includeTimestamp) { return ReplicaReturnResult.REPLICA_CANCEL_PROCESS; }
         public ReplicaReturnResult Serialize(ref bool sendTimestamp, BitStream outBitStream, uint lastSendTime, ref PacketPriority priority, ref PacketReliability reliability, uint currentTime, SystemAddress systemAddress, SWIGTYPE_p_unsigned_int flags) { return ReplicaReturnResult.REPLICA_CANCEL_PROCESS; }
+        #endregion
+        #region INetworkIDGeneratorListener Members
+        public bool IsNetworkIDAuthority() { return false; }
         #endregion
     }
 }
