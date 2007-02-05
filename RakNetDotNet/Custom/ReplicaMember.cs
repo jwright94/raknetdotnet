@@ -1,6 +1,6 @@
 namespace RakNetDotNet
 {
-    public class ReplicaMember : Replica
+    public sealed class ReplicaMember : Replica
     {
         private IReplicaListener listener = NullReplicaListener.Instance;
         public IReplicaListener Listener
