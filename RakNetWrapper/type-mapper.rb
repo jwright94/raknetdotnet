@@ -68,6 +68,27 @@ EOS
 %typemap(csdirectorin)                 #{ctype_and_name} "ref $iminput"
 EOS
   end
+
+  # This method is not usable. 'directorout' was not usable instead of 'directorargout'.
+  def typemap_ref_bool(ctype, name, cstype, options = {})
+    ctype_and_name = concat ctype, name
+    <<EOS
+%typemap(ctype)                        #{ctype_and_name} "unsigned int*"
+%typemap(imtype, inattributes="#{options[:imtype_inattributes]} ref ", outattributes="#{options[:imtype_outattributes]}", out="ref #{cstype}") #{ctype_and_name} "#{cstype}"
+%typemap(cstype, inattributes="ref ")  #{ctype_and_name} "#{cstype}"
+%typemap(in)                           #{ctype_and_name} ($*1_ltype temp)
+%{ temp = *$input ? true : false; 
+   $1 = &temp; %}
+%typemap(argout)                       #{ctype_and_name}
+%{ *$input = temp$argnum ? 1 : 0; %}
+%typemap(directorin)                   #{ctype_and_name} 
+%{ unsigned int temp$argnum = *$1_name ? 1 : 0;
+   $input = &temp$argnum; %}
+%typemap(directorout)                  #{ctype_and_name} "$result = ($1_ltype)$input;"
+%typemap(csin)                         #{ctype_and_name} "ref $csinput"
+%typemap(csdirectorin)                 #{ctype_and_name} "ref $iminput"
+EOS
+  end
   
   def typemap_void_ptr(ctype, name)
     ctype_and_name = concat ctype, name

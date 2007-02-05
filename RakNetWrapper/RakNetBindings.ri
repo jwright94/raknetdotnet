@@ -186,8 +186,9 @@ as_is_header_files_no_ext = raknet_header_files_no_ext - swig_interfaces_no_ext
 <%= @type_mapper.typemap_inout_blittable('unsigned char*', 'INOUT_BLITTABLE_ARRAY', 'byte[]') %>
 
 // This way is not good. SWIG usually treats bool as 4byte.
-<%= @type_mapper.typemap_ref_blittable('bool*', 'REF_BLITTABLE', 'bool', 
+<%#= @type_mapper.typemap_ref_blittable('bool*', 'REF_BLITTABLE', 'bool', 
       {:imtype_inattributes=>'[MarshalAs(UnmanagedType.U1)]', :imtype_outattributes=>'[return: MarshalAs(UnmanagedType.U1)]'}) %>
+<%= @type_mapper.typemap_ref_bool('bool*', 'REF_BOOL', 'bool') %>
 // add more types.
 
 // apply directives
