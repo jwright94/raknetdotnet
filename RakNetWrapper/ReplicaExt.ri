@@ -8,7 +8,9 @@
 <%= @type_mapper.typemap_ref_blittable('PacketReliability*', 'REF_BLITTABLE', 'PacketReliability') %>
 <%= @type_mapper.apply_same_ctype('PacketReliability*', 'REF_BLITTABLE') %>
 
-<%#= @type_mapper.apply_same_ctype('bool*', 'REF_BOOL', 'includeTimestamp') %>  // SendConstruction, SendDestruction, SendScopeChange
+<%#= @type_mapper.apply_same_ctype('bool*', 'REF_BOOL', 'includeTimestamp') %>             // SendConstruction, SendDestruction, SendScopeChange
+<%= @type_mapper.apply_same_ctype('unsigned int*', 'REF_UINTBOOL', 'includeTimestamp') %>  // SendConstruction, SendDestruction, SendScopeChange
+<%= @type_mapper.apply_same_ctype('unsigned int*', 'REF_UINTBOOL', 'sendTimestamp') %>     // Serialize
 
 %include "ReplicaExt.h"
 

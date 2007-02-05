@@ -40,7 +40,7 @@ namespace ReplicaManagerCS
             Program.monster = null;
         }
 
-        public ReplicaReturnResult SendConstruction(uint currentTime, SystemAddress systemAddress, BitStream outBitStream, SWIGTYPE_p_unsigned_int includeTimestamp)
+        public ReplicaReturnResult SendConstruction(uint currentTime, SystemAddress systemAddress, BitStream outBitStream, ref bool includeTimestamp)
         {
             outBitStream.Write("Monster");
 
@@ -51,7 +51,7 @@ namespace ReplicaManagerCS
             return ReplicaReturnResult.REPLICA_PROCESSING_DONE;
         }
 
-        public void SendDestruction(BitStream outBitStream, SystemAddress systemAddress, SWIGTYPE_p_unsigned_int includeTimestamp)
+        public void SendDestruction(BitStream outBitStream, SystemAddress systemAddress, ref bool includeTimestamp)
         {
         }
 
@@ -62,7 +62,7 @@ namespace ReplicaManagerCS
             return ReplicaReturnResult.REPLICA_PROCESSING_DONE;
         }
 
-        public ReplicaReturnResult SendScopeChange(bool inScope, BitStream outBitStream, uint currentTime, SystemAddress systemAddress, SWIGTYPE_p_unsigned_int includeTimestamp)
+        public ReplicaReturnResult SendScopeChange(bool inScope, BitStream outBitStream, uint currentTime, SystemAddress systemAddress, ref bool includeTimestamp)
         {
             if (inScope)
                 Console.Write("Sending scope change to true in Monster\n");
@@ -84,7 +84,7 @@ namespace ReplicaManagerCS
             return ReplicaReturnResult.REPLICA_PROCESSING_DONE;
         }
 
-        public ReplicaReturnResult Serialize(SWIGTYPE_p_unsigned_int sendTimestamp, BitStream outBitStream, uint lastSendTime, ref PacketPriority priority, ref PacketReliability reliability, uint currentTime, SystemAddress systemAddress, SWIGTYPE_p_unsigned_int flags)
+        public ReplicaReturnResult Serialize(ref bool sendTimestamp, BitStream outBitStream, uint lastSendTime, ref PacketPriority priority, ref PacketReliability reliability, uint currentTime, SystemAddress systemAddress, SWIGTYPE_p_unsigned_int flags)
         {
             if (lastSendTime == 0)
                 Console.Write("First call to Monster::Serialize for {0}:{1}\n", systemAddress.binaryAddress, systemAddress.port);

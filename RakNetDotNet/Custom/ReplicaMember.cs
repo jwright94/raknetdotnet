@@ -29,21 +29,21 @@ namespace RakNetDotNet
         {
             return listener.ReceiveScopeChange(inBitStream, systemAddress, timestamp);
         }
-        public override ReplicaReturnResult SendConstruction(uint currentTime, SystemAddress systemAddress, BitStream outBitStream, SWIGTYPE_p_unsigned_int includeTimestamp)
+        public override ReplicaReturnResult SendConstruction(uint currentTime, SystemAddress systemAddress, BitStream outBitStream, ref bool includeTimestamp)
         {
-            return listener.SendConstruction(currentTime, systemAddress, outBitStream, includeTimestamp);
+            return listener.SendConstruction(currentTime, systemAddress, outBitStream, ref includeTimestamp);
         }
-        public override void SendDestruction(BitStream outBitStream, SystemAddress systemAddress, SWIGTYPE_p_unsigned_int includeTimestamp)
+        public override void SendDestruction(BitStream outBitStream, SystemAddress systemAddress, ref bool includeTimestamp)
         {
-            listener.SendDestruction(outBitStream, systemAddress, includeTimestamp);
+            listener.SendDestruction(outBitStream, systemAddress, ref includeTimestamp);
         }
-        public override ReplicaReturnResult SendScopeChange(bool inScope, BitStream outBitStream, uint currentTime, SystemAddress systemAddress, SWIGTYPE_p_unsigned_int includeTimestamp)
+        public override ReplicaReturnResult SendScopeChange(bool inScope, BitStream outBitStream, uint currentTime, SystemAddress systemAddress, ref bool includeTimestamp)
         {
-            return listener.SendScopeChange(inScope, outBitStream, currentTime, systemAddress, includeTimestamp);
+            return listener.SendScopeChange(inScope, outBitStream, currentTime, systemAddress, ref includeTimestamp);
         }
-        public override ReplicaReturnResult Serialize(SWIGTYPE_p_unsigned_int sendTimestamp, BitStream outBitStream, uint lastSendTime, ref PacketPriority priority, ref PacketReliability reliability, uint currentTime, SystemAddress systemAddress, SWIGTYPE_p_unsigned_int flags)
+        public override ReplicaReturnResult Serialize(ref bool sendTimestamp, BitStream outBitStream, uint lastSendTime, ref PacketPriority priority, ref PacketReliability reliability, uint currentTime, SystemAddress systemAddress, SWIGTYPE_p_unsigned_int flags)
         {
-            return listener.Serialize(sendTimestamp, outBitStream, lastSendTime, ref priority, ref reliability, currentTime, systemAddress, flags);
+            return listener.Serialize(ref sendTimestamp, outBitStream, lastSendTime, ref priority, ref reliability, currentTime, systemAddress, flags);
         }
         #endregion
         #region NetworkIDGenerator Members
