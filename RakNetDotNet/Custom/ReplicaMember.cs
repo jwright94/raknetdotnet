@@ -29,17 +29,17 @@ namespace RakNetDotNet
         {
             return listener.ReceiveScopeChange(inBitStream, systemAddress, timestamp);
         }
-        public override ReplicaReturnResult SendConstruction(uint currentTime, SystemAddress systemAddress, BitStream outBitStream, ref bool includeTimestamp)
+        public override ReplicaReturnResult SendConstruction(uint currentTime, SystemAddress systemAddress, BitStream outBitStream, SWIGTYPE_p_bool includeTimestamp)
         {
-            return listener.SendConstruction(currentTime, systemAddress, outBitStream, ref includeTimestamp);
+            return listener.SendConstruction(currentTime, systemAddress, outBitStream, includeTimestamp);
         }
-        public override void SendDestruction(BitStream outBitStream, SystemAddress systemAddress, ref bool includeTimestamp)
+        public override void SendDestruction(BitStream outBitStream, SystemAddress systemAddress, SWIGTYPE_p_bool includeTimestamp)
         {
-            listener.SendDestruction(outBitStream, systemAddress, ref includeTimestamp);
+            listener.SendDestruction(outBitStream, systemAddress, includeTimestamp);
         }
-        public override ReplicaReturnResult SendScopeChange(bool inScope, BitStream outBitStream, uint currentTime, SystemAddress systemAddress, ref bool includeTimestamp)
+        public override ReplicaReturnResult SendScopeChange(bool inScope, BitStream outBitStream, uint currentTime, SystemAddress systemAddress, SWIGTYPE_p_bool includeTimestamp)
         {
-            return listener.SendScopeChange(inScope, outBitStream, currentTime, systemAddress, ref includeTimestamp);
+            return listener.SendScopeChange(inScope, outBitStream, currentTime, systemAddress, includeTimestamp);
         }
         public override ReplicaReturnResult Serialize(SWIGTYPE_p_bool sendTimestamp, BitStream outBitStream, uint lastSendTime, ref PacketPriority priority, ref PacketReliability reliability, uint currentTime, SystemAddress systemAddress, SWIGTYPE_p_unsigned_int flags)
         {

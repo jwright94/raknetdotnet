@@ -37,7 +37,7 @@ namespace ReplicaManagerCS
             Program.player = null;
         }
 
-        public ReplicaReturnResult SendConstruction(uint currentTime, SystemAddress systemAddress, BitStream outBitStream, ref bool includeTimestamp)
+        public ReplicaReturnResult SendConstruction(uint currentTime, SystemAddress systemAddress, BitStream outBitStream, SWIGTYPE_p_bool includeTimestamp)
         {
             outBitStream.Write("Player");
 
@@ -48,7 +48,7 @@ namespace ReplicaManagerCS
             return ReplicaReturnResult.REPLICA_PROCESSING_DONE;
         }
 
-        public void SendDestruction(BitStream outBitStream, SystemAddress systemAddress, ref bool includeTimestamp)
+        public void SendDestruction(BitStream outBitStream, SystemAddress systemAddress, SWIGTYPE_p_bool includeTimestamp)
         {
         }
 
@@ -59,7 +59,7 @@ namespace ReplicaManagerCS
             return ReplicaReturnResult.REPLICA_PROCESSING_DONE;
         }
 
-        public ReplicaReturnResult SendScopeChange(bool inScope, BitStream outBitStream, uint currentTime, SystemAddress systemAddress, ref bool includeTimestamp)
+        public ReplicaReturnResult SendScopeChange(bool inScope, BitStream outBitStream, uint currentTime, SystemAddress systemAddress, SWIGTYPE_p_bool includeTimestamp)
         {
             if (inScope)
                 Console.Write("Sending scope change to true in Player\n");
