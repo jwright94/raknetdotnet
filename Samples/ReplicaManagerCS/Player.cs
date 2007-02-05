@@ -39,7 +39,7 @@ namespace ReplicaManagerCS
 
         public ReplicaReturnResult SendConstruction(uint currentTime, SystemAddress systemAddress, BitStream outBitStream, ref bool includeTimestamp)
         {
-            outBitStream.Write("Player");
+            StringTable.Instance().EncodeString("Player", 255, outBitStream);
 
             Program.replicaManager.SetScope(replica, true, systemAddress, false);
 

@@ -1,0 +1,6 @@
+<%= @type_mapper.start_scope('StringTable') %>
+<%= @type_mapper.apply_same_ctype('char*', 'INPUT_STRINGBUILDER', 'output') %>
+
+%include "<%= @raknet_home %>/StringTable.h"
+
+<%= @type_mapper.end_scope %>

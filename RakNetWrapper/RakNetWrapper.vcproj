@@ -376,6 +376,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\StringTable.ri"
+			>
+		</File>
+		<File
 			RelativePath=".\swig-renderer.rb"
 			>
 		</File>

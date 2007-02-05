@@ -42,7 +42,7 @@ namespace ReplicaManagerCS
 
         public ReplicaReturnResult SendConstruction(uint currentTime, SystemAddress systemAddress, BitStream outBitStream, ref bool includeTimestamp)
         {
-            outBitStream.Write("Monster");
+            StringTable.Instance().EncodeString("Monster", 255, outBitStream);
 
             Program.replicaManager.SetScope(replica, true, systemAddress, false);
 

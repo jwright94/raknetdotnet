@@ -181,6 +181,7 @@ as_is_header_files_no_ext = raknet_header_files_no_ext - swig_interfaces_no_ext
 <%= @type_mapper.typemap_void_ptr('unsigned char*', 'VOID_PTR') %>
 
 <%= @type_mapper.typemap_input_blittable('char*', 'INPUT_BLITTABLE_ARRAY', 'byte[]') %>
+<%= @type_mapper.typemap_input_blittable('char*', 'INPUT_STRINGBUILDER', 'System.Text.StringBuilder') %>
 <%= @type_mapper.typemap_input_blittable('const char*', 'INPUT_BLITTABLE_ARRAY', 'byte[]') %>
 <%= @type_mapper.typemap_input_blittable('unsigned char*', 'INPUT_BLITTABLE_ARRAY', 'byte[]') %>
 <%= @type_mapper.typemap_input_blittable('const unsigned char*', 'INPUT_BLITTABLE_ARRAY', 'byte[]') %>

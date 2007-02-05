@@ -18,14 +18,13 @@ namespace ReplicaManagerCS
 
         static ReplicaReturnResult ConstructionCB(BitStream inBitStream, uint timestamp, NetworkID networkID, Replica existingReplica, SystemAddress senderId, ReplicaManagerExt caller, IntPtr userData)
         {
-            string output;
+            StringBuilder output = new StringBuilder(255);
 
             if (isServer)
                 return ReplicaReturnResult.REPLICA_PROCESSING_DONE;
 
-            //StringTable.Instance().DecodeString(
-            inBitStream.Read(out output);
-            if (output == "Player")
+            StringTable.Instance().DecodeString(output, output.Capacity, inBitStream);
+            if (output.ToString() == "Player")
             {
                 System.Diagnostics.Debug.Assert(player == null);
 
@@ -42,7 +41,7 @@ namespace ReplicaManagerCS
 
                 Console.Write("New player created\n");
             }
-            else if (output == "Monster")
+            else if (output.ToString() == "Monster")
             {
                 System.Diagnostics.Debug.Assert(monster == null);
 
