@@ -121,10 +121,10 @@ namespace LightweightDatabase
 
                 if (_kbhit() != 0)
                 {
-                    char ch = Console.ReadKey(true).KeyChar;
+                    char _ch = Console.ReadKey(true).KeyChar;
                     if (isServer)
                     {
-                        if (ch == 'c')
+                        if (_ch == 'c')
                         {
                             bool allowRemoteUpdate;
                             bool allowRemoteQuery;
@@ -236,7 +236,7 @@ namespace LightweightDatabase
                             //    Console.Write("Table {0} creation failed.  Possibly already exists.\n", tableName);
 
                         }
-                        else if (ch == 'r')
+                        else if (_ch == 'r')
                         {
                             Console.Write("Enter name of table to remove: ");
                             str = Console.ReadLine();
@@ -250,7 +250,7 @@ namespace LightweightDatabase
                     }
                     else
                     {
-                        if (ch == 'q' || ch == 'u' || ch == 'r')
+                        if (_ch == 'q' || _ch == 'u' || _ch == 'r')
                         {
                             Console.Write("Enter table name: ");
                             tableName = Console.ReadLine();
@@ -260,13 +260,13 @@ namespace LightweightDatabase
                             tablePassword = Console.ReadLine();
                         }
 
-                        if (ch == 'q')
+                        if (_ch == 'q')
                         {
                             // TODO - let the user enter filters, columns, and rows to return.
                             // TODO - not yet.
                             //databaseClient.QueryTable(tableName, tablePassword, 0, 0, 0, 0, 0, 0, UNASSIGNED_SYSTEM_ADDRESS, true);
                         }
-                        else if (ch == 'u')
+                        else if (_ch == 'u')
                         {
                             RowUpdateMode updateMode;
                             uint rowId;
@@ -339,7 +339,7 @@ namespace LightweightDatabase
 
                             databaseClient.UpdateRow(tableName, tablePassword, updateMode, hasRowId, rowId, cellUpdates, numCellUpdates, RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS, true);
                         }
-                        else if (ch == 'r')
+                        else if (_ch == 'r')
                         {
                             uint rowId;
                             Console.Write("Enter row ID to remove: ");
@@ -349,10 +349,10 @@ namespace LightweightDatabase
                         }
                     }
 
-                    if (ch == 'e')
+                    if (_ch == 'e')
                         break;
 
-                    ch = 0;
+                    _ch = 0;
                 }
 
                 RakNetBindings.RakSleep(30);
