@@ -267,6 +267,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DS_Table.i"
+				>
+			</File>
+			<File
 				RelativePath=".\LogCommandParser.i"
 				>
 			</File>
@@ -309,6 +313,10 @@
 		</File>
 		<File
 			RelativePath=".\DS_BinarySearchTree.ri"
+			>
+		</File>
+		<File
+			RelativePath=".\DS_Table.ri"
 			>
 		</File>
 		<File

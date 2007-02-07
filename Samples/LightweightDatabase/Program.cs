@@ -303,7 +303,7 @@ namespace LightweightDatabase
                             }
 
                             Console.Write("Enter cells\n");
-                            int numCellUpdates;
+                            byte numCellUpdates;
                             DatabaseCellUpdate[] cellUpdates = new DatabaseCellUpdate[64];
                             for (numCellUpdates = 0; numCellUpdates < 64; numCellUpdates++)
                             {
@@ -317,27 +317,28 @@ namespace LightweightDatabase
                                 str = Console.ReadLine();
                                 if (str[0] == '1' || str.Equals(string.Empty))
                                 {
-                                    cellUpdates[numCellUpdates].columnType = DataStructures.Table.ColumnType.STRING;
+                                    cellUpdates[numCellUpdates].columnType = Table.ColumnType.STRING;
                                     Console.Write("Enter string value: ");
                                     str = Console.ReadLine();
                                     cellUpdates[numCellUpdates].cellValue.Set(str);
                                 }
                                 else if (str[0] == '2')
                                 {
-                                    cellUpdates[numCellUpdates].columnType = DataStructures.Table.ColumnType.NUMERIC;
+                                    cellUpdates[numCellUpdates].columnType = Table.ColumnType.NUMERIC;
                                     Console.Write("Enter numeric value: ");
                                     str = Console.ReadLine();
                                     cellUpdates[numCellUpdates].cellValue.Set(int.Parse(str));
                                 }
                                 else
                                 {
-                                    cellUpdates[numCellUpdates].columnType = DataStructures.Table.ColumnType.BINARY;
+                                    cellUpdates[numCellUpdates].columnType = Table.ColumnType.BINARY;
                                     // TODO - Pain in the ass to write this demo code
                                     Console.Write("TODO\n");
                                 }
                             }
 
-                            databaseClient.UpdateRow(tableName, tablePassword, updateMode, hasRowId, rowId, cellUpdates, numCellUpdates, RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS, true);
+                            // TODO: not yet.
+                            //databaseClient.UpdateRow(tableName, tablePassword, updateMode, hasRowId, rowId, cellUpdates, numCellUpdates, RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS, true);
                         }
                         else if (_ch == 'r')
                         {
@@ -352,7 +353,7 @@ namespace LightweightDatabase
                     if (_ch == 'e')
                         break;
 
-                    _ch = 0;
+                    _ch = (char)0;
                 }
 
                 RakNetBindings.RakSleep(30);
