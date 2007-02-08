@@ -1,0 +1,6 @@
+<%= @type_mapper.start_scope('TableSerializer') %>
+<%= @type_mapper.apply_same_ctype('unsigned char*', 'INPUT_BLITTABLE_ARRAY', 'serializedTable') %>  // DeserializeTable
+
+%include "<%= @raknet_home %>/TableSerializer.h"
+
+<%= @type_mapper.end_scope %>

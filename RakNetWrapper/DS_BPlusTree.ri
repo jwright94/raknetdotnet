@@ -1,0 +1,7 @@
+<%= @type_mapper.start_scope('DS_BPlusTree') %>
+
+%include "<%= @raknet_home %>/DS_BPlusTree.h"
+
+%template(TableRowPage) DataStructures::Page<unsigned, DataStructures::Table::Row*, _TABLE_BPLUS_TREE_ORDER>;
+
+<%= @type_mapper.end_scope %>

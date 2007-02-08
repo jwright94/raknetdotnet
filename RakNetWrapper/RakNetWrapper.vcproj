@@ -267,6 +267,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DS_BPlusTree.i"
+				>
+			</File>
+			<File
 				RelativePath=".\DS_Table.i"
 				>
 			</File>
@@ -302,6 +306,10 @@
 				RelativePath=".\StringCompressor.i"
 				>
 			</File>
+			<File
+				RelativePath=".\TableSerializer.i"
+				>
+			</File>
 		</Filter>
 		<File
 			RelativePath=".\BitStream.ri"
@@ -313,6 +321,14 @@
 		</File>
 		<File
 			RelativePath=".\DS_BinarySearchTree.ri"
+			>
+		</File>
+		<File
+			RelativePath=".\DS_BPlusTree.ri"
+			>
+		</File>
+		<File
+			RelativePath=".\DS_List.ri"
 			>
 		</File>
 		<File
@@ -389,6 +405,10 @@
 		</File>
 		<File
 			RelativePath=".\swig-renderer.rb"
+			>
+		</File>
+		<File
+			RelativePath=".\TableSerializer.ri"
 			>
 		</File>
 		<File

@@ -18,7 +18,7 @@ namespace LightweightDatabase
             RakPeerInterface rakPeer = RakNetworkFactory.GetRakPeerInterface();
             string str;
             string columnName;
-            string tableName, tablePassword;
+            string tableName = "", tablePassword = "";
             Console.Write("(S)erver or (C)lient?\n");
             ch = Console.ReadKey(true).KeyChar;
             if (ch == 's')
@@ -78,41 +78,43 @@ namespace LightweightDatabase
                     else if (data[0] == RakNetBindings.ID_DATABASE_QUERY_REPLY)
                     {
                         // TODO: not yet.
-                        //Console.Write("Incoming table:\n");
-                        //DataStructures.Table table;
-                        //if (TableSerializer.DeserializeTable(p.data+sizeof(MessageID), p.length-sizeof(MessageID), &table))
-                        //{
-                        //    DataStructures.Page<unsigned, DataStructures.Table.Row*, _TABLE_BPLUS_TREE_ORDER> *cur = table.GetListHead();
-                        //    unsigned i;
+                        Console.Write("Incoming table:\n");
+                        Table table;
+                        byte[] serializedTable = new byte[data.Length - sizeof(byte)];
+                        data.CopyTo(serializedTable, sizeof(byte));  // ugly copy
+                        if (TableSerializer.DeserializeTable(serializedTable, (uint)serializedTable.Length, table))
+                        {
+                            TableRowPage cur = table.GetListHead();
+                            uint i;
 
-                        //    Console.Write("Columns:\n");
-                        //    for (i=0; i < table.GetColumns().Size(); i++)
-                        //    {
-                        //        Console.Write("%i. %s : ", i+1, table.GetColumns()[i].columnName);
-                        //        if (table.GetColumns()[i].columnType==DataStructures.Table.ColumnType.BINARY)
-                        //            Console.Write("BINARY");
-                        //        else if (table.GetColumns()[i].columnType==DataStructures.Table.ColumnType.NUMERIC)
-                        //            Console.Write("NUMERIC");
-                        //        else
-                        //            Console.Write("STRING");
-                        //        Console.Write("\n");
-                        //    }
-                        //    if (cur)
-                        //        Console.Write("Rows:\n");
-                        //    else
-                        //        Console.Write("Table has no rows.\n");
-                        //    while (cur)
-                        //    {
-                        //        for (i=0; i < (unsigned)cur.size; i++)
-                        //        {
-                        //            table.PrintRow(str, 256, ',', true, cur.data[i]);
-                        //            Console.Write("RowID %i: %s\n", cur.keys[i], str );
-                        //        }
-                        //        cur=cur.next;
-                        //    }
-                        //}
-                        //else
-                        //    Console.Write("Deserialization of table failed.\n");
+                            Console.Write("Columns:\n");
+                            for (i = 0; i < table.GetColumns().Size(); i++)
+                            {
+                                Console.Write("%i. %s : ", i + 1, table.GetColumns()[i].columnName);
+                                if (table.GetColumns()[i].columnType == DataStructures.Table.ColumnType.BINARY)
+                                    Console.Write("BINARY");
+                                else if (table.GetColumns()[i].columnType == DataStructures.Table.ColumnType.NUMERIC)
+                                    Console.Write("NUMERIC");
+                                else
+                                    Console.Write("STRING");
+                                Console.Write("\n");
+                            }
+                            if (cur)
+                                Console.Write("Rows:\n");
+                            else
+                                Console.Write("Table has no rows.\n");
+                            while (cur)
+                            {
+                                for (i = 0; i < (unsigned)cur.size; i++)
+                                {
+                                    table.PrintRow(str, 256, ',', true, cur.data[i]);
+                                    Console.Write("RowID %i: %s\n", cur.keys[i], str);
+                                }
+                                cur = cur.next;
+                            }
+                        }
+                        else
+                            Console.Write("Deserialization of table failed.\n");
                     }
 
                     rakPeer.DeallocatePacket(p);
@@ -353,7 +355,7 @@ namespace LightweightDatabase
                     if (_ch == 'e')
                         break;
 
-                    _ch = (char)0;
+                    _ch = '\0';
                 }
 
                 RakNetBindings.RakSleep(30);

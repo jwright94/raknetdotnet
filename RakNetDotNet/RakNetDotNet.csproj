@@ -259,7 +259,6 @@
     <Compile Include="SWIGTYPE_p_DataStructures__OrderedListTchar_p_char_p_MessageFilterStrComp_t.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SWIGTYPE_p_DataStructures__PageTunsigned_int_Row_p_16_t.cs" />
     <Compile Include="SWIGTYPE_p_DataStructures__Table__SortQuery.cs" />
     <Compile Include="SWIGTYPE_p_DataStructures__WeightedGraphTConnectionGraph__SystemAddressAndGroupId_unsigned_short_false_t.cs">
       <SubType>Code</SubType>
@@ -276,6 +275,7 @@
     <Compile Include="SWIGTYPE_p_p_char.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SWIGTYPE_p_p_DataStructures__PageTunsigned_int_Row_p_16_t.cs" />
     <Compile Include="SWIGTYPE_p_p_Row.cs" />
     <Compile Include="SWIGTYPE_p_p_unsigned_char.cs">
       <SubType>Code</SubType>
@@ -304,6 +304,7 @@
     <Compile Include="TableColumnDescriptor.cs" />
     <Compile Include="TableFilterQuery.cs" />
     <Compile Include="TableRow.cs" />
+    <Compile Include="TableRowPage.cs" />
     <Compile Include="TableSerializer.cs">
       <SubType>Code</SubType>
     </Compile>
