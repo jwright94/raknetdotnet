@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RakNetDotNet
 {
-    struct SystemAddressStruct
+    public struct SystemAddressStruct
     {
         public SystemAddressStruct(SystemAddress refObject)
         {
