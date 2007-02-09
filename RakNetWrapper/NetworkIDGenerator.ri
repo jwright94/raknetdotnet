@@ -1,5 +1,6 @@
 %{
 #include "ServerNetworkIDGenerator.h"
+#include "NetworkIDGeneratorMember.h"
 %}
 
 <%= @type_mapper.start_scope('NetworkIDGenerator') %>
@@ -11,7 +12,7 @@
 %csmethodmodifiers NetworkIDGenerator::GET_OBJECT_FROM_ID "private";
 %rename NetworkIDGenerator::GET_OBJECT_FROM_ID GET_OBJECT_FROM_IDImpl;
 
-%typemap(csfinalize) ServerNetworkIDGenerator %{
+%typemap(csfinalize) ServerNetworkIDGenerator, NetworkIDGeneratorMember %{
 %}
 
 %typemap(csdestruct, methodname="Dispose", methodmodifiers="public") NetworkIDGenerator {
@@ -26,7 +27,7 @@
     }
   }
 
-%typemap(csdestruct_derived, methodname="Dispose", methodmodifiers="public") ServerNetworkIDGenerator {
+%typemap(csdestruct_derived, methodname="Dispose", methodmodifiers="public") ServerNetworkIDGenerator, NetworkIDGeneratorMember {
     lock(this) {
       swigCPtr = new HandleRef(null, IntPtr.Zero);
       base.Dispose();
@@ -64,5 +65,6 @@
 
 %include "<%= @raknet_home %>/NetworkIDGenerator.h"
 %include "ServerNetworkIDGenerator.h"
+%include "NetworkIDGeneratorMember.h"
 
 <%= @type_mapper.end_scope %>

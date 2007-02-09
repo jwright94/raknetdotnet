@@ -134,6 +134,7 @@
     <Compile Include="NetworkIDGenerator.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="NetworkIDGeneratorMember.cs" />
     <Compile Include="NetworkIDNode.cs">
       <SubType>Code</SubType>
     </Compile>
