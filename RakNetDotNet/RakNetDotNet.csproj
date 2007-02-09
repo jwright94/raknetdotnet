@@ -61,6 +61,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Custom\ReplicaMember.cs" />
+    <Compile Include="Custom\SystemAddressStruct.cs" />
     <Compile Include="DatabaseCellUpdate.cs">
       <SubType>Code</SubType>
     </Compile>
