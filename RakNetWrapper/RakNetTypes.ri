@@ -11,6 +11,7 @@
 <%= @type_mapper.apply_same_ctype('unsigned char*', 'VOID_PTR') %>
 
 %ignore SocketDescriptor;
+%copyctor SystemAddress;
 
 %include "<%= @raknet_home %>/RakNetTypes.h"
 %extend Packet {

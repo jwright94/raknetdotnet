@@ -62,7 +62,6 @@
     </Compile>
     <Compile Include="Custom\RakPeerHelper.cs" />
     <Compile Include="Custom\ReplicaMember.cs" />
-    <Compile Include="Custom\SystemAddressStruct.cs" />
     <Compile Include="DatabaseCellUpdate.cs">
       <SubType>Code</SubType>
     </Compile>
