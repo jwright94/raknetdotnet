@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace RakNetDotNet.Custom
+namespace RakNetDotNet
 {
     struct SystemAddressStruct
     {
