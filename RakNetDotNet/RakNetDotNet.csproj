@@ -60,6 +60,7 @@
     <Compile Include="CSHA1_SHA1_WORKSPACE_BLOCK.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Custom\RakPeerHelper.cs" />
     <Compile Include="Custom\ReplicaMember.cs" />
     <Compile Include="Custom\SystemAddressStruct.cs" />
     <Compile Include="DatabaseCellUpdate.cs">
