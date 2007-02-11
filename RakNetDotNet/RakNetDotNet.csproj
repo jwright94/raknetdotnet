@@ -66,6 +66,7 @@
     <Compile Include="DatabaseCellUpdate.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DatabaseCellUpdates.cs" />
     <Compile Include="DatabaseFilter.cs">
       <SubType>Code</SubType>
     </Compile>

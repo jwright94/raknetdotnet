@@ -10,7 +10,6 @@ namespace LightweightDatabase
     {
         static void Main(string[] args)
         {
-#if true
             char ch;
             bool isServer;
             LightweightDatabaseServer databaseServer = new LightweightDatabaseServer();
@@ -264,8 +263,7 @@ namespace LightweightDatabase
                         if (_ch == 'q')
                         {
                             // TODO - let the user enter filters, columns, and rows to return.
-                            // TODO - not yet.
-                            //databaseClient.QueryTable(tableName, tablePassword, 0, 0, 0, 0, 0, 0, UNASSIGNED_SYSTEM_ADDRESS, true);
+                            databaseClient.QueryTable(tableName, tablePassword, null, 0, null, 0, null, 0, RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS, true);
                         }
                         else if (_ch == 'u')
                         {
@@ -305,41 +303,41 @@ namespace LightweightDatabase
 
                             Console.Write("Enter cells\n");
                             byte numCellUpdates;
-                            DatabaseCellUpdate[] cellUpdates = new DatabaseCellUpdate[64];
+                            DatabaseCellUpdates cellUpdates = new DatabaseCellUpdates(64);
                             for (numCellUpdates = 0; numCellUpdates < 64; numCellUpdates++)
                             {
-                                cellUpdates[numCellUpdates] = new DatabaseCellUpdate();
+                                DatabaseCellUpdate cellUpdate = new DatabaseCellUpdate();
                                 Console.Write("Enter column name (Enter when done): ");
 
-                                cellUpdates[numCellUpdates].columnName = Console.ReadLine();
-                                if (cellUpdates[numCellUpdates].columnName.Equals(string.Empty))
+                                cellUpdate.columnName = Console.ReadLine();
+                                if (cellUpdate.columnName.Equals(string.Empty))
                                     break;
                                 Console.Write("Enter column type\n1=STRING\n2=NUMERIC\n3=BINARY\n");
                                 str = Console.ReadLine();
                                 if (str[0] == '1' || str.Equals(string.Empty))
                                 {
-                                    cellUpdates[numCellUpdates].columnType = Table.ColumnType.STRING;
+                                    cellUpdate.columnType = Table.ColumnType.STRING;
                                     Console.Write("Enter string value: ");
                                     str = Console.ReadLine();
-                                    cellUpdates[numCellUpdates].cellValue.Set(str);
+                                    cellUpdate.cellValue.Set(str);
                                 }
                                 else if (str[0] == '2')
                                 {
-                                    cellUpdates[numCellUpdates].columnType = Table.ColumnType.NUMERIC;
+                                    cellUpdate.columnType = Table.ColumnType.NUMERIC;
                                     Console.Write("Enter numeric value: ");
                                     str = Console.ReadLine();
-                                    cellUpdates[numCellUpdates].cellValue.Set(int.Parse(str));
+                                    cellUpdate.cellValue.Set(int.Parse(str));
                                 }
                                 else
                                 {
-                                    cellUpdates[numCellUpdates].columnType = Table.ColumnType.BINARY;
+                                    cellUpdate.columnType = Table.ColumnType.BINARY;
                                     // TODO - Pain in the ass to write this demo code
                                     Console.Write("TODO\n");
                                 }
+                                cellUpdates.Add(cellUpdate);
                             }
 
-                            // TODO: not yet.
-                            //databaseClient.UpdateRow(tableName, tablePassword, updateMode, hasRowId, rowId, cellUpdates, numCellUpdates, RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS, true);
+                            databaseClient.UpdateRow(tableName, tablePassword, updateMode, hasRowId, rowId, cellUpdates, RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS, true);
                         }
                         else if (_ch == 'r')
                         {
@@ -362,7 +360,6 @@ namespace LightweightDatabase
 
             rakPeer.Shutdown(100, 0);
             RakNetworkFactory.DestroyRakPeerInterface(rakPeer);
-#endif
         }
 
         [System.Runtime.InteropServices.DllImport("crtdll.dll")]

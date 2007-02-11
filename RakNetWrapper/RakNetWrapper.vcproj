@@ -344,6 +344,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\LightweightDatabaseClient.ri"
+			>
+		</File>
+		<File
 			RelativePath=".\LogCommandParser.ri"
 			>
 		</File>
