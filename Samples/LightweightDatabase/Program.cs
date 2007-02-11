@@ -77,7 +77,6 @@ namespace LightweightDatabase
                         Console.Write("ID_DATABASE_INCORRECT_PASSWORD\n");
                     else if (data[0] == RakNetBindings.ID_DATABASE_QUERY_REPLY)
                     {
-                        // TODO: not yet.
                         Console.Write("Incoming table:\n");
                         Table table = null;
                         byte[] serializedTable = new byte[data.Length - sizeof(byte)];
@@ -132,13 +131,13 @@ namespace LightweightDatabase
                             bool allowRemoteUpdate;
                             bool allowRemoteQuery;
                             bool allowRemoteRemove;
-                            string queryPassword;
-                            string updatePassword;
-                            string removePassword;
-                            bool oneRowPerSystemAddress;
-                            bool onlyUpdateOwnRows;
-                            bool removeRowOnPingFailure;
-                            bool removeRowOnDisconnect;
+                            string queryPassword = string.Empty;
+                            string updatePassword = string.Empty;
+                            string removePassword = string.Empty;
+                            bool oneRowPerSystemAddress = false;
+                            bool onlyUpdateOwnRows = false;
+                            bool removeRowOnPingFailure = false;
+                            bool removeRowOnDisconnect = false;
                             bool autogenerateRowIDs;
 
                             Console.Write("Enter name of table to create: ");
@@ -203,40 +202,39 @@ namespace LightweightDatabase
                             Console.Write("Autogenerate row ids? (y (Default) / n)\n");
                             autogenerateRowIDs = (Console.ReadKey(false).KeyChar == 'n') == false;
 
-                            // TODO: not yet.
-                            //DataStructures.Table *table;
-                            //table=databaseServer.AddTable(tableName, allowRemoteUpdate, allowRemoteQuery, allowRemoteRemove, queryPassword, updatePassword, removePassword, oneRowPerSystemAddress, onlyUpdateOwnRows, removeRowOnPingFailure, removeRowOnDisconnect, autogenerateRowIDs);
-                            //if (table)
-                            //{
-                            //    Console.Write("Table {0} created.\n", tableName);
-                            //    while (1)
-                            //    {
-                            //        Console.Write("Enter name of new column\n");
-                            //        Console.Write("Hit enter when done\n");
-                            //        columnName = Console.ReadLine();
-                            //        if (columnName.Equals(string.Empty))
-                            //            break;
-                            //        DataStructures.Table.ColumnType columnType;
-                            //        Console.Write("Enter column type\n1=STRING\n2=NUMERIC\n3=BINARY\n");
-                            //        str = Console.ReadLine();
-                            //        if (str[0]=='1')
-                            //            columnType=DataStructures.Table.ColumnType.STRING;
-                            //        else if (str[0]=='2')
-                            //            columnType=DataStructures.Table.ColumnType.NUMERIC;
-                            //        else if (str[0]=='3')
-                            //            columnType=DataStructures.Table.ColumnType.BINARY;
-                            //        else
-                            //        {
-                            //            Console.Write("Defaulting to string\n");
-                            //            columnType=DataStructures.Table.ColumnType.STRING;
-                            //        }
-                            //        table.AddColumn(columnName, columnType);
-                            //        Console.Write("{0} added.\n", columnName);
-                            //    }
-                            //    Console.Write("Done.\n");
-                            //}
-                            //else
-                            //    Console.Write("Table {0} creation failed.  Possibly already exists.\n", tableName);
+                            Table table;
+                            table = databaseServer.AddTable(tableName, allowRemoteUpdate, allowRemoteQuery, allowRemoteRemove, queryPassword, updatePassword, removePassword, oneRowPerSystemAddress, onlyUpdateOwnRows, removeRowOnPingFailure, removeRowOnDisconnect, autogenerateRowIDs);
+                            if (table != null)
+                            {
+                                Console.Write("Table {0} created.\n", tableName);
+                                while (true)
+                                {
+                                    Console.Write("Enter name of new column\n");
+                                    Console.Write("Hit enter when done\n");
+                                    columnName = Console.ReadLine();
+                                    if (columnName.Equals(string.Empty))
+                                        break;
+                                    Table.ColumnType columnType;
+                                    Console.Write("Enter column type\n1=STRING\n2=NUMERIC\n3=BINARY\n");
+                                    str = Console.ReadLine();
+                                    if (str[0] == '1')
+                                        columnType = Table.ColumnType.STRING;
+                                    else if (str[0] == '2')
+                                        columnType = Table.ColumnType.NUMERIC;
+                                    else if (str[0] == '3')
+                                        columnType = Table.ColumnType.BINARY;
+                                    else
+                                    {
+                                        Console.Write("Defaulting to string\n");
+                                        columnType = Table.ColumnType.STRING;
+                                    }
+                                    table.AddColumn(columnName, columnType);
+                                    Console.Write("{0} added.\n", columnName);
+                                }
+                                Console.Write("Done.\n");
+                            }
+                            else
+                                Console.Write("Table {0} creation failed.  Possibly already exists.\n", tableName);
 
                         }
                         else if (_ch == 'r')
