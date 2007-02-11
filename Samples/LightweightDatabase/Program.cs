@@ -77,9 +77,9 @@ namespace LightweightDatabase
                     else if (data[0] == RakNetBindings.ID_DATABASE_QUERY_REPLY)
                     {
                         Console.Write("Incoming table:\n");
-                        Table table = null;
+                        Table table = new Table();
                         byte[] serializedTable = new byte[data.Length - sizeof(byte)];
-                        data.CopyTo(serializedTable, sizeof(byte));  // ugly copy
+                        Array.Copy(data, sizeof(byte), serializedTable, 0, data.Length - sizeof(byte));  // ugly copy
                         if (TableSerializer.DeserializeTable(serializedTable, (uint)serializedTable.Length, table))
                         {
                             TableRowPage cur = table.GetListHead();
@@ -88,7 +88,7 @@ namespace LightweightDatabase
                             Console.Write("Columns:\n");
                             for (i = 0; i < table.GetColumns().Size(); i++)
                             {
-                                Console.Write("%i. %s : ", i + 1, table.GetColumns()[i].columnName);
+                                Console.Write("{0}. {1} : ", i + 1, table.GetColumns()[i].columnName);
                                 if (table.GetColumns()[i].columnType == Table.ColumnType.BINARY)
                                     Console.Write("BINARY");
                                 else if (table.GetColumns()[i].columnType == Table.ColumnType.NUMERIC)
@@ -107,7 +107,7 @@ namespace LightweightDatabase
                                 {
                                     StringBuilder sb = new StringBuilder(256);
                                     table.PrintRow(sb, sb.Capacity, ',', true, cur.GetData(i));
-                                    Console.Write("RowID %i: %s\n", cur.GetKey(i), sb.ToString());
+                                    Console.Write("RowID {0}: {1}\n", cur.GetKey(i), sb.ToString());
                                 }
                                 cur = cur.next;
                             }
@@ -245,7 +245,7 @@ namespace LightweightDatabase
                             if (databaseServer.RemoveTable(str))
                                 Console.Write("Success\n");
                             else
-                                Console.Write("Table %s not found\n", str);
+                                Console.Write("Table {0} not found\n", str);
                         }
                     }
                     else
