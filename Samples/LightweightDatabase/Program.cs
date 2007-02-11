@@ -10,7 +10,7 @@ namespace LightweightDatabase
     {
         static void Main(string[] args)
         {
-#if false
+#if true
             char ch;
             bool isServer;
             LightweightDatabaseServer databaseServer = new LightweightDatabaseServer();
@@ -79,36 +79,37 @@ namespace LightweightDatabase
                     {
                         // TODO: not yet.
                         Console.Write("Incoming table:\n");
-                        Table table;
+                        Table table = null;
                         byte[] serializedTable = new byte[data.Length - sizeof(byte)];
                         data.CopyTo(serializedTable, sizeof(byte));  // ugly copy
                         if (TableSerializer.DeserializeTable(serializedTable, (uint)serializedTable.Length, table))
                         {
                             TableRowPage cur = table.GetListHead();
-                            uint i;
+                            int i;
 
                             Console.Write("Columns:\n");
                             for (i = 0; i < table.GetColumns().Size(); i++)
                             {
                                 Console.Write("%i. %s : ", i + 1, table.GetColumns()[i].columnName);
-                                if (table.GetColumns()[i].columnType == DataStructures.Table.ColumnType.BINARY)
+                                if (table.GetColumns()[i].columnType == Table.ColumnType.BINARY)
                                     Console.Write("BINARY");
-                                else if (table.GetColumns()[i].columnType == DataStructures.Table.ColumnType.NUMERIC)
+                                else if (table.GetColumns()[i].columnType == Table.ColumnType.NUMERIC)
                                     Console.Write("NUMERIC");
                                 else
                                     Console.Write("STRING");
                                 Console.Write("\n");
                             }
-                            if (cur)
+                            if (cur != null)
                                 Console.Write("Rows:\n");
                             else
                                 Console.Write("Table has no rows.\n");
-                            while (cur)
+                            while (cur != null)
                             {
-                                for (i = 0; i < (unsigned)cur.size; i++)
+                                for (i = 0; i < cur.size; i++)
                                 {
-                                    table.PrintRow(str, 256, ',', true, cur.data[i]);
-                                    Console.Write("RowID %i: %s\n", cur.keys[i], str);
+                                    StringBuilder sb = new StringBuilder(256);
+                                    table.PrintRow(sb, sb.Capacity, ',', true, cur.GetData(i));
+                                    Console.Write("RowID %i: %s\n", cur.GetKey(i), sb.ToString());
                                 }
                                 cur = cur.next;
                             }

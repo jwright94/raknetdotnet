@@ -45,6 +45,7 @@
     <Compile Include="CheckSum.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ColumnDescriptorList.cs" />
     <Compile Include="CommandParserInterface.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -1,7 +1,6 @@
 <%= @type_mapper.start_scope('DS_List') %>
 
+%rename(At) DataStructures::List::operator[];
 %include "<%= @raknet_home %>/DS_List.h"
-
-%template(ColumnDescriptorList) DataStructures::List<ColumnDescriptor>;
 
 <%= @type_mapper.end_scope %>

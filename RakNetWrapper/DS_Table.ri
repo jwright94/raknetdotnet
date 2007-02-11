@@ -1,4 +1,5 @@
 <%= @type_mapper.start_scope('DS_Table') %>
+<%= @type_mapper.apply_same_ctype('char*', 'INPUT_STRINGBUILDER', 'out') %>
 
 %rename(TableCell)             Cell;
 %rename(TableColumnDescriptor) ColumnDescriptor;
@@ -73,7 +74,16 @@ struct FilterQuery
 	DataStructures::Table::FilterQueryType operation;
 };
 
+%typemap(cscode) DataStructures::List<DataStructures::Table::ColumnDescriptor> %{
+  public TableColumnDescriptor this[int position] {
+    get { return At(position); }
+  }
+%}
+
 %include "<%= @raknet_home %>/DS_Table.h"
+// TODO - I am confused for handling of a template.
+<%= @type_mapper.apply('int', '', 'unsigned int', 'position') %>
+%template(ColumnDescriptorList) DataStructures::List<DataStructures::Table::ColumnDescriptor>;
 
 %{
 // I need to trick the C++ compiler.
@@ -81,6 +91,11 @@ typedef DataStructures::Table::Cell             Cell;
 typedef DataStructures::Table::ColumnDescriptor ColumnDescriptor;
 typedef DataStructures::Table::Row              Row;
 typedef DataStructures::Table::FilterQuery      FilterQuery;
+
+// Why must I implement this?
+inline bool operator==(const DataStructures::Table::ColumnDescriptor& lhs, const DataStructures::Table::ColumnDescriptor& rhs) {
+  return (strcmp(lhs.columnName, rhs.columnName) == 0) && (lhs.columnType == rhs.columnType);
+}
 %}
 
 <%= @type_mapper.end_scope %>

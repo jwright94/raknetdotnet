@@ -1,6 +1,24 @@
 <%= @type_mapper.start_scope('DS_BPlusTree') %>
 
+%ignore DataStructures::Page::keys;
+%ignore DataStructures::Page::data;
 %include "<%= @raknet_home %>/DS_BPlusTree.h"
+namespace DataStructures {
+  %extend Page {
+    inline KeyType GetKey(int index) const {
+      return $self->keys[index];
+    }
+    inline DataType GetData(int index) const {
+      return $self->data[index];
+    }
+    inline void SetKey(int index, KeyType key) {
+      $self->keys[index] = key;
+    }
+    inline void SetData(int index, DataType data) {
+      $self->data[index] = data;
+    }
+  }
+}
 
 %template(TableRowPage) DataStructures::Page<unsigned, DataStructures::Table::Row*, _TABLE_BPLUS_TREE_ORDER>;
 

@@ -275,6 +275,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DS_List.i"
+				>
+			</File>
+			<File
 				RelativePath=".\DS_Table.i"
 				>
 			</File>

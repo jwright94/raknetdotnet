@@ -1,3 +1,5 @@
+<%= @type_mapper.start_scope('DS_BinarySearchTree') %>
+
 %ignore DataStructures::BinarySearchTree::Height;
 %ignore DataStructures::BinarySearchTree::Add;
 %ignore DataStructures::BinarySearchTree::Del;
@@ -7,3 +9,5 @@ namespace DataStructures {
   %template(NetworkIDNodeBinarySearchTree)            BinarySearchTree<NetworkIDNode>;
   %template(NetworkIDNodeAVLBalancedBinarySearchTree) AVLBalancedBinarySearchTree<NetworkIDNode>;
 }
+
+<%= @type_mapper.end_scope %>
