@@ -74,16 +74,7 @@ struct FilterQuery
 	DataStructures::Table::FilterQueryType operation;
 };
 
-%typemap(cscode) DataStructures::List<DataStructures::Table::ColumnDescriptor> %{
-  public TableColumnDescriptor this[int position] {
-    get { return At(position); }
-  }
-%}
-
 %include "<%= @raknet_home %>/DS_Table.h"
-// TODO - I am confused for handling of a template.
-<%= @type_mapper.apply('int', '', 'unsigned int', 'position') %>
-%template(ColumnDescriptorList) DataStructures::List<DataStructures::Table::ColumnDescriptor>;
 
 %{
 // I need to trick the C++ compiler.
@@ -97,5 +88,16 @@ inline bool operator==(const DataStructures::Table::ColumnDescriptor& lhs, const
   return (strcmp(lhs.columnName, rhs.columnName) == 0) && (lhs.columnType == rhs.columnType);
 }
 %}
+
+// List depends on Table. Therefore I must take a definition here.
+<%= @type_mapper.start_scope('DataStructures::List<DataStructures::Table::ColumnDescriptor>') %>
+<%= @type_mapper.apply('int', '', 'unsigned int', 'position') %>
+%typemap(cscode) DataStructures::List<DataStructures::Table::ColumnDescriptor> %{
+  public TableColumnDescriptor this[int position] {
+    get { return At(position); }
+  }
+%}
+%template(ColumnDescriptorList) DataStructures::List<DataStructures::Table::ColumnDescriptor>;
+<%= @type_mapper.end_scope %>
 
 <%= @type_mapper.end_scope %>
