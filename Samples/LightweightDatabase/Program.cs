@@ -306,6 +306,7 @@ namespace LightweightDatabase
                             DatabaseCellUpdates cellUpdates = new DatabaseCellUpdates(64);
                             for (numCellUpdates = 0; numCellUpdates < 64; numCellUpdates++)
                             {
+
                                 DatabaseCellUpdate cellUpdate = new DatabaseCellUpdate();
                                 Console.Write("Enter column name (Enter when done): ");
 

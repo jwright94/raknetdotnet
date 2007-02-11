@@ -1,4 +1,5 @@
 <%= @type_mapper.start_scope('LightweightDatabaseClient') %>
+<%= @type_mapper.apply_same_ctype('unsigned *', 'INPUT_BLITTABLE_ARRAY', 'rowIds') %>
 
 %ignore LightweightDatabaseClient::UpdateRow(const char *tableName, const char *updatePassword, RowUpdateMode updateMode, bool hasRowId, unsigned rowId, DatabaseCellUpdate *cellUpdates, unsigned char numCellUpdates, SystemAddress systemAddress, bool broadcast);
 %include "<%= @raknet_home %>/LightweightDatabaseClient.h"
@@ -9,6 +10,15 @@
 }
 
 SWIG_STD_VECTOR_SPECIALIZE_MINIMUM(DatabaseCellUpdate, DatabaseCellUpdate)
+/*
+namespace std {
+  template<> class vector<DatabaseCellUpdate > {
+    SWIG_STD_VECTOR_MINIMUM(DatabaseCellUpdate, DatabaseCellUpdate)
+    %rename(Resize) resize;
+    void resize(size_type new_size);
+  };
+}
+*/
 %template(DatabaseCellUpdates) std::vector<DatabaseCellUpdate>;
 
 <%= @type_mapper.end_scope %>
