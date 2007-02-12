@@ -1,0 +1,20 @@
+<%= @type_mapper.start_scope('StaticArray') %>
+
+%ignore StaticArray::pointer;
+%ignore StaticArray::operator[];
+%csmethodmodifiers StaticArray::GetItem "private";
+%include "StaticArray.h"
+%extend StaticArray {
+  T& GetItem(int index) {
+    return $self->operator[](index);
+  }
+}
+%typemap(cscode) StaticArray<DatabaseCellUpdate> %{
+  public DatabaseCellUpdate this[int index] {
+    get { return GetItem(index); }
+  }
+%}
+
+%template(DatabaseCellUpdates) StaticArray<DatabaseCellUpdate>;
+
+<%= @type_mapper.end_scope %>

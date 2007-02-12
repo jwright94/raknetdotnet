@@ -307,35 +307,32 @@ namespace LightweightDatabase
                             for (numCellUpdates = 0; numCellUpdates < 64; numCellUpdates++)
                             {
 
-                                DatabaseCellUpdate cellUpdate = new DatabaseCellUpdate();
                                 Console.Write("Enter column name (Enter when done): ");
-
-                                cellUpdate.columnName = Console.ReadLine();
-                                if (cellUpdate.columnName.Equals(string.Empty))
+                                cellUpdates[numCellUpdates].columnName = Console.ReadLine();
+                                if (cellUpdates[numCellUpdates].columnName.Equals(string.Empty))
                                     break;
                                 Console.Write("Enter column type\n1=STRING\n2=NUMERIC\n3=BINARY\n");
                                 str = Console.ReadLine();
                                 if (str[0] == '1' || str.Equals(string.Empty))
                                 {
-                                    cellUpdate.columnType = Table.ColumnType.STRING;
+                                    cellUpdates[numCellUpdates].columnType = Table.ColumnType.STRING;
                                     Console.Write("Enter string value: ");
                                     str = Console.ReadLine();
-                                    cellUpdate.cellValue.Set(str);
+                                    cellUpdates[numCellUpdates].cellValue.Set(str);
                                 }
                                 else if (str[0] == '2')
                                 {
-                                    cellUpdate.columnType = Table.ColumnType.NUMERIC;
+                                    cellUpdates[numCellUpdates].columnType = Table.ColumnType.NUMERIC;
                                     Console.Write("Enter numeric value: ");
                                     str = Console.ReadLine();
-                                    cellUpdate.cellValue.Set(int.Parse(str));
+                                    cellUpdates[numCellUpdates].cellValue.Set(int.Parse(str));
                                 }
                                 else
                                 {
-                                    cellUpdate.columnType = Table.ColumnType.BINARY;
+                                    cellUpdates[numCellUpdates].columnType = Table.ColumnType.BINARY;
                                     // TODO - Pain in the ass to write this demo code
                                     Console.Write("TODO\n");
                                 }
-                                cellUpdates.Add(cellUpdate);
                             }
 
                             databaseClient.UpdateRow(tableName, tablePassword, updateMode, hasRowId, rowId, cellUpdates, RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS, true);

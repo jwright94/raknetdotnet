@@ -254,6 +254,10 @@
 				RelativePath=".\ServerNetworkIDGenerator.h"
 				>
 			</File>
+			<File
+				RelativePath=".\StaticArray.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="SWIG interfaces"
@@ -280,6 +284,10 @@
 			</File>
 			<File
 				RelativePath=".\DS_Table.i"
+				>
+			</File>
+			<File
+				RelativePath=".\LightweightDatabaseClient.i"
 				>
 			</File>
 			<File
@@ -311,7 +319,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\StaticArray.i"
+				>
+			</File>
+			<File
 				RelativePath=".\StringCompressor.i"
+				>
+			</File>
+			<File
+				RelativePath=".\StringTable.i"
 				>
 			</File>
 			<File
@@ -405,6 +421,10 @@
 		</File>
 		<File
 			RelativePath=".\ReplicaManagerExt.ri"
+			>
+		</File>
+		<File
+			RelativePath=".\StaticArray.ri"
 			>
 		</File>
 		<File

@@ -82,6 +82,7 @@ including_files_no_ext = [
   'LightweightDatabaseClient',
   'LightweightDatabaseCommon',
   'LightweightDatabaseServer',
+  'StaticArray',
   'LinuxStrings',
   'MessageFilter',
   'MessageIdentifiers',
