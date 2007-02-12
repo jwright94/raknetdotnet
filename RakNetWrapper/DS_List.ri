@@ -1,20 +1,10 @@
 <%= @type_mapper.start_scope('DS_List') %>
-
-%ignore DataStructures::List::operator[];
-%csmethodmodifiers DataStructures::List::GetItem "private";
-%include "<%= @raknet_home %>/DS_List.h"
-%extend DataStructures::List {
-  list_type& GetItem(int position) {
-    return $self->operator[](position);
-  }
-}
-
 <%= @type_mapper.apply('int', '', 'unsigned int', 'position') %>
-%typemap(cscode) DataStructures::List<DataStructures::Table::ColumnDescriptor> %{
-  public TableColumnDescriptor this[int position] {
-    get { return GetItem(position); }
-  }
-%}
+
+<%= DirectiveHelper::bracket_operator_to_getitem('DataStructures::List', 'list_type') %>
+%include "<%= @raknet_home %>/DS_List.h"
+
+<%= DirectiveHelper::getitem_to_indexer('DataStructures::List<DataStructures::Table::ColumnDescriptor>', 'TableColumnDescriptor') %>
 %template(ColumnDescriptorList) DataStructures::List<DataStructures::Table::ColumnDescriptor>;
 
 <%= @type_mapper.end_scope %>

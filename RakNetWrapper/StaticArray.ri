@@ -1,19 +1,9 @@
 <%= @type_mapper.start_scope('StaticArray') %>
 
 %ignore StaticArray::pointer;
-%ignore StaticArray::operator[];
-%csmethodmodifiers StaticArray::GetItem "private";
+<%= DirectiveHelper::bracket_operator_to_getitem('StaticArray', 'T') %>
 %include "StaticArray.h"
-%extend StaticArray {
-  T& GetItem(int index) {
-    return $self->operator[](index);
-  }
-}
-%typemap(cscode) StaticArray<DatabaseCellUpdate> %{
-  public DatabaseCellUpdate this[int index] {
-    get { return GetItem(index); }
-  }
-%}
+<%= DirectiveHelper::getitem_to_indexer('StaticArray<DatabaseCellUpdate>', 'DatabaseCellUpdate') %>
 
 %template(DatabaseCellUpdates) StaticArray<DatabaseCellUpdate>;
 

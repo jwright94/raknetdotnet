@@ -24,7 +24,29 @@ module DirectiveHelper
     out
   end
   
-  module_function :member_template_specialize_in
+  def bracket_operator_to_getitem(cclasstype, crettype)
+    <<EOS
+%ignore #{cclasstype}::operator[];
+%csmethodmodifiers #{cclasstype}::GetItem "private";
+%extend #{cclasstype} {
+  #{crettype}& GetItem(int position) {
+    return $self->operator[](position);
+  }
+}
+EOS
+  end
+  
+  def getitem_to_indexer(cclasstype, csrettype)
+    <<EOS
+%typemap(cscode) #{cclasstype} %{
+  public #{csrettype} this[int index] {
+    get { return GetItem(index); }
+  }
+%}
+EOS
+  end
+  
+  module_function :member_template_specialize_in, :bracket_operator_to_getitem, :getitem_to_indexer
 end
 
 class TypeMapper
