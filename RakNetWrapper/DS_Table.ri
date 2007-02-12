@@ -89,15 +89,4 @@ inline bool operator==(const DataStructures::Table::ColumnDescriptor& lhs, const
 }
 %}
 
-// List depends on Table. Therefore I must take a definition here.
-<%= @type_mapper.start_scope('DataStructures::List<DataStructures::Table::ColumnDescriptor>') %>
-<%= @type_mapper.apply('int', '', 'unsigned int', 'position') %>
-%typemap(cscode) DataStructures::List<DataStructures::Table::ColumnDescriptor> %{
-  public TableColumnDescriptor this[int position] {
-    get { return GetItem(position); }
-  }
-%}
-%template(ColumnDescriptorList) DataStructures::List<DataStructures::Table::ColumnDescriptor>;
-<%= @type_mapper.end_scope %>
-
 <%= @type_mapper.end_scope %>

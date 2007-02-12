@@ -9,4 +9,12 @@
   }
 }
 
+<%= @type_mapper.apply('int', '', 'unsigned int', 'position') %>
+%typemap(cscode) DataStructures::List<DataStructures::Table::ColumnDescriptor> %{
+  public TableColumnDescriptor this[int position] {
+    get { return GetItem(position); }
+  }
+%}
+%template(ColumnDescriptorList) DataStructures::List<DataStructures::Table::ColumnDescriptor>;
+
 <%= @type_mapper.end_scope %>
