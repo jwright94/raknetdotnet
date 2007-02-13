@@ -1,0 +1,17 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <ItemGroup>
+    <ProjectReferences Include="*.*proj" />
+  </ItemGroup>
+
+  <Target Name="BuildOtherProjects">
+    <MSBuild
+        Projects="@(ProjectReferences)"
+        Targets="Build">
+      <Output
+          TaskParameter="TargetOutputs"
+          ItemName="AssembliesBuiltByChildProjects" />
+    </MSBuild>
+  </Target>
+
+</Project>
