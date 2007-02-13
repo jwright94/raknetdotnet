@@ -4,8 +4,8 @@
 %ignore LightweightDatabaseClient::UpdateRow(const char *tableName, const char *updatePassword, RowUpdateMode updateMode, bool hasRowId, unsigned rowId, DatabaseCellUpdate *cellUpdates, unsigned char numCellUpdates, SystemAddress systemAddress, bool broadcast);
 %include "<%= @raknet_home %>/LightweightDatabaseClient.h"
 %extend LightweightDatabaseClient {
-  void UpdateRow(const char *tableName, const char *updatePassword, RowUpdateMode updateMode, bool hasRowId, unsigned rowId, StaticArray<DatabaseCellUpdate> &cellUpdates, const SystemAddress &systemAddress, bool broadcast) {
-    $self->UpdateRow(tableName, updatePassword, updateMode, hasRowId, rowId, cellUpdates.pointer(), cellUpdates.size(), systemAddress, broadcast);
+  void UpdateRow(const char *tableName, const char *updatePassword, RowUpdateMode updateMode, bool hasRowId, unsigned rowId, StaticArray<DatabaseCellUpdate> &cellUpdates, unsigned char numCellUpdates, const SystemAddress &systemAddress, bool broadcast) {
+    $self->UpdateRow(tableName, updatePassword, updateMode, hasRowId, rowId, cellUpdates.pointer(), numCellUpdates, systemAddress, broadcast);
   }
 }
 

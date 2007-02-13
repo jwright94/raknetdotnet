@@ -335,7 +335,7 @@ namespace LightweightDatabase
                                 }
                             }
 
-                            databaseClient.UpdateRow(tableName, tablePassword, updateMode, hasRowId, rowId, cellUpdates, RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS, true);
+                            databaseClient.UpdateRow(tableName, tablePassword, updateMode, hasRowId, rowId, cellUpdates, numCellUpdates, RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS, true);
                         }
                         else if (_ch == 'r')
                         {
