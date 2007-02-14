@@ -299,6 +299,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\PluginInterface.i"
+				>
+			</File>
+			<File
 				RelativePath=".\RakNetTypes.i"
 				>
 			</File>
@@ -369,6 +373,10 @@
 		</File>
 		<File
 			RelativePath=".\NetworkIDGenerator.ri"
+			>
+		</File>
+		<File
+			RelativePath=".\PluginInterface.ri"
 			>
 		</File>
 		<File

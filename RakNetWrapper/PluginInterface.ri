@@ -1,0 +1,6 @@
+<%= @type_mapper.start_scope('PluginInterface') %>
+
+%feature("director") PluginInterface;
+%include "<%= @raknet_home %>/PluginInterface.h"
+
+<%= @type_mapper.end_scope %>
