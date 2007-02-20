@@ -40,7 +40,7 @@ namespace ReplicaManagerCS
             Program.monster = null;
         }
 
-        public ReplicaReturnResult SendConstruction(uint currentTime, SystemAddress systemAddress, BitStream outBitStream, ref bool includeTimestamp)
+        public ReplicaReturnResult SendConstruction(uint currentTime, SystemAddress systemAddress, SWIGTYPE_p_unsigned_int flags, BitStream outBitStream, ref bool includeTimestamp)
         {
             StringTable.Instance().EncodeString("Monster", 255, outBitStream);
 
@@ -51,8 +51,9 @@ namespace ReplicaManagerCS
             return ReplicaReturnResult.REPLICA_PROCESSING_DONE;
         }
 
-        public void SendDestruction(BitStream outBitStream, SystemAddress systemAddress, ref bool includeTimestamp)
+        public ReplicaReturnResult SendDestruction(BitStream outBitStream, SystemAddress systemAddress, ref bool includeTimestamp)
         {
+            return ReplicaReturnResult.REPLICA_PROCESSING_DONE;
         }
 
         public ReplicaReturnResult ReceiveDestruction(BitStream inBitStream, SystemAddress systemAddress, uint timestamp)

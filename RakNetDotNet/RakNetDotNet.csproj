@@ -94,6 +94,7 @@
     <Compile Include="FileListTransferCBInterface.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="FileListTransferCBInterfaceOnFileStruct.cs" />
     <Compile Include="FilteredSystem.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -110,9 +111,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="InternalPacket.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="InternalPacketPool.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Custom\IReplicaListener.cs" />
@@ -134,10 +132,7 @@
     <Compile Include="NetworkID.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="NetworkIDGenerator.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="NetworkIDGeneratorMember.cs" />
+    <Compile Include="NetworkIDManager.cs" />
     <Compile Include="NetworkIDNode.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -147,6 +142,7 @@
     <Compile Include="NetworkIDNodeBinarySearchTree.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="NetworkIDObject.cs" />
     <Compile Include="Packet.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -187,9 +183,7 @@
     <Compile Include="RakNetCommandParser.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="RakNetStatisticsStruct.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="RakNetStatistics.cs" />
     <Compile Include="RakNetTransport.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -229,9 +223,6 @@
     <Compile Include="RPCParameters.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ServerNetworkIDGenerator.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="SimpleMutex.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -253,7 +244,6 @@
     <Compile Include="SWIGTYPE_p_DataStructures__BPlusTreeTunsigned_int_Row_p_16_t.cs" />
     <Compile Include="SWIGTYPE_p_DataStructures__ListTCell_p_t.cs" />
     <Compile Include="SWIGTYPE_p_DataStructures__ListTCell_t.cs" />
-    <Compile Include="SWIGTYPE_p_DataStructures__ListTColumnDescriptor_t.cs" />
     <Compile Include="SWIGTYPE_p_DataStructures__ListTFileListNode_t.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -1,0 +1,44 @@
+<%= @type_mapper.start_scope('NetworkIDObject') %>
+
+%feature("director") NetworkIDObject;
+%csmethodmodifiers NetworkIDObject::SetParent "protected";
+%csmethodmodifiers NetworkIDObject::GetParent "protected";
+
+%typemap(csdestruct, methodname="Dispose", methodmodifiers="public") NetworkIDObject {
+    lock(this) {
+      Parent = null;
+      if(swigCPtr.Handle != IntPtr.Zero && swigCMemOwn) {
+        swigCMemOwn = false;
+        $imcall;
+      }
+      swigCPtr = new HandleRef(null, IntPtr.Zero);
+      GC.SuppressFinalize(this);
+    }
+  }
+  
+%typemap(cscode) NetworkIDObject %{
+  public virtual object Parent {
+    get {
+      IntPtr parent = GetParent();
+      if (parent == IntPtr.Zero) return null;
+      return GCHandle.FromIntPtr(parent).Target;
+    }
+    set {
+      if (value != null) {
+        GCHandle gch = GCHandle.Alloc(value);
+        SetParent(GCHandle.ToIntPtr(gch));
+      } else {
+        IntPtr parent = GetParent();
+        if (parent == IntPtr.Zero) return;
+        GCHandle gch = GCHandle.FromIntPtr(parent);
+        if (gch.IsAllocated) {
+          gch.Free();
+        }
+      }
+    }
+  }
+%}
+
+%include "<%= @raknet_home %>/NetworkIDObject.h"
+
+<%= @type_mapper.end_scope %>

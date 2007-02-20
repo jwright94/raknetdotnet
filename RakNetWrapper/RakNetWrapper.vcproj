@@ -295,7 +295,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\NetworkIDGenerator.i"
+				RelativePath=".\NetworkIDManager.i"
+				>
+			</File>
+			<File
+				RelativePath=".\NetworkIDObject.i"
 				>
 			</File>
 			<File
@@ -364,6 +368,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\FileListTransferCBInterface.ri"
+			>
+		</File>
+		<File
 			RelativePath=".\LightweightDatabaseClient.ri"
 			>
 		</File>
@@ -373,6 +381,14 @@
 		</File>
 		<File
 			RelativePath=".\NetworkIDGenerator.ri"
+			>
+		</File>
+		<File
+			RelativePath=".\NetworkIDManager.ri"
+			>
+		</File>
+		<File
+			RelativePath=".\NetworkIDObject.ri"
 			>
 		</File>
 		<File

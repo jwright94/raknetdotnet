@@ -97,7 +97,7 @@ namespace StressTest
                     //    systemAddress.port != RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS.port)
                     if(!systemAddress.Equals(RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS))
                     {
-                        RakNetStatisticsStruct rss = serverRakPeer.GetStatistics(systemAddress);
+                        RakNetStatistics rss = serverRakPeer.GetStatistics(systemAddress);
                         if (RakNetBindings.GetTime() > lastLog + 4000)
                         {
                             Console.WriteLine("Packets sent:\t\t\t\t{0:D}", rss.packetsSent);

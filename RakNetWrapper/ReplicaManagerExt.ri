@@ -33,13 +33,13 @@ SWIGEXPORT void SWIGSTDCALL CSharp_ReplicaManagerExt_SetDownloadCompleteCB(void 
 %}
 %typemap(cscode) ReplicaManagerExt %{
   [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-  public delegate ReplicaReturnResult _RME_Delegate_Construction(IntPtr inBitStream, uint timestamp, IntPtr new_networkID, IntPtr existingReplica, IntPtr new_senderId, IntPtr caller, IntPtr userData);
+  public delegate ReplicaReturnResult _RME_Delegate_Construction(IntPtr inBitStream, uint timestamp, IntPtr new_networkID, IntPtr existingObject, IntPtr new_senderId, IntPtr caller, IntPtr userData);
   [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
   public delegate ReplicaReturnResult _RME_Delegate_SendDownloadComplete(IntPtr outBitStream, uint currentTime, IntPtr new_senderId, IntPtr caller, IntPtr userData);
   [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
   public delegate ReplicaReturnResult _RME_Delegate_ReceiveDownloadComplete(IntPtr inBitStream, IntPtr new_senderId, IntPtr caller, IntPtr userData);
 
-  public delegate ReplicaReturnResult RME_Delegate_Construction(BitStream inBitStream, uint timestamp, NetworkID networkID, Replica existingReplica, SystemAddress senderId, ReplicaManagerExt caller, IntPtr userData);
+  public delegate ReplicaReturnResult RME_Delegate_Construction(BitStream inBitStream, uint timestamp, NetworkID networkID, NetworkIDObject existingObject, SystemAddress senderId, ReplicaManagerExt caller, IntPtr userData);
   public delegate ReplicaReturnResult RME_Delegate_SendDownloadComplete(BitStream inBitStream, uint timestamp, SystemAddress senderId, ReplicaManagerExt caller, IntPtr userData);
   public delegate ReplicaReturnResult RME_Delegate_ReceiveDownloadComplete(BitStream inBitStream, SystemAddress senderId, ReplicaManagerExt caller, IntPtr userData);
 
@@ -73,9 +73,9 @@ SWIGEXPORT void SWIGSTDCALL CSharp_ReplicaManagerExt_SetDownloadCompleteCB(void 
     RakNetBindingsPINVOKE.ReplicaManagerExt_SetDownloadCompleteCB(swigCPtr, arg2, arg3, arg4, arg5);
   }
 
-  private ReplicaReturnResult ConstructionAdapter(IntPtr inBitStream, uint timestamp, IntPtr new_networkID, IntPtr existingReplica, IntPtr new_senderId, IntPtr caller, IntPtr userData) {
+  private ReplicaReturnResult ConstructionAdapter(IntPtr inBitStream, uint timestamp, IntPtr new_networkID, IntPtr existingObject, IntPtr new_senderId, IntPtr caller, IntPtr userData) {
     System.Diagnostics.Debug.Assert(constructionDelegate != null);
-    return constructionDelegate(new BitStream(inBitStream, false), timestamp, new NetworkID(new_networkID, true), new Replica(existingReplica, false), new SystemAddress(new_senderId, true), new ReplicaManagerExt(caller, false), userData);
+    return constructionDelegate(new BitStream(inBitStream, false), timestamp, new NetworkID(new_networkID, true), new NetworkIDObject(existingObject, false), new SystemAddress(new_senderId, true), new ReplicaManagerExt(caller, false), userData);
   }
   private ReplicaReturnResult SendDownloadCompleteAdapter(IntPtr outBitStream, uint currentTime, IntPtr new_senderId, IntPtr caller, IntPtr userData) {
     System.Diagnostics.Debug.Assert(sendDownloadCompleteDelegate != null);

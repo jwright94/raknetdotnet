@@ -1,0 +1,48 @@
+<%= @type_mapper.start_scope('FileListTransferCBInterface') %>
+
+%rename(FileListTransferCBInterfaceOnFileStruct)  OnFileStruct;
+
+// SWIG ignores a nested class.
+struct OnFileStruct
+{
+	/// The index into the set of files, from 0 to setCount
+	unsigned fileIndex;
+
+	/// The name of the file
+	char fileName[512];
+
+	/// The data pointed to by the file
+	char *fileData;
+
+	/// How many bytes this file took to send, if using compression.
+	unsigned compressedTransmissionLength;
+
+	/// The actual length of this file.
+	unsigned finalDataLength;
+
+	/// Files are transmitted in sets, where more than one set of files can be transmitted at the same time.
+	/// This is the identifier for the set, which is returned by FileListTransfer::SetupReceive
+	unsigned short setID;
+
+	/// The number of files that are in this set.
+	unsigned setCount;
+
+	/// The total length of the transmitted files for this set, with compression.
+	unsigned setTotalCompressedTransmissionLength;
+
+	/// The total length of the transmitted files for this set, after being uncompressed
+	unsigned setTotalFinalLength;
+
+	/// User data passed to one of the functions in the FileList class.
+	/// However, on error, this is instead changed to one of the enumerations in the PatchContext structure.
+	unsigned char context;
+};
+
+%include "<%= @raknet_home %>/FileListTransferCBInterface.h"
+
+%{
+// I need to trick the C++ compiler.
+typedef FileListTransferCBInterface::OnFileStruct  OnFileStruct;
+%}
+
+<%= @type_mapper.end_scope %>

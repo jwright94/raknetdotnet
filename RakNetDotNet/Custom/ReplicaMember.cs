@@ -38,13 +38,13 @@ namespace RakNetDotNet
         {
             return Listener.ReceiveScopeChange(inBitStream, systemAddress, timestamp);
         }
-        public override ReplicaReturnResult SendConstruction(uint currentTime, SystemAddress systemAddress, BitStream outBitStream, ref bool includeTimestamp)
+        public override ReplicaReturnResult SendConstruction(uint currentTime, SystemAddress systemAddress, SWIGTYPE_p_unsigned_int flags, BitStream outBitStream, ref bool includeTimestamp)
         {
-            return Listener.SendConstruction(currentTime, systemAddress, outBitStream, ref includeTimestamp);
+            return Listener.SendConstruction(currentTime, systemAddress, flags, outBitStream, ref includeTimestamp);
         }
-        public override void SendDestruction(BitStream outBitStream, SystemAddress systemAddress, ref bool includeTimestamp)
+        public override ReplicaReturnResult SendDestruction(BitStream outBitStream, SystemAddress systemAddress, ref bool includeTimestamp)
         {
-            Listener.SendDestruction(outBitStream, systemAddress, ref includeTimestamp);
+            return Listener.SendDestruction(outBitStream, systemAddress, ref includeTimestamp);
         }
         public override ReplicaReturnResult SendScopeChange(bool inScope, BitStream outBitStream, uint currentTime, SystemAddress systemAddress, ref bool includeTimestamp)
         {
@@ -55,11 +55,7 @@ namespace RakNetDotNet
             return Listener.Serialize(ref sendTimestamp, outBitStream, lastSendTime, ref priority, ref reliability, currentTime, systemAddress, flags);
         }
         #endregion
-        #region NetworkIDGenerator Members
-        public override bool IsNetworkIDAuthority()
-        {
-            return Listener.IsNetworkIDAuthority();
-        }
+        #region NetworkIDObject Members
         public override bool RequiresSetParent()
         {
             return true;

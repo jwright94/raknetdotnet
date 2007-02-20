@@ -10,7 +10,7 @@ namespace ObjectMemberRPC
     {
         public Apple()
         {
-            gen.Parent = this;
+            netObj.Parent = this;
         }
 
         public virtual void func1(RPCParameters rpcParams)
@@ -45,7 +45,7 @@ namespace ObjectMemberRPC
 
         public virtual NetworkID GetNetworkID()
         {
-            return gen.GetNetworkID();
+            return netObj.GetNetworkID();
         }
 
         protected string GetString(byte[] bytes)
@@ -53,7 +53,7 @@ namespace ObjectMemberRPC
             return Encoding.Unicode.GetString(bytes);
         }
 
-        protected ServerNetworkIDGenerator gen = new ServerNetworkIDGenerator();  // I recommend that your class does not inherit from NetworkIDGenerator.
+        protected NetworkIDObject netObj = new NetworkIDObject();  // I recommend that your class does not inherit from NetworkIDObject.
     }
 
     class GrannySmith : Apple

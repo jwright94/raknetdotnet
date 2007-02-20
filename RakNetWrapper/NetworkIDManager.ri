@@ -1,0 +1,17 @@
+<%= @type_mapper.start_scope('NetworkIDManager') %>
+
+%rename NetworkIDNode::object NetworkedObject;
+%csmethodmodifiers NetworkIDManager::GET_OBJECT_FROM_ID "private";
+%rename NetworkIDManager::GET_OBJECT_FROM_ID GET_OBJECT_FROM_IDImpl;
+
+%typemap(cscode) NetworkIDManager %{
+  public object GET_OBJECT_FROM_ID(NetworkID x) {
+    IntPtr parent = GET_OBJECT_FROM_IDImpl(x);
+    if (parent == IntPtr.Zero) return null;
+    return GCHandle.FromIntPtr(parent).Target;
+  }
+%}
+
+%include "<%= @raknet_home %>/NetworkIDManager.h"
+
+<%= @type_mapper.end_scope %>

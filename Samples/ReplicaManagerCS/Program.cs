@@ -16,7 +16,7 @@ namespace ReplicaManagerCS
         public static Monster monster;
         public static Player player;
 
-        static ReplicaReturnResult ConstructionCB(BitStream inBitStream, uint timestamp, NetworkID networkID, Replica existingReplica, SystemAddress senderId, ReplicaManagerExt caller, IntPtr userData)
+        static ReplicaReturnResult ConstructionCB(BitStream inBitStream, uint timestamp, NetworkID networkID, NetworkIDObject existingObject, SystemAddress senderId, ReplicaManagerExt caller, IntPtr userData)
         {
             StringBuilder output = new StringBuilder(255);
 

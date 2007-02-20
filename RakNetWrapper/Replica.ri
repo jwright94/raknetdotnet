@@ -1,5 +1,5 @@
 <%= @type_mapper.start_scope('Replica') %>
-%ignore Replica::SendConstruction(RakNetTime, SystemAddress, RakNet::BitStream *, bool *);
+%ignore Replica::SendConstruction(RakNetTime, SystemAddress, unsigned int &, RakNet::BitStream *, bool *);
 %ignore Replica::SendDestruction(RakNet::BitStream *, SystemAddress, bool *);
 %ignore Replica::SendScopeChange(bool, RakNet::BitStream *, RakNetTime, SystemAddress, bool *);
 %ignore Replica::Serialize(bool *, RakNet::BitStream *, RakNetTime, PacketPriority *, PacketReliability *, RakNetTime, SystemAddress, unsigned int &);

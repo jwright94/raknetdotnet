@@ -8,22 +8,22 @@ class ReplicaBoolMarshalAsUInt : public Replica
 {
 public:
 	// These methods accept unsigned int.
-	virtual ReplicaReturnResult SendConstruction( RakNetTime currentTime, SystemAddress systemAddress, RakNet::BitStream *outBitStream, unsigned int *includeTimestamp )=0;
-	virtual void SendDestruction(RakNet::BitStream *outBitStream, SystemAddress systemAddress, unsigned int *includeTimestamp )=0;
+	virtual ReplicaReturnResult SendConstruction( RakNetTime currentTime, SystemAddress systemAddress, unsigned int &flags, RakNet::BitStream *outBitStream, unsigned int *includeTimestamp )=0;
+	virtual ReplicaReturnResult SendDestruction(RakNet::BitStream *outBitStream, SystemAddress systemAddress, unsigned int *includeTimestamp )=0;
 	virtual ReplicaReturnResult SendScopeChange(bool inScope, RakNet::BitStream *outBitStream, RakNetTime currentTime, SystemAddress systemAddress, unsigned int *includeTimestamp )=0;
 	virtual ReplicaReturnResult Serialize(unsigned int *sendTimestamp, RakNet::BitStream *outBitStream, RakNetTime lastSendTime, PacketPriority *priority, PacketReliability *reliability, RakNetTime currentTime, SystemAddress systemAddress, unsigned int &flags)=0;
 
 protected:
 	// I manually convert the boolean to unsigned int.
-	ReplicaReturnResult SendConstruction( RakNetTime currentTime, SystemAddress systemAddress, RakNet::BitStream *outBitStream, bool *includeTimestamp )
+	ReplicaReturnResult SendConstruction( RakNetTime currentTime, SystemAddress systemAddress, unsigned int &flags, RakNet::BitStream *outBitStream, bool *includeTimestamp )
 	{
 		IMBoolean imIncludeTimestamp(includeTimestamp);
-		return SendConstruction(currentTime, systemAddress, outBitStream, &imIncludeTimestamp.integer);
+		return SendConstruction(currentTime, systemAddress, flags, outBitStream, &imIncludeTimestamp.integer);
 	}
-	void SendDestruction(RakNet::BitStream *outBitStream, SystemAddress systemAddress, bool *includeTimestamp )
+	ReplicaReturnResult SendDestruction(RakNet::BitStream *outBitStream, SystemAddress systemAddress, bool *includeTimestamp )
 	{
 		IMBoolean imIncludeTimestamp(includeTimestamp);
-		SendDestruction(outBitStream, systemAddress, &imIncludeTimestamp.integer);
+		return SendDestruction(outBitStream, systemAddress, &imIncludeTimestamp.integer);
 	}
 	ReplicaReturnResult SendScopeChange(bool inScope, RakNet::BitStream *outBitStream, RakNetTime currentTime, SystemAddress systemAddress, bool *includeTimestamp )
 	{

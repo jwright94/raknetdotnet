@@ -16,14 +16,14 @@ public:
 
 class ReplicaManagerExt;
 
-typedef ReplicaReturnResult (* RME_FP_ConstructionCB)(RakNet::BitStream *inBitStream, RakNetTime timestamp, NetworkID *new_networkID, Replica *existingReplica, SystemAddress *new_senderId, ReplicaManagerExt *caller, void *userData);
+typedef ReplicaReturnResult (* RME_FP_ConstructionCB)(RakNet::BitStream *inBitStream, RakNetTime timestamp, NetworkID *new_networkID, NetworkIDObject *existingObject, SystemAddress *new_senderId, ReplicaManagerExt *caller, void *userData);
 typedef ReplicaReturnResult (* RME_FP_SendDownloadCompleteCB)(RakNet::BitStream *outBitStream, RakNetTime currentTime, SystemAddress *new_senderId, ReplicaManagerExt *caller, void *userData);
 typedef ReplicaReturnResult (* RME_FP_ReceiveDownloadCompleteCB)(RakNet::BitStream *inBitStream, SystemAddress* new_senderId, ReplicaManagerExt *caller, void *userData);
 
 class ReplicaManagerExt : public PluginInterface
 {
 public:
-	ReplicaManagerExt() 
+	ReplicaManagerExt() : mediator(this)
 	{
 		_constructionCB = 0;
 		_sendDownloadCompleteCB = 0;
@@ -32,8 +32,8 @@ public:
 		sendDownloadCompleteUserData = 0;
 		constructionUserData = 0;
 
-		myOBJ.SetReceiveConstructionCB(this, CallConstructionCB);
-		myOBJ.SetDownloadCompleteCB(this, CallSendDownloadCompleteCB, this, CallReceiveDownloadCompleteCB);
+		myOBJ.SetReceiveConstructionCB(&mediator);
+		myOBJ.SetDownloadCompleteCB(&mediator, &mediator);
 	}
 
 	// extend
@@ -65,9 +65,8 @@ public:
 	void SetScope(Replica *replica, bool inScope, SystemAddress systemAddress, bool broadcast) { myOBJ.SetScope(replica, inScope, systemAddress, broadcast); }
 	void SignalSerializeNeeded(Replica *replica, SystemAddress systemAddress, bool broadcast) { myOBJ.SignalSerializeNeeded(replica, systemAddress, broadcast); }
 	// hooks these methods
-	//void SetReceiveConstructionCB(void *_constructionUserData, ReplicaReturnResult (* constructionCB)(RakNet::BitStream *inBitStream, RakNetTime timestamp, NetworkID networkID, Replica *existingReplica, SystemAddress senderId, ReplicaManager *caller, void *userData)) { myOBJ.SetReceiveConstructionCB(_constructionUserData, constructionCB); }
-	//void SetDownloadCompleteCB(void *_sendDownloadCompleteUserData, ReplicaReturnResult (* sendDownloadCompleteCB)(RakNet::BitStream *outBitStream, RakNetTime currentTime, SystemAddress senderId, ReplicaManager *caller, void *userData),
-	//	void *_receiveDownloadCompleteUserData, ReplicaReturnResult (* receiveDownloadCompleteCB)(RakNet::BitStream *inBitStream, SystemAddress senderId, ReplicaManager *caller, void *userData)) { myOBJ.SetDownloadCompleteCB(_sendDownloadCompleteUserData, sendDownloadCompleteCB, _receiveDownloadCompleteUserData, receiveDownloadCompleteCB); }
+	//void SetReceiveConstructionCB(ReceiveConstructionInterface *receiveConstructionInterface);
+	//void SetDownloadCompleteCB( SendDownloadCompleteInterface *sendDownloadComplete, ReceiveDownloadCompleteInterface *receiveDownloadComplete );
 	void SetSendChannel(unsigned char channel) { myOBJ.SetSendChannel(channel); }
 	void SetAutoConstructToNewParticipants(bool autoConstruct) { myOBJ.SetAutoConstructToNewParticipants(autoConstruct); }
 	void SetDefaultScope(bool scope) { myOBJ.SetDefaultScope(scope); }
@@ -80,6 +79,7 @@ public:
 	Replica *GetReplicaAtIndex(unsigned index) { return myOBJ.GetReplicaAtIndex(index); }
 	unsigned GetParticipantCount(void) const { return myOBJ.GetParticipantCount(); }
 	SystemAddress GetParticipantAtIndex(unsigned index) { return myOBJ.GetParticipantAtIndex(index); }
+	bool HasParticipant(SystemAddress systemAddress) { return myOBJ.HasParticipant(systemAddress); }
 	void SignalSerializationFlags(Replica *replica, SystemAddress systemAddress, bool broadcast, bool set, unsigned int flags) { myOBJ.SignalSerializationFlags(replica, systemAddress, broadcast, set, flags); }
 	unsigned int* AccessSerializationFlags(Replica *replica, SystemAddress systemAddress) { return myOBJ.AccessSerializationFlags(replica, systemAddress); }
 
@@ -91,21 +91,28 @@ protected:
 	void OnCloseConnection(RakPeerInterface *peer, SystemAddress systemAddress) { myOBJ.OnCloseConnection(peer, systemAddress); }
 	void OnShutdown(RakPeerInterface *peer) { myOBJ.OnShutdown(peer); }
 
-	static ReplicaReturnResult CallConstructionCB(RakNet::BitStream *inBitStream, RakNetTime timestamp, NetworkID networkID, Replica *existingReplica, SystemAddress senderId, ReplicaManager *caller, void *userData)
+	class Mediator : public  ReceiveConstructionInterface, public SendDownloadCompleteInterface, public ReceiveDownloadCompleteInterface
 	{
-		ReplicaManagerExt* ext = reinterpret_cast<ReplicaManagerExt*>(userData);
-		return ext->_constructionCB(inBitStream, timestamp, new NetworkID(networkID), existingReplica, new SystemAddress(senderId), ext, ext->constructionUserData);
-	}
-	static ReplicaReturnResult CallSendDownloadCompleteCB(RakNet::BitStream *outBitStream, RakNetTime currentTime, SystemAddress senderId, ReplicaManager *caller, void *userData)
-	{
-		ReplicaManagerExt* ext = reinterpret_cast<ReplicaManagerExt*>(userData);
-		return ext->_sendDownloadCompleteCB(outBitStream, currentTime, new SystemAddress(senderId), ext, ext->sendDownloadCompleteUserData);
-	}
-	static ReplicaReturnResult CallReceiveDownloadCompleteCB(RakNet::BitStream *inBitStream, SystemAddress senderId, ReplicaManager *caller, void *userData)
-	{
-		ReplicaManagerExt* ext = reinterpret_cast<ReplicaManagerExt*>(userData);
-		return ext->_receiveDownloadCompleteCB(inBitStream, new SystemAddress(senderId), ext, ext->receiveDownloadCompleteUserData);
-	}
+	public:
+		Mediator(ReplicaManagerExt* _ext)
+		{
+			ext = _ext;
+		}
+		ReplicaReturnResult ReceiveConstruction(RakNet::BitStream *inBitStream, RakNetTime timestamp, NetworkID networkID, NetworkIDObject *existingObject, SystemAddress senderId, ReplicaManager *caller)
+		{
+			return ext->_constructionCB(inBitStream, timestamp, new NetworkID(networkID), existingObject, new SystemAddress(senderId), ext, ext->constructionUserData);
+		}
+		ReplicaReturnResult SendDownloadComplete(RakNet::BitStream *outBitStream, RakNetTime currentTime, SystemAddress senderId, ReplicaManager *caller)
+		{
+			return ext->_sendDownloadCompleteCB(outBitStream, currentTime, new SystemAddress(senderId), ext, ext->sendDownloadCompleteUserData);
+		}
+		ReplicaReturnResult ReceiveDownloadComplete(RakNet::BitStream *inBitStream, SystemAddress senderId, ReplicaManager *caller)
+		{
+			return ext->_receiveDownloadCompleteCB(inBitStream, new SystemAddress(senderId), ext, ext->receiveDownloadCompleteUserData);
+		}
+	protected:
+		ReplicaManagerExt* ext;
+	};
 
 	// Required callback to handle construction calls
 	RME_FP_ConstructionCB _constructionCB;
@@ -117,6 +124,7 @@ protected:
 	// Userdata with the callbacks
 	void *receiveDownloadCompleteUserData, *sendDownloadCompleteUserData, *constructionUserData;
 
+	Mediator mediator;
 	ReplicaManagerWithBackdoor myOBJ;
 };
 
