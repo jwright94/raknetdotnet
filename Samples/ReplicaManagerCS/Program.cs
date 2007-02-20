@@ -16,6 +16,8 @@ namespace ReplicaManagerCS
         public static Monster monster;
         public static Player player;
 
+        static NetworkIDManager networkIDManager = new NetworkIDManager();
+
         static ReplicaReturnResult ConstructionCB(BitStream inBitStream, uint timestamp, NetworkID networkID, NetworkIDObject existingObject, SystemAddress senderId, ReplicaManagerExt caller, IntPtr userData)
         {
             StringBuilder output = new StringBuilder(255);
@@ -30,6 +32,7 @@ namespace ReplicaManagerCS
 
                 player = new Player();
 
+                player.replica.SetNetworkIDManager(networkIDManager);
                 player.replica.SetNetworkID(networkID);
 
                 if (!isServer)
@@ -47,6 +50,7 @@ namespace ReplicaManagerCS
 
                 monster = new Monster();
 
+                monster.replica.SetNetworkIDManager(networkIDManager);
                 monster.replica.SetNetworkID(networkID);
 
                 if (!isServer)
@@ -85,6 +89,8 @@ namespace ReplicaManagerCS
             rakPeer = RakNetworkFactory.GetRakPeerInterface();
 
             rakPeer.AttachPlugin(replicaManager);
+
+            rakPeer.SetNetworkIDManager(networkIDManager);
 
             replicaManager.SetAutoParticipateNewConnections(true);
 
@@ -132,6 +138,10 @@ namespace ReplicaManagerCS
                 }
                 Console.Write("Connecting...\n");
             }
+
+            // The network ID manager will automatically index pointers of object instance NetworkIDObject if
+            // SetIsNetworkIDAuthority is called with true.  Otherwise, it will rely on another system setting the IDs
+            networkIDManager.SetIsNetworkIDAuthority(isServer);
 
             Console.Write("Commands:\n(Q)uit\n(Space) Show status\n(R)andomize health and position\n");
             if (isServer)

@@ -34,6 +34,7 @@ namespace ReplicaManagerCS
 
             Program.replicaManager.Destruct(replica, RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS, true);
             Program.replicaManager.DereferencePointer(replica);
+            replica.Dispose();
             Program.player = null;
         }
 

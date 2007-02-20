@@ -4,15 +4,25 @@
 %csmethodmodifiers NetworkIDObject::SetParent "protected";
 %csmethodmodifiers NetworkIDObject::GetParent "protected";
 
+%typemap(csfinalize) Replica, ReplicaBoolMarshalAsUInt %{
+%}
+
 %typemap(csdestruct, methodname="Dispose", methodmodifiers="public") NetworkIDObject {
     lock(this) {
-      Parent = null;
       if(swigCPtr.Handle != IntPtr.Zero && swigCMemOwn) {
         swigCMemOwn = false;
+        Parent = null;
         $imcall;
       }
       swigCPtr = new HandleRef(null, IntPtr.Zero);
       GC.SuppressFinalize(this);
+    }
+  }
+  
+%typemap(csdestruct_derived, methodname="Dispose", methodmodifiers="public") Replica, ReplicaBoolMarshalAsUInt {
+    lock(this) {
+      swigCPtr = new HandleRef(null, IntPtr.Zero);
+      base.Dispose();
     }
   }
   
