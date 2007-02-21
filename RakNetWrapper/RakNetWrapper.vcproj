@@ -428,6 +428,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\RakNetStatistics.ri"
+			>
+		</File>
+		<File
 			RelativePath=".\RakNetTypes.ri"
 			>
 		</File>

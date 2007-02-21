@@ -1,0 +1,6 @@
+<%= @type_mapper.start_scope('RakNetStatistics') %>
+<%= @type_mapper.apply_same_ctype('char*', 'INPUT_STRINGBUILDER', 'buffer') %>
+
+%include "<%= @raknet_home %>/RakNetStatistics.h"
+
+<%= @type_mapper.end_scope %>
