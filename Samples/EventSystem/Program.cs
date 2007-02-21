@@ -73,6 +73,23 @@ namespace EventSystem
 
     sealed class RpcCalls
     {
+        #region Implementing the singleton pattern.
+        static readonly RpcCalls instance = new RpcCalls();
+        RpcCalls() { }
+        public static RpcCalls Instance
+        {
+            get { return instance; }
+        }
+        #endregion
+        static void SendEventToClient(RPCParameters _params)
+        {
+            BitStream source = new BitStream(_params, false);
+            IEvent _event = Instance.RecreateEvent(source);
+
+            // TODO - EventCenterClient.ProcessEvent
+            
+            Instance.WipeEvent(_event);
+        }
         public IEvent RecreateEvent(BitStream source)
         {
             return factory.RecreateEvent(source);
@@ -88,19 +105,17 @@ namespace EventSystem
         AbstractEventFactory factory;
     }
 
-    //static class RpcCalls
-    //{
-    //    public static void SendEventToClient(RPCParameters _params)
-    //    {
-    //    }
-    //    public static void Add(SystemAddress, RpcCalls)
-    //    {
-    //    }
-    //    public static void Remove(RpcCalls)
-    //    {
-    //    }
-    //    IDictionary<SystemAddress, RpcCalls> dic = new Dictionary<SystemAddress, RpcCalls>();
-    //}
+    sealed class EventCenterClient
+    {
+        #region Implementing the singleton pattern.
+        static readonly EventCenterClient instance = new EventCenterClient();
+        EventCenterClient() { }
+        public static EventCenterClient Instance
+        {
+            get { return instance; }
+        }
+        #endregion
+    }
 
     class Program
     {
