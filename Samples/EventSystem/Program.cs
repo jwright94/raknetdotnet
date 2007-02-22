@@ -871,6 +871,8 @@ namespace EventSystem
 
             Root.Instance.AddFrameListener(this);
 
+            Root.Instance.AddKeyListener(this);
+
             log("pusing first state...");
             PushState(state);
 
