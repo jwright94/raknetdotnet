@@ -1,5 +1,5 @@
 --- C:/Documents and Settings/takushima/My Documents/raknetdotnet/RakNet30Beta/Source/ReliabilityLayer.cpp	Sat Feb 17 02:16:20 2007
-+++ C:/Documents and Settings/takushima/My Documents/raknetdotnet/RakNet30Beta/Source/ReliabilityLayer - bigpacket.cpp	Thu Feb 22 11:48:19 2007
++++ C:/Documents and Settings/takushima/My Documents/raknetdotnet/RakNet30Beta/Source/ReliabilityLayer.cpp	Thu Feb 22 11:48:19 2007
 @@ -40,7 +40,7 @@
  static const RakNetTime MIN_PING_TO_RESEND=30; // So system timer changes and CPU lag don't send needless resends
  static const RakNetTimeNS TIME_TO_NEW_SAMPLE=500000; // How many ns to wait before starting a new sample.  This way buffers have time to overflow or relax at the new send rate, if they are indeed going to overflow.
