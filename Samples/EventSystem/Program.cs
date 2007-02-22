@@ -15,8 +15,8 @@ namespace EventSystem
         bool IsBroadcast { get; }
         bool IsTwoWay { get; }
         SystemAddress OriginPlayer { get; set; }
-        bool RunOnServer();
-        bool PerformBeforeConnectOnClient();
+        bool RunOnServer { get; }
+        bool PerformBeforeConnectOnClient { get; }
     }
 
     abstract class AbstractEvent : IEvent
@@ -25,8 +25,8 @@ namespace EventSystem
         public abstract void Perform();
         public abstract bool IsBroadcast { get; }
         public abstract bool IsTwoWay { get; }
-        public abstract bool RunOnServer();
-        public virtual bool PerformBeforeConnectOnClient() { return false; }
+        public abstract bool RunOnServer { get; }
+        public virtual bool PerformBeforeConnectOnClient { get { return false; } }
 
         public int Id
         {
@@ -205,7 +205,7 @@ namespace EventSystem
                     _event.Perform();
                 else
                 {
-                    if (_event.PerformBeforeConnectOnClient())
+                    if (_event.PerformBeforeConnectOnClient)
                         _event.Perform();
                 }
             }
@@ -374,7 +374,7 @@ namespace EventSystem
         {
             Debug.Assert(_event != null);
 
-            if (_event.RunOnServer()) _event.Perform();
+            if (_event.RunOnServer) _event.Perform();
 
             if (_event.IsTwoWay)
             {
@@ -501,10 +501,601 @@ namespace EventSystem
         #endregion
     }
 
+    sealed class ServerToClientEvent : AbstractEvent
+    {
+        public ServerToClientEvent(int eventId, uint _objId)
+        {
+            objId = _objId;
+            eventStream = null;
+            Id = eventId;
+        }
+        public ServerToClientEvent(BitStream source)
+        {
+            int eventId;
+            source.Read(out eventId);
+            Id = eventId;
+
+            source.Read(out objId);
+
+            source.Read(out x);
+        }
+        public void SetData(float _x)
+        {
+            Console.WriteLine("setting data. x = {0}", _x);
+
+            x = _x;
+        }
+        #region Private Members
+        uint objId;  // I want to use ulong.
+        float x;     // position
+        BitStream eventStream;
+        #endregion
+        #region AbstractEvent Methods
+        public override BitStream Stream
+        {
+            get 
+            {
+                eventStream = new BitStream();
+
+                eventStream.Write(Id);
+
+                eventStream.Write(x);
+
+                return eventStream;
+            }
+        }
+        public override void Perform()
+        {
+            Console.WriteLine("ServerToClientEvent.Perform(): x = {0}, objId = {1}", x, objId);  // or delegate to facade
+        }
+        public override bool IsBroadcast
+        {
+            get { return true; }
+        }
+        public override bool IsTwoWay
+        {
+            get { return false; }
+        }
+        public override bool RunOnServer
+        {
+            get { return false; }
+        }
+        #endregion
+    }
+
+    sealed class ClientToServerEvent : AbstractEvent
+    {
+        public ClientToServerEvent(int eventId)
+        {
+            eventStream = null;
+            Id = eventId;
+        }
+        public ClientToServerEvent(BitStream source)
+        {
+            eventStream = null;
+
+            int eventId;
+
+            source.Read(out eventId);
+
+            Id = eventId;
+        }
+        #region Private Members
+        BitStream eventStream;
+        #endregion
+        #region AbstractEvent Methods
+        public override BitStream Stream
+        {
+            get 
+            {
+                eventStream = new BitStream();
+
+                eventStream.Write(Id);
+
+                return eventStream;
+            }
+        }
+        public override void Perform()
+        {
+            Console.WriteLine("ClientToServerEvent.Perform()");  
+            // if this event is new player event then
+            // send back origin player
+            // send out new event.
+        }
+        public override bool IsBroadcast
+        {
+            get { return false; }
+        }
+        public override bool IsTwoWay
+        {
+            get { return false; }
+        }
+        public override bool RunOnServer
+        {
+            get { return true; }
+        }
+        #endregion
+    }
+
+    sealed class TestConnectionEvent : AbstractEvent
+    {
+        public TestConnectionEvent(int uniqueId)
+        {
+            cameBackFromServer = false;
+
+            Id = uniqueId;
+        }
+        public TestConnectionEvent(BitStream stream)
+        {
+            eventStream = stream;
+
+            int eventId;
+            eventStream.Read(out eventId);
+            Id = eventId;
+
+            eventStream.Read(out cameBackFromServer);
+        }
+        #region Private Members
+        BitStream eventStream;
+        bool cameBackFromServer;
+        #endregion
+        #region AbstractEvent Methods
+        public override BitStream Stream
+        {
+            get 
+            {
+                eventStream = new BitStream();
+
+                eventStream.Write(Id);
+                eventStream.Write(cameBackFromServer);
+
+                return eventStream;
+            }
+        }
+        public override void Perform()
+        {
+            if (cameBackFromServer)
+            {
+                Console.WriteLine("performs on client");
+            }
+            else
+            {
+                Console.WriteLine("performs on server");
+                cameBackFromServer = true;
+            }
+        }
+        public override bool IsBroadcast
+        {
+            get { return false; }
+        }
+        public override bool IsTwoWay
+        {
+            get { return true; }
+        }
+        public override bool RunOnServer
+        {
+            get { return true; }
+        }
+        public override bool PerformBeforeConnectOnClient
+        {
+            get { return false; }
+        }
+        #endregion
+    }
+
+    sealed class SampleEventFactory : AbstractEventFactory
+    {
+        #region Ogre-like singleton implementation.
+        static SampleEventFactory instance;
+        public SampleEventFactory() 
+        {  
+            Debug.Assert(instance == null);
+            instance = this;
+        }
+        public void  Dispose()
+        {
+            Debug.Assert(instance != null);
+ 	        instance = null;
+        }
+        public static SampleEventFactory Instance
+        {
+            get 
+            { 
+                Debug.Assert(instance != null);
+                return instance; 
+            }
+        }
+        #endregion
+        public enum EventTypes
+        { 
+            SERVERTOCLIENT,
+            CLIENTTOSERVER,
+            TESTCONNECTION,
+        }
+        public IEvent CreateEvent(EventTypes eventType, uint objId)
+        {
+            IEvent _event = null;
+
+            switch (eventType)
+            {
+                case EventTypes.SERVERTOCLIENT:
+                    _event = new ServerToClientEvent((int)EventTypes.SERVERTOCLIENT, objId);
+                    break;
+
+                case EventTypes.CLIENTTOSERVER:
+                    _event = new ClientToServerEvent((int)EventTypes.CLIENTTOSERVER);
+                    break;
+
+                //case EventTypes.TESTCONNECTION:  // NOTE - this type shuld be created externally.
+                    
+                default:
+                    throw new NetworkException(
+                        string.Format("Event type {0} not recognized by SampleFactory.CreateEvent()!", eventType));
+            }
+
+            StoreEvent(_event);
+            return _event;
+        }
+        public void StoreExternallyCreatedEvent(IEvent _event)
+        {
+            StoreEvent(_event);
+        }
+        public override IEvent RecreateEvent(BitStream source)
+        {
+            Debug.Assert(source != null);
+
+            IEvent _event;
+
+            int ID;
+            source.Read(out ID);
+            EventTypes eventType = (EventTypes)ID;
+            source.ResetReadPointer();
+
+            switch (eventType)
+            {
+                case EventTypes.SERVERTOCLIENT:
+                    _event = new ServerToClientEvent(source);
+                    break;
+
+                case EventTypes.CLIENTTOSERVER:
+                    _event = new ClientToServerEvent(source);
+                    break;
+
+                case EventTypes.TESTCONNECTION:
+                    _event = new TestConnectionEvent(source);
+                    break;
+
+                default:
+                    throw new NetworkException(
+                        string.Format("Event type {0} not recognized by SampleFactory.CreateEvent()!", ID));
+            }
+
+            return _event;
+        }
+    }
+
+    sealed class GameManager
+    {
+        #region Ogre-like singleton implementation.
+        static GameManager instance;
+        public GameManager() 
+        {  
+            Debug.Assert(instance == null);
+            instance = this;
+        }
+        public void  Dispose()
+        {
+            Debug.Assert(instance != null);
+ 	        instance = null;
+
+            while (0 < states.Count)
+            {
+                Debug.Assert(states.Peek() != null);
+                states.Peek().Exit();
+                states.Pop();
+            }
+        }
+        public static GameManager Instance
+        {
+            get 
+            { 
+                Debug.Assert(instance != null);
+                return instance; 
+            }
+        }
+        #endregion
+        public void Start(IGameState state)
+        {
+            log("starting...");
+
+            PushState(state);
+        }
+        public void ChangeState(IGameState state)
+        {
+            Debug.Assert(state != null);
+
+            log("changing to state: {0}", state.Name);
+
+            // cleanup the current state
+            if (0 < states.Count)
+            {
+                IGameState oldState = states.Peek();
+
+                if (state.Name == oldState.Name) return;
+
+                log("exiting current state: {0}", oldState.Name);
+                oldState.Exit();
+                states.Pop();
+            }
+
+            // store and init the new state
+            log("entering new state: {0}", state.Name);
+            states.Push(state);
+            states.Peek().Enter();
+        }
+        public void PushState(IGameState state)
+        {
+            Debug.Assert(state != null);
+
+            log("pushing state: {0}", state.Name);
+
+            if (0 < states.Count)
+            {
+                IGameState oldState = states.Peek();
+                log("pause current state: {0}", oldState.Name);
+                oldState.Pause();
+            }
+
+            log("store and init the new state: ", state.Name);
+            states.Push(state);
+            states.Peek().Enter();
+        }
+        public void PopState()
+        {
+            log("popping state");
+
+            // TODO - impl.
+        }
+        #region Private Members
+        void log(string message)
+        {
+            Console.WriteLine(message);
+        }
+        void log(string format, params object[] args)
+        {
+            Console.WriteLine(string.Format(format, args));
+        }
+        Stack<IGameState> states = new Stack<IGameState>();
+        #endregion
+    }
+
+    interface IGameState
+    {
+        string Name { get; }
+        void Enter();
+        void Exit();
+        void Pause();
+        void Resume();
+    }
+
+    abstract class AbstractGameState : IGameState
+    {
+        public AbstractGameState(string _name)
+        {
+            name = _name;
+        }
+        public virtual string Name
+        {
+            get { return name; }
+        }
+        string name;
+        #region Protected Members
+        protected void ChangeState(IGameState state)
+        {
+            GameManager.Instance.ChangeState(state);
+        }
+        protected void PushState(IGameState state)
+        {
+            GameManager.Instance.PushState(state);
+        }
+        protected void PopState()
+        {
+            GameManager.Instance.PopState();
+        }
+        #endregion
+        #region IGameState Members
+        public abstract void Enter();
+        public abstract void Exit();
+        public abstract void Pause();
+        public abstract void Resume();
+        #endregion
+    }
+
+    sealed class IntroState : AbstractGameState
+    {
+        #region Ogre-like singleton implementation.
+        static IntroState instance;
+        public IntroState() : base("Intro") 
+        {  
+            Debug.Assert(instance == null);
+            instance = this;
+        }
+        public void  Dispose()
+        {
+            Debug.Assert(instance != null);
+ 	        instance = null;
+        }
+        public static IntroState Instance
+        {
+            get 
+            { 
+                Debug.Assert(instance != null);
+                return instance; 
+            }
+        }
+        #endregion
+        public override void Enter()
+        {
+        }
+        public override void Exit()
+        {
+        }
+        public override void Pause()
+        {
+        }
+        public override void Resume()
+        {
+        }
+    }
+
+    class PlayState : AbstractGameState
+    {
+        #region Ogre-like singleton implementation.
+        static PlayState instance;
+        public PlayState(ushort _clientPort, string _serverIP) : base("Play")
+        {  
+            Debug.Assert(instance == null);
+            instance = this;
+
+            clientPort = _clientPort;
+            serverIP = _serverIP;
+        }
+        public void  Dispose()
+        {
+            Debug.Assert(instance != null);
+ 	        instance = null;
+        }
+        public static PlayState Instance
+        {
+            get 
+            { 
+                Debug.Assert(instance != null);
+                return instance; 
+            }
+        }
+        #endregion
+        public override void Enter()
+        {
+            log("starting...");
+
+            try
+            {
+                ConnectToServer();
+            }
+            catch (NetworkException e)
+            {
+                Console.WriteLine(e.ToString());
+                ChangeState(IntroState.Instance);
+                return;
+            }
+        }
+        public override void Exit()
+        {
+            SampleEventFactory.Instance.Dispose();
+            rpcCalls.Dispose();
+
+            eventCenterClient.Dispose();
+        }
+        public override void Pause()
+        {
+        }
+        public override void Resume()
+        {
+        }
+        #region Protected Members
+        protected void Update(float dt)
+        {
+            UpdateNetwork();
+
+            EventCenterClient.Instance.Update();
+        }
+        protected void UpdateNetwork()
+        {
+            EventCenterClient.Instance.Update();
+        }
+        protected void ConnectToServer()
+        {
+            log("starting network...");
+
+            new SampleEventFactory();
+            rpcCalls = new RpcCalls();
+            rpcCalls.Handler = SampleEventFactory.Instance;
+
+            eventCenterClient = new EventCenterClient("client.xml");
+            eventCenterClient.OverrideClientPort(clientPort);
+            eventCenterClient.OverrideServerPort(serverIP);
+            eventCenterClient.ConnectPlayer();
+
+            log("client started...");
+            
+            // TODO - try connect
+            // blocking?
+        }
+        #endregion
+        #region Private Members
+        void log(string message)
+        {
+            Console.WriteLine(message);
+        }
+        ushort clientPort;
+        string serverIP;
+
+        EventCenterClient eventCenterClient;
+        RpcCalls rpcCalls;
+        #endregion
+    }
+
     class Program
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("(S)erver or (C)lient?");
+            string userInput = Console.ReadLine();
+            if (userInput[0] == 's' || userInput[0] == 'S')
+                ServerMain(args);
+            else
+                ClientMain(args);
+        }
+
+        static void ClientMain(string[] args)
+        {
+            // TODO - parse options
+            ushort clientPort = 20000;
+            string serverIP = "127.0.0.1";
+
+            GameManager game = new GameManager();
+            IntroState intro = new IntroState();
+            PlayState play = new PlayState(clientPort, serverIP);
+
+            try
+            {
+                game.Start(intro);
+
+                Console.WriteLine("All done!");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("An exception occured: {0}", e.ToString());
+            }
+
+            game.Dispose();
+            intro.Dispose();
+            play.Dispose();
+
+            Console.WriteLine("Quiting...");
+        }
+
+        static void ServerMain(string[] args)
+        {
+            EventCenterServer server = new EventCenterServer("server.xml");
+            RpcCalls rpcCalls = new RpcCalls();
+            SampleEventFactory factory = new SampleEventFactory();
+            rpcCalls.Handler = factory;
+
+            server.Start();
+
+            factory.Dispose();
+            server.Dispose();
         }
     }
 }
