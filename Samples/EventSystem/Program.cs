@@ -95,7 +95,7 @@ namespace EventSystem
             }
         }
         #endregion
-        static void SendEventToClient(RPCParameters _params)
+        public static void SendEventToClient(RPCParameters _params)
         {
             BitStream source = new BitStream(_params, false);
             IEvent _event = Instance.RecreateEvent(source);
@@ -355,7 +355,7 @@ namespace EventSystem
             }
         }
         #endregion
-        static void SendEventToServer(RPCParameters _params)
+        public static void SendEventToServer(RPCParameters _params)
         {
             SystemAddress sender = _params.sender;
 
@@ -774,7 +774,67 @@ namespace EventSystem
         }
     }
 
-    sealed class GameManager
+    interface IFrameListener
+    {
+        bool FrameStarted();
+    }
+
+    interface IKeyListener
+    {
+        bool KeyPressed(char key);
+    }
+
+    sealed class Root
+    {
+        #region Implementing popular pattern of singleton
+        static readonly Root instance = new Root();
+        Root() { }
+        public static Root Instance { get { return instance; } }
+        #endregion
+        public void AddFrameListener(IFrameListener newListener)
+        {
+            frameListeners.Add(newListener);
+        }
+        public void RemoteFrameListener(IFrameListener oldListener)
+        {
+            frameListeners.Remove(oldListener);
+        }
+        public void AddKeyListener(IKeyListener newListener)
+        {
+            keyListeners.Add(newListener);
+        }
+        public void RemoveKeyListener(IKeyListener oldListener)
+        {
+            keyListeners.Remove(oldListener);
+        }
+        public void StartRendering()
+        {
+            while (true)
+            {
+                if (_kbhit() != 0)
+                {
+                    char key = Console.ReadKey(true).KeyChar;
+                    foreach (IKeyListener keyListener in keyListeners)
+                    {
+                        keyListener.KeyPressed(key);
+                    }
+                }
+                foreach (IFrameListener frameListener in frameListeners)
+                {
+                    if (!frameListener.FrameStarted())
+                        return;
+                }
+                System.Threading.Thread.Sleep(1);
+            }
+        }
+        ICollection<IFrameListener> frameListeners = new List<IFrameListener>();
+        ICollection<IKeyListener> keyListeners = new List<IKeyListener>();
+
+        [System.Runtime.InteropServices.DllImport("crtdll.dll")]
+        public static extern int _kbhit();  // I do not want to use this.
+    }
+
+    sealed class GameManager : IKeyListener, IFrameListener
     {
         #region Ogre-like singleton implementation.
         static GameManager instance;
@@ -788,6 +848,7 @@ namespace EventSystem
             Debug.Assert(instance != null);
  	        instance = null;
 
+            // clean up all the states
             while (0 < states.Count)
             {
                 Debug.Assert(states.Peek() != null);
@@ -808,7 +869,12 @@ namespace EventSystem
         {
             log("starting...");
 
+            Root.Instance.AddFrameListener(this);
+
+            log("pusing first state...");
             PushState(state);
+
+            Root.Instance.StartRendering();
         }
         public void ChangeState(IGameState state)
         {
@@ -867,6 +933,19 @@ namespace EventSystem
         }
         Stack<IGameState> states = new Stack<IGameState>();
         #endregion
+        #region IFrameListener Members
+        public bool FrameStarted()
+        {
+            return states.Peek().FrameStarted();
+        }
+        #endregion
+        #region IKeyListener Members
+        public bool KeyPressed(char key)
+        {
+            states.Peek().KeyPressed(key);
+            return true;
+        }
+        #endregion
     }
 
     interface IGameState
@@ -876,6 +955,8 @@ namespace EventSystem
         void Exit();
         void Pause();
         void Resume();
+        bool KeyPressed(char key);
+        bool FrameStarted();
     }
 
     abstract class AbstractGameState : IGameState
@@ -908,6 +989,8 @@ namespace EventSystem
         public abstract void Exit();
         public abstract void Pause();
         public abstract void Resume();
+        public abstract bool KeyPressed(char key);
+        public abstract bool FrameStarted();
         #endregion
     }
 
@@ -934,6 +1017,7 @@ namespace EventSystem
             }
         }
         #endregion
+        #region IGameState Members
         public override void Enter()
         {
         }
@@ -946,6 +1030,19 @@ namespace EventSystem
         public override void Resume()
         {
         }
+        public override bool KeyPressed(char key)
+        {
+            if (key == 'p')
+            {
+                ChangeState(PlayState.Instance);
+            }
+            return true;
+        }
+        public override bool FrameStarted()
+        {
+            return true;
+        }
+        #endregion
     }
 
     class PlayState : AbstractGameState
@@ -974,6 +1071,7 @@ namespace EventSystem
             }
         }
         #endregion
+        #region IGameState Members
         public override void Enter()
         {
             log("starting...");
@@ -1002,6 +1100,17 @@ namespace EventSystem
         public override void Resume()
         {
         }
+        public override bool KeyPressed(char key)
+        {
+            return true;
+        }
+        public override bool FrameStarted()
+        {
+            Update(0.0f);  // hmm
+
+            return true;
+        }
+        #endregion
         #region Protected Members
         protected void Update(float dt)
         {
@@ -1050,8 +1159,8 @@ namespace EventSystem
         static void Main(string[] args)
         {
             Console.WriteLine("(S)erver or (C)lient?");
-            string userInput = Console.ReadLine();
-            if (userInput[0] == 's' || userInput[0] == 'S')
+            char key = Console.ReadKey(true).KeyChar;
+            if (key == 's' || key == 'S')
                 ServerMain(args);
             else
                 ClientMain(args);
