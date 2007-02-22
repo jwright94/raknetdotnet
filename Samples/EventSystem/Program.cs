@@ -119,7 +119,7 @@ namespace EventSystem
         AbstractEventFactory factory;
     }
 
-    sealed class EventCenterClient
+    sealed class EventCenterClient : IDisposable
     {
         #region Ogre-like singleton implementation.
         static EventCenterClient instance;
@@ -270,11 +270,11 @@ namespace EventSystem
                     message.AppendFormat(" from port {0}", packet.systemAddress.port);
 
                     BitStream stream = new BitStream(packet, false);
-                    int eventType;  // int?
-                    stream.Read(out eventType);
-                    message.AppendFormat(", stream = [{0}]", eventType);
+                    byte packetIdentifier;
+                    stream.Read(out packetIdentifier);
+                    message.AppendFormat(", stream = [{0}]", packetIdentifier);
 
-                    if (false) log(message.ToString());
+                    if (true) log(message.ToString());
 
                     rakClientInterface.DeallocatePacket(packet);
                     packet = rakClientInterface.Receive();
@@ -313,7 +313,7 @@ namespace EventSystem
         #endregion
     }
 
-    sealed class EventCenterServer
+    sealed class EventCenterServer : IDisposable
     {
         #region Ogre-like singleton implementation.
         static EventCenterServer instance;
@@ -332,6 +332,7 @@ namespace EventSystem
             ushort port = 6000;
             SocketDescriptor socketDescriptor = new SocketDescriptor(port, string.Empty);
             rakServerInterface.Startup(allowedPlayers, threadSleepTimer, new SocketDescriptor[] { socketDescriptor }, 1);
+            rakServerInterface.SetMaximumIncomingConnections(allowedPlayers);
 
             rakServerInterface.RegisterAsRemoteProcedureCall("sendeventtoserver", typeof(EventCenterServer).GetMethod("SendEventToServer"));
         }
@@ -657,6 +658,7 @@ namespace EventSystem
             if (cameBackFromServer)
             {
                 Console.WriteLine("performs on client");
+                ClientWorld.Instance.SetTestReplyFromServer(true);
             }
             else
             {
@@ -683,7 +685,7 @@ namespace EventSystem
         #endregion
     }
 
-    sealed class SampleEventFactory : AbstractEventFactory
+    sealed class SampleEventFactory : AbstractEventFactory, IDisposable
     {
         #region Ogre-like singleton implementation.
         static SampleEventFactory instance;
@@ -834,7 +836,7 @@ namespace EventSystem
         public static extern int _kbhit();  // I do not want to use this.
     }
 
-    sealed class GameManager : IKeyListener, IFrameListener
+    sealed class GameManager : IDisposable, IKeyListener, IFrameListener
     {
         #region Ogre-like singleton implementation.
         static GameManager instance;
@@ -996,7 +998,7 @@ namespace EventSystem
         #endregion
     }
 
-    sealed class IntroState : AbstractGameState
+    sealed class IntroState : AbstractGameState, IDisposable
     {
         #region Ogre-like singleton implementation.
         static IntroState instance;
@@ -1047,7 +1049,7 @@ namespace EventSystem
         #endregion
     }
 
-    class PlayState : AbstractGameState
+    class PlayState : AbstractGameState, IDisposable
     {
         #region Ogre-like singleton implementation.
         static PlayState instance;
@@ -1077,6 +1079,7 @@ namespace EventSystem
         public override void Enter()
         {
             log("starting...");
+            Load("application.xml");
 
             try
             {
@@ -1093,6 +1096,7 @@ namespace EventSystem
         {
             SampleEventFactory.Instance.Dispose();
             rpcCalls.Dispose();
+            ClientWorld.Instance.Dispose();
 
             eventCenterClient.Dispose();
         }
@@ -1124,9 +1128,16 @@ namespace EventSystem
         {
             EventCenterClient.Instance.Update();
         }
+        protected void Load(string xmlFile)
+        {
+            // TODO - use xml reader
+            networkConnectTimeout = 100;
+        }
         protected void ConnectToServer()
         {
             log("starting network...");
+
+            new ClientWorld();
 
             new SampleEventFactory();
             rpcCalls = new RpcCalls();
@@ -1139,8 +1150,26 @@ namespace EventSystem
 
             log("client started...");
             
-            // TODO - try connect
-            // blocking?
+            // try a few times
+            bool success = false;
+            for (int j = 0; j < 5 && !success; ++j)
+            {
+                ClientWorld.Instance.TestConnectionWithServer();
+                bool reply = false;
+                long i = 1;
+                long milliSecondWait = networkConnectTimeout;
+                while (!reply && i <= milliSecondWait)
+                {
+                    reply = ClientWorld.Instance.GetTestResponseFromServer();
+                    System.Threading.Thread.Sleep(1);
+                    EventCenterClient.Instance.Update();
+                    ++i;
+
+                    if (i % 10 == 0) Console.WriteLine("{0} {1}", i, networkConnectTimeout);
+                }
+
+                if (reply) success = true;
+            }
         }
         #endregion
         #region Private Members
@@ -1148,11 +1177,59 @@ namespace EventSystem
         {
             Console.WriteLine(message);
         }
+
+        long networkConnectTimeout;
+
         ushort clientPort;
         string serverIP;
 
         EventCenterClient eventCenterClient;
         RpcCalls rpcCalls;
+        #endregion
+    }
+
+    sealed class ClientWorld : IDisposable
+    {
+        #region Ogre-like singleton implementation.
+        static ClientWorld instance;
+        public ClientWorld() 
+        {  
+            Debug.Assert(instance == null);
+            instance = this;
+        }
+        public void  Dispose()
+        {
+            Debug.Assert(instance != null);
+ 	        instance = null;
+        }
+        public static ClientWorld Instance
+        {
+            get 
+            { 
+                Debug.Assert(instance != null);
+                return instance; 
+            }
+        }
+        #endregion
+        public void TestConnectionWithServer()
+        {
+            SetTestReplyFromServer(false);
+
+            IEvent _event = new TestConnectionEvent((int)SampleEventFactory.EventTypes.TESTCONNECTION);
+
+            SampleEventFactory.Instance.StoreExternallyCreatedEvent(_event);
+            EventCenterClient.Instance.ReportEvent(_event);
+        }
+        public void SetTestReplyFromServer(bool flag)
+        {
+            gotTestResponseFromServer = flag;
+        }
+        public bool GetTestResponseFromServer()
+        {
+            return gotTestResponseFromServer;
+        }
+        #region Private Members
+        bool gotTestResponseFromServer;
         #endregion
     }
 
