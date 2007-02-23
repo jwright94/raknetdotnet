@@ -8,6 +8,9 @@ namespace EventSystem
     {
         static void Main(string[] args)
         {
+            UnifiedNetwork un = new UnifiedNetwork();
+            un.Test();
+
             Console.WriteLine("(S)erver or (C)lient?");
             char key = Console.ReadKey(true).KeyChar;
             if (key == 's' || key == 'S')
