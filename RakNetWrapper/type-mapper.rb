@@ -90,6 +90,23 @@ EOS
 %typemap(csdirectorin)                 #{ctype_and_name} "ref $iminput"
 EOS
   end
+  
+  def override_typemap_bool_output_input_about_marshaling
+    <<EOS
+%typemap(in) bool *OUTPUT ($*1_ltype temp), 
+             bool &OUTPUT ($*1_ltype temp), 
+             bool *INOUT ($*1_ltype temp), 
+             bool &INOUT ($*1_ltype temp)
+%{ temp = *$input ? true : false; 
+   $1 = &temp; %}
+
+%typemap(argout) bool *OUTPUT, 
+                 bool &OUTPUT, 
+                 bool *INOUT, 
+                 bool &INOUT
+%{ *$input = temp$argnum ? 1 : 0; %}    
+EOS
+  end
 
   # This method is not usable. 'directorout' was not usable instead of 'directorargout'.
   def typemap_ref_bool(ctype, name, cstype, options = {})
