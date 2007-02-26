@@ -8,7 +8,6 @@ namespace EventSystem
     using RakNetDotNet;
 
     sealed class EventCenterServer : IDisposable
-
     {
         #region Ogre-like singleton implementation.
         static EventCenterServer instance;

@@ -30,5 +30,23 @@ namespace EventSystem
             }
         }
         #endregion
+
+
+        #region Private Members
+        void log(string message)
+        {
+            Console.WriteLine("UnifiedNetwork> {0}", message);
+        }
+        void log(string format, params object[] args)
+        {
+            log(string.Format(format, args));
+        }
+        string name;
+        RakPeerInterface rakPeerInterface;
+        #endregion
+        // Set FCM plugin to RakPeerInterface.
+        // Set LWD plugin to RakPeerInterface.
+        // Add argument of service name to SendEvent, ReportEvent.
+        // ...
     }
 }
