@@ -100,18 +100,18 @@ namespace EventSystem
 
                 if (_event.IsTwoWay)
                 {
-                    SendEvent(_event);
+                    SendEvent(_event, _event.OriginPlayer);
                 }
             }
         }
-        public void SendEvent(IEvent _event)
+        public void SendEvent(IEvent _event, SystemAddress _player)
         {
             if (isOnline)
             {
                 PacketPriority priority = PacketPriority.HIGH_PRIORITY;
                 PacketReliability reliability = PacketReliability.RELIABLE_ORDERED;
                 byte orderingChannel = 0;
-                SystemAddress player = _event.OriginPlayer;
+                SystemAddress player = _player;
                 uint shiftTimestamp = 0;
                 //string sendevent = "sendeventtoclient";
                 string sendevent = "sendeventtoserver";

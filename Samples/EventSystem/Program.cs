@@ -202,7 +202,7 @@ namespace EventSystem
                     IEvent _event = new TestConnectionEvent2((int)SampleEventFactory.EventTypes.TESTCONNECTION2);
 
                     SampleEventFactory.Instance.StoreExternallyCreatedEvent(_event);
-                    UnifiedNetwork.Instance.SendEvent(_event);
+                    UnifiedNetwork.Instance.SendEvent(_event, RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS);
                 }
                 key = '\0';
             }
