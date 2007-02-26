@@ -23,6 +23,7 @@ namespace EventSystem
     }
 
     // Based on ECS
+    // TODO - Query service port to name service.
     sealed class UnifiedNetwork : IDisposable
     {
         #region Ogre-like singleton implementation.
@@ -163,7 +164,7 @@ namespace EventSystem
             if (IsOnline)
             {
                 Packet packet = rakServerInterface.Receive();
-                while (packet != null)
+                while (packet != null)  // Process all incoming packets. Do we need to switch other thread ?
                 {
                     //StringBuilder message = new StringBuilder("recieved Message from player ");
                     //message.Append(packet.systemAddress.ToString());

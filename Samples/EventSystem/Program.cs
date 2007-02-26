@@ -6,6 +6,7 @@ namespace EventSystem
 {
     using Castle.Core;
     using Castle.MicroKernel;
+    using RakNetDotNet;
     #region Castle MicroKernel
     //[Transient]
     class Automobile : IDisposable
@@ -96,7 +97,6 @@ namespace EventSystem
             else
                 ClientMain(args);
         }
-
         static void ClientMain(string[] args)
         {
             // TODO - parse options
@@ -124,7 +124,6 @@ namespace EventSystem
 
             Console.WriteLine("Quiting...");
         }
-
         static void ServerMain(string[] args)
         {
             EventCenterServer server = new EventCenterServer("server.xml");
@@ -138,21 +137,69 @@ namespace EventSystem
             factory.Dispose();
             server.Dispose();
         }
-
+        #region Unified Network
         static void UnifiedNetworkMain(string[] args)
         {
+            const ushort NAME_SERVICE_PORT = 6000;
+            Console.WriteLine("Server Port ? (NS=6000)");
+            string input = Console.ReadLine();
+            if (input.Equals(string.Empty))
+                serverPort = NAME_SERVICE_PORT;
+            else
+                serverPort = ushort.Parse(input);
+
             Dictionary<string, object> extendedProperties = new Dictionary<string, object>();
-            extendedProperties.Add("port", (ushort)6000);
+            extendedProperties.Add("port", serverPort);
             UnifiedNetwork unifiedNetwork = new UnifiedNetwork("server.xml", extendedProperties);
             RpcCalls rpcCalls = new RpcCalls();
             rpcCalls.ProcessEventOnServerSide += unifiedNetwork.ProcessEvent;
             SampleEventFactory factory = new SampleEventFactory();
             rpcCalls.Handler = factory;
 
-            unifiedNetwork.Start();
+            if (serverPort != NAME_SERVICE_PORT)
+            {
+                unifiedNetwork.ConnectPlayer("127.0.0.1", NAME_SERVICE_PORT);
+            }
+            System.Console.WriteLine("running...");
+            while (true)
+            {
+                PrintConnections();
+                unifiedNetwork.Update();
+                System.Threading.Thread.Sleep(0);
+            }
 
             factory.Dispose();
             unifiedNetwork.Dispose();
         }
+        static void PrintConnections()
+        {
+            if (_kbhit() != 0)
+            {
+                char key = Console.ReadKey(true).KeyChar;
+                if (key == ' ')
+                {
+                    Console.Write("--------------------------------\n");
+                    uint numPeers = UnifiedNetwork.Instance.ServerInterface.GetNumberOfAddresses();
+
+                    Console.Write("{0} (Conn): ", serverPort);
+                    for (int j = 0; j < numPeers; j++)
+                    {
+                        SystemAddress systemAddress = UnifiedNetwork.Instance.ServerInterface.GetSystemAddressFromIndex(j);
+                        if (!systemAddress.Equals(RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS))
+                            Console.Write("{0} ", systemAddress.port);
+                    }
+
+                    Console.Write("\n");
+                    Console.Write("\n");
+                    key = '\0';
+
+                    Console.Write("--------------------------------\n");
+                }
+            }
+        }
+        [System.Runtime.InteropServices.DllImport("crtdll.dll")]
+        public static extern int _kbhit();  // I do not want to use this.
+        static ushort serverPort;
+        #endregion
     }
 }
