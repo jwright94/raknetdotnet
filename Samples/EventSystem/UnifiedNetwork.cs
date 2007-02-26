@@ -7,6 +7,20 @@ namespace EventSystem
     using System.Diagnostics;
     using RakNetDotNet;
 
+    // NS(UN) - GS(UN) - FS(UN, ECS)
+    // 
+    sealed class UN
+    {
+        public string Name { get { return ""; } }
+        void ReportEvent(IEvent _event) { }  // ReportEvent(string serviceName, IEvent _event) { }
+        void SendEvent(IEvent _event) { }
+        void ProcessEventOnClientSide(IEvent _event) { }  // only do perform.
+        void ProcessEventOnServerSide(IEvent _event) { }  // RunOnServer, TwoWay.
+        void ConnectNameService() { }
+        void Start() { }
+        void Update() { }
+    }
+
     sealed class UnifiedNetwork : IDisposable
     {
         #region Ogre-like singleton implementation.

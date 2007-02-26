@@ -62,28 +62,7 @@ namespace EventSystem
 
             if (_event.IsTwoWay)
             {
-                PacketPriority priority = PacketPriority.HIGH_PRIORITY;
-                PacketReliability reliability = PacketReliability.RELIABLE_ORDERED;
-                byte orderingChannel = 0;
-                SystemAddress player = _event.OriginPlayer;
-                uint shiftTimestamp = 0;
-                string sendevent = "sendeventtoclient";
-
-                bool broadcast = _event.IsBroadcast;
-
-                bool result = EventCenterServer.Instance.rakServerInterface.RPC(
-                    sendevent,
-                    _event.Stream, priority, reliability, orderingChannel,
-                    player, broadcast, shiftTimestamp,
-                    RakNetBindings.UNASSIGNED_NETWORK_ID, null);
-
-                if (false)
-                {
-                    if (!result)
-                        log("could not send data to the client!");
-                    else
-                        log("sent data to the client...");
-                }
+                SendEvent(_event);
             }
         }
         public void SendEvent(IEvent _event)
@@ -93,21 +72,25 @@ namespace EventSystem
             byte orderingChannel = 0;
             SystemAddress player = _event.OriginPlayer;
             uint shiftTimestamp = 0;
+            string sendevent = "sendeventtoclient";
 
             bool broadcast = _event.IsBroadcast;
 
             log("sending an event: [{0}], broadcast = {1}", _event.ToString(), broadcast);
 
             bool result = EventCenterServer.Instance.ServerInterface.RPC(
-                "sendeventtoclient",
+                sendevent,
                 _event.Stream, priority, reliability, orderingChannel,
                 player, broadcast, shiftTimestamp,
                 RakNetBindings.UNASSIGNED_NETWORK_ID, null);
 
-            if (!result)
-                log("could not send data to the client!");
-            else
-                log("send data to the client...");
+            if (false)
+            {
+                if (!result)
+                    log("could not send data to the client!");
+                else
+                    log("send data to the client...");
+            }
         }
         public void Start()
         {
