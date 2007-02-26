@@ -7,7 +7,7 @@ namespace EventSystem
     using System.Diagnostics;
     using RakNetDotNet;
 
-    sealed class EventCenterServer : IDisposable
+    sealed class EventCenterServer : IDisposable, IEventProcessor
     {
         #region Ogre-like singleton implementation.
         static EventCenterServer instance;
@@ -28,7 +28,7 @@ namespace EventSystem
             rakServerInterface.Startup(allowedPlayers, threadSleepTimer, new SocketDescriptor[] { socketDescriptor }, 1);
             rakServerInterface.SetMaximumIncomingConnections(allowedPlayers);
 
-            rakServerInterface.RegisterAsRemoteProcedureCall("sendeventtoserver", typeof(EventCenterServer).GetMethod("SendEventToServer"));
+            rakServerInterface.RegisterAsRemoteProcedureCall("sendeventtoserver", typeof(RpcCalls).GetMethod("SendEventToServer"));
         }
         public void Dispose()
         {
@@ -50,17 +50,6 @@ namespace EventSystem
             }
         }
         #endregion
-        public static void SendEventToServer(RPCParameters _params)
-        {
-            SystemAddress sender = _params.sender;
-
-            BitStream source = new BitStream(_params, false);
-
-            IEvent _event = RpcCalls.Instance.RecreateEvent(source);
-            if (false) Console.WriteLine("EventCenterServer> {0}", _event.ToString());
-            _event.OriginPlayer = sender;
-            EventCenterServer.Instance.ProcessEvent(_event);
-        }
         public string Name
         {
             get { return name; }

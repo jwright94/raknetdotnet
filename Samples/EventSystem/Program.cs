@@ -6,7 +6,7 @@ namespace EventSystem
 {
     using Castle.Core;
     using Castle.MicroKernel;
-
+    #region Castle MicroKernel
     //[Transient]
     class Automobile : IDisposable
     {
@@ -77,15 +77,15 @@ namespace EventSystem
             return kernel;
         }
     }
-
+    #endregion
     class Program
     {
         static void Main(string[] args)
         {
-            Main m = new Main();
-            m.Test();
-            char keyp = Console.ReadKey(true).KeyChar;
-            return;
+            //Main m = new Main();
+            //m.Test();
+            //char keyp = Console.ReadKey(true).KeyChar;
+            //return;
 
             Console.WriteLine("(S)erver or (C)lient?");
             char key = Console.ReadKey(true).KeyChar;
@@ -127,6 +127,7 @@ namespace EventSystem
         {
             EventCenterServer server = new EventCenterServer("server.xml");
             RpcCalls rpcCalls = new RpcCalls();
+            rpcCalls.EventProcessorOnServerSide = server;
             SampleEventFactory factory = new SampleEventFactory();
             rpcCalls.Handler = factory;
 
