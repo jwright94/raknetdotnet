@@ -24,6 +24,7 @@ namespace EventSystem
 
     // Based on ECS
     // TODO - Query service port to name service.
+    // TODO - Rename 'player' related methods.
     sealed class UnifiedNetwork : IDisposable
     {
         #region Ogre-like singleton implementation.
@@ -41,8 +42,17 @@ namespace EventSystem
             if (isOnline)
             {
                 rakServerInterface = RakNetworkFactory.GetRakPeerInterface();
+                ConnectionGraph connectionGraphPlugin = RakNetworkFactory.GetConnectionGraph();  // TODO - Do Destroy?
+                FullyConnectedMesh fullyConnectedMeshPlugin = new FullyConnectedMesh();          // TODO - Do Dispose?
 
-                ushort allowedPlayers = 5;
+                // Initialize the message handlers
+                fullyConnectedMeshPlugin.Startup(string.Empty);
+                rakServerInterface.AttachPlugin(fullyConnectedMeshPlugin);
+                rakServerInterface.AttachPlugin(connectionGraphPlugin);
+
+                // Initialize the peers
+                //ushort allowedPlayers = 5;
+                ushort allowedPlayers = (ushort)extendedProperties["allowedPlayers"];
                 int threadSleepTimer = 0;
                 //ushort port = 6000;
                 ushort port = (ushort)extendedProperties["port"];
