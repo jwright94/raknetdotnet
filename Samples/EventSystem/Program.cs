@@ -162,7 +162,7 @@ namespace EventSystem
             {
                 unifiedNetwork.ConnectPlayer("127.0.0.1", NAME_SERVICE_PORT);
             }
-            System.Console.WriteLine("running...");
+            System.Console.WriteLine("running... Press space to see status.");
             while (true)
             {
                 PrintConnections();
@@ -194,10 +194,17 @@ namespace EventSystem
 
                     Console.Write("\n");
                     Console.Write("\n");
-                    key = '\0';
 
                     Console.Write("--------------------------------\n");
                 }
+                else if (key == 't')
+                {
+                    IEvent _event = new TestConnectionEvent2((int)SampleEventFactory.EventTypes.TESTCONNECTION2);
+
+                    SampleEventFactory.Instance.StoreExternallyCreatedEvent(_event);
+                    UnifiedNetwork.Instance.SendEvent(_event);
+                }
+                key = '\0';
             }
         }
         [System.Runtime.InteropServices.DllImport("crtdll.dll")]

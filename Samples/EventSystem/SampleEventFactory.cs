@@ -35,6 +35,7 @@ namespace EventSystem
             SERVERTOCLIENT,
             CLIENTTOSERVER,
             TESTCONNECTION,
+            TESTCONNECTION2,
         }
         public IEvent CreateEvent(EventTypes eventType, uint objId)
         {
@@ -51,6 +52,8 @@ namespace EventSystem
                     break;
 
                 //case EventTypes.TESTCONNECTION:  // NOTE - this type shuld be created externally.
+
+                //case EventTypes.TESTCONNECTION2:  // NOTE - this type shuld be created externally.
 
                 default:
                     throw new NetworkException(
@@ -87,6 +90,10 @@ namespace EventSystem
 
                 case EventTypes.TESTCONNECTION:
                     _event = new TestConnectionEvent(source);
+                    break;
+
+                case EventTypes.TESTCONNECTION2:
+                    _event = new TestConnectionEvent2(source);
                     break;
 
                 default:

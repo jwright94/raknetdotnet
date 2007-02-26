@@ -120,7 +120,7 @@ namespace EventSystem
 
                 log("sending an event: [{0}], broadcast = {1}", _event.ToString(), broadcast);
 
-                bool result = EventCenterServer.Instance.ServerInterface.RPC(
+                bool result = rakServerInterface.RPC(
                     sendevent,
                     _event.Stream, priority, reliability, orderingChannel,
                     player, broadcast, shiftTimestamp,
