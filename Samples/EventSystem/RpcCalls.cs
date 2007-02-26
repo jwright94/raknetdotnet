@@ -7,10 +7,7 @@ namespace EventSystem
     using System.Diagnostics;
     using RakNetDotNet;
 
-    interface IEventProcessor
-    {
-        void ProcessEvent(IEvent _event);
-    }
+    delegate void ProcessEventDelegate(IEvent _event);
 
     sealed class RpcCalls : IDisposable
     {
@@ -40,8 +37,8 @@ namespace EventSystem
             BitStream source = new BitStream(_params, false);
             IEvent _event = Instance.RecreateEvent(source);
 
-            Debug.Assert(Instance.eventProcessorOnClientSide != null);
-            Instance.eventProcessorOnClientSide.ProcessEvent(_event);
+            Debug.Assert(Instance.ProcessEventOnClientSide != null);
+            Instance.ProcessEventOnClientSide(_event);
 
             Instance.WipeEvent(_event);
         }
@@ -54,8 +51,8 @@ namespace EventSystem
             IEvent _event = RpcCalls.Instance.RecreateEvent(source);
             if (false) Console.WriteLine("EventCenterServer> {0}", _event.ToString());
             _event.OriginPlayer = sender;
-            Debug.Assert(Instance.eventProcessorOnServerSide != null);
-            Instance.eventProcessorOnServerSide.ProcessEvent(_event);
+            Debug.Assert(Instance.ProcessEventOnServerSide != null);
+            Instance.ProcessEventOnServerSide(_event);
         }
         public IEvent RecreateEvent(BitStream source)
         {
@@ -72,19 +69,11 @@ namespace EventSystem
         /// <summary>
         /// if on sever-side then null
         /// </summary>
-        public IEventProcessor EventProcessorOnClientSide
-        {
-            set { eventProcessorOnClientSide = value; }
-        }
+        public event ProcessEventDelegate ProcessEventOnClientSide;
         /// <summary>
         /// if on client-side then null
         /// </summary>
-        public IEventProcessor EventProcessorOnServerSide
-        {
-            set { eventProcessorOnServerSide = value; }
-        }
+        public event ProcessEventDelegate ProcessEventOnServerSide;
         AbstractEventFactory factory;
-        IEventProcessor eventProcessorOnClientSide;
-        IEventProcessor eventProcessorOnServerSide;
     }
 }

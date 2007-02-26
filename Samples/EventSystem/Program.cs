@@ -127,7 +127,7 @@ namespace EventSystem
         {
             EventCenterServer server = new EventCenterServer("server.xml");
             RpcCalls rpcCalls = new RpcCalls();
-            rpcCalls.EventProcessorOnServerSide = server;
+            rpcCalls.ProcessEventOnServerSide += server.ProcessEvent;
             SampleEventFactory factory = new SampleEventFactory();
             rpcCalls.Handler = factory;
 

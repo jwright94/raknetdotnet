@@ -7,7 +7,8 @@ namespace EventSystem
     using System.Diagnostics;
     using RakNetDotNet;
 
-    sealed class EventCenterServer : IDisposable, IEventProcessor
+    sealed class EventCenterServer : IDisposable
+
     {
         #region Ogre-like singleton implementation.
         static EventCenterServer instance;

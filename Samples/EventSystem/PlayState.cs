@@ -102,7 +102,7 @@ namespace EventSystem
             rpcCalls.Handler = SampleEventFactory.Instance;
 
             eventCenterClient = new EventCenterClient("client.xml");
-            rpcCalls.EventProcessorOnClientSide = eventCenterClient;
+            rpcCalls.ProcessEventOnClientSide += eventCenterClient.ProcessEvent;
             eventCenterClient.OverrideClientPort(clientPort);
             eventCenterClient.OverrideServerPort(serverIP);
             eventCenterClient.ConnectPlayer();
