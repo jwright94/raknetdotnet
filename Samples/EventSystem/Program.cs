@@ -4,12 +4,88 @@ using System.Text;
 
 namespace EventSystem
 {
+    using Castle.Core;
+    using Castle.MicroKernel;
+
+    //[Transient]
+    class Automobile : IDisposable
+    {
+        public Automobile(IKernel kernel, Tire _tire, string _name)
+        {
+            tire = _tire;
+        }
+        public void Drive()
+        {
+            Console.WriteLine(name);
+            tire.Roll();
+        }
+        public string Name
+        {
+            get { return name; }
+            set { name = value; }
+        }
+        string name;
+        Tire tire;
+
+        public void Dispose()
+        {
+            Console.WriteLine("Dispose");
+        }
+
+        #region IStartable ÉÅÉìÉo
+
+        public void Start()
+        {
+            Console.WriteLine("Start");
+        }
+
+        public void Stop()
+        {
+            Console.WriteLine("Stop");
+        }
+
+        #endregion
+    }
+
+    class Tire
+    {
+        public void Roll()
+        {
+            Console.WriteLine("Rolling Tire.");
+        }
+    }
+
+    class Main
+    {
+        public void Test()
+        {
+            IKernel k = ConfigureContainer();
+            //Automobile a = (Automobile)k[typeof(Automobile)];
+            Dictionary<string, object> arg = new Dictionary<string,object>();
+            arg["_name"] = "Mama";
+            Automobile a = (Automobile)k.Resolve("automobile", arg);
+            a.Name = "GT";
+            a.Drive();
+            k.ReleaseComponent(a);
+        }
+
+        IKernel ConfigureContainer()
+        {
+            IKernel kernel = new DefaultKernel();
+            kernel.AddComponent("tire", typeof(Tire));
+            kernel.AddComponent("automobile", typeof(Automobile));
+            return kernel;
+        }
+    }
+
     class Program
     {
         static void Main(string[] args)
         {
-            UnifiedNetwork un = new UnifiedNetwork();
-            un.Test();
+            Main m = new Main();
+            m.Test();
+            char keyp = Console.ReadKey(true).KeyChar;
+            return;
 
             Console.WriteLine("(S)erver or (C)lient?");
             char key = Console.ReadKey(true).KeyChar;
