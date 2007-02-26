@@ -189,8 +189,8 @@ namespace EventSystem
                 if (key == ' ')
                 {
                     Console.Write("--------------------------------\n");
-                    //uint numPeers = UnifiedNetwork.Instance.ServerInterface.GetNumberOfAddresses();  // TODO - Maybe return wrong number.
-                    uint numPeers = 10;
+                    uint numPeers = UnifiedNetwork.Instance.ServerInterface.NumberOfConnections();
+                    //uint numPeers = 10;
 
                     Console.Write("{0} (Conn): ", serverPort);
                     for (int j = 0; j < numPeers; j++)

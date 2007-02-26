@@ -263,6 +263,7 @@ namespace EventSystem
                     break;
                 case RakNetBindings.ID_CONNECTION_REQUEST_ACCEPTED:
                     log("Our connection request has been accepted.");
+                    namingComponent.OnConnectionRequestAccepted(rakServerInterface, packet);
                     break;
                 case RakNetBindings.ID_NEW_INCOMING_CONNECTION:
                     log("A connection is incoming.\n");
@@ -313,6 +314,7 @@ namespace EventSystem
     interface INamingComponent
     {
         void OnStartup(RakPeerInterface peer);
+        void OnConnectionRequestAccepted(RakPeerInterface peer, Packet packet);
         void OnDatabaseQueryReply(RakPeerInterface peer, Packet packet);
     }
     sealed class NamingClientComponent : INamingComponent
@@ -321,6 +323,17 @@ namespace EventSystem
         public void OnStartup(RakPeerInterface peer)
         {
             peer.AttachPlugin(databaseClient);
+        }
+        public void OnConnectionRequestAccepted(RakPeerInterface peer, Packet packet)
+        {
+            byte numCellUpdates = 0;
+            DatabaseCellUpdates cellUpdates = new DatabaseCellUpdates(8);
+            cellUpdates[numCellUpdates].columnName = "Name";
+            cellUpdates[numCellUpdates].columnType = Table.ColumnType.STRING;
+            cellUpdates[numCellUpdates].cellValue.Set("Unknown Service");
+            numCellUpdates++;
+
+            databaseClient.UpdateRow("Services", string.Empty, RowUpdateMode.RUM_UPDATE_OR_ADD_ROW, false, 0, cellUpdates, numCellUpdates, packet.systemAddress, false);
         }
         public void OnDatabaseQueryReply(RakPeerInterface peer, Packet packet)
         {
@@ -344,6 +357,7 @@ namespace EventSystem
                 table.AddColumn("Name", Table.ColumnType.STRING);
             }
         }
+        public void OnConnectionRequestAccepted(RakPeerInterface peer, Packet packet) { }
         public void OnDatabaseQueryReply(RakPeerInterface peer, Packet packet)
         {
             NamingComponentHelper.PrintIncomingTable(packet);
