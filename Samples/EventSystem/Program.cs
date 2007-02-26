@@ -87,10 +87,12 @@ namespace EventSystem
             //char keyp = Console.ReadKey(true).KeyChar;
             //return;
 
-            Console.WriteLine("(S)erver or (C)lient?");
+            Console.WriteLine("(S)erver or (U)nifiedNetwork or (C)lient?");
             char key = Console.ReadKey(true).KeyChar;
             if (key == 's' || key == 'S')
                 ServerMain(args);
+            else if (key == 'u' || key == 'U')
+                UnifiedNetworkMain(args);
             else
                 ClientMain(args);
         }
@@ -135,6 +137,22 @@ namespace EventSystem
 
             factory.Dispose();
             server.Dispose();
+        }
+
+        static void UnifiedNetworkMain(string[] args)
+        {
+            Dictionary<string, object> extendedProperties = new Dictionary<string, object>();
+            extendedProperties.Add("port", (ushort)6000);
+            UnifiedNetwork unifiedNetwork = new UnifiedNetwork("server.xml", extendedProperties);
+            RpcCalls rpcCalls = new RpcCalls();
+            rpcCalls.ProcessEventOnServerSide += unifiedNetwork.ProcessEvent;
+            SampleEventFactory factory = new SampleEventFactory();
+            rpcCalls.Handler = factory;
+
+            unifiedNetwork.Start();
+
+            factory.Dispose();
+            unifiedNetwork.Dispose();
         }
     }
 }

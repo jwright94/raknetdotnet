@@ -30,7 +30,7 @@ namespace EventSystem
             Debug.Assert(instance != null);
             instance = null;
 
-            if (IsOnline)
+            if (isOnline)
             {
                 log("Closing connection...");
                 rakClientInterface.Shutdown(10);
