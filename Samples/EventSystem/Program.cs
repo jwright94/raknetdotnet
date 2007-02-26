@@ -141,15 +141,23 @@ namespace EventSystem
         static void UnifiedNetworkMain(string[] args)
         {
             const ushort NAME_SERVICE_PORT = 6000;
+            bool isNS;
 
             Console.WriteLine("Server Port ? (NS=6000)");
             string input = Console.ReadLine();
             if (input.Equals(string.Empty))
+            {
+                isNS = true;
                 serverPort = NAME_SERVICE_PORT;
+            }
             else
+            {
+                isNS = false;
                 serverPort = ushort.Parse(input);
+            }
 
             Dictionary<string, object> extendedProperties = new Dictionary<string, object>();
+            extendedProperties.Add("isNS", isNS);
             extendedProperties.Add("allowedPlayers", (ushort)10);
             extendedProperties.Add("port", serverPort);
             UnifiedNetwork unifiedNetwork = new UnifiedNetwork("server.xml", extendedProperties);
@@ -158,7 +166,7 @@ namespace EventSystem
             SampleEventFactory factory = new SampleEventFactory();
             rpcCalls.Handler = factory;
 
-            if (serverPort != NAME_SERVICE_PORT)
+            if (!isNS)
             {
                 unifiedNetwork.ConnectPlayer("127.0.0.1", NAME_SERVICE_PORT);
             }

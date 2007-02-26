@@ -41,6 +41,12 @@ namespace EventSystem
 
             if (isOnline)
             {
+                bool isNS = (bool)extendedProperties["isNS"];
+                if (isNS)
+                    namingComponent = new NamingServerComponent();
+                else
+                    namingComponent = new NamingClientComponent();
+
                 rakServerInterface = RakNetworkFactory.GetRakPeerInterface();
                 ConnectionGraph connectionGraphPlugin = RakNetworkFactory.GetConnectionGraph();  // TODO - Do Destroy?
                 FullyConnectedMesh fullyConnectedMeshPlugin = new FullyConnectedMesh();          // TODO - Do Dispose?
@@ -58,6 +64,7 @@ namespace EventSystem
                 ushort port = (ushort)extendedProperties["port"];
                 SocketDescriptor socketDescriptor = new SocketDescriptor(port, string.Empty);
                 rakServerInterface.Startup(allowedPlayers, threadSleepTimer, new SocketDescriptor[] { socketDescriptor }, 1);
+                namingComponent.OnStartup(rakServerInterface);
                 rakServerInterface.SetMaximumIncomingConnections(allowedPlayers);
 
                 rakServerInterface.RegisterAsRemoteProcedureCall("sendeventtoserver", typeof(RpcCalls).GetMethod("SendEventToServer"));
@@ -272,6 +279,16 @@ namespace EventSystem
                 //case RakNetBindings.ID_RECEIVED_STATIC_DATA:
                 //    log("Got static data.\n");
                 //    break;
+                case RakNetBindings.ID_DATABASE_UNKNOWN_TABLE:
+                    log("ID_DATABASE_UNKNOWN_TABLE\n");
+                    break;
+                case RakNetBindings.ID_DATABASE_INCORRECT_PASSWORD:
+                    log("ID_DATABASE_INCORRECT_PASSWORD\n");
+                    break;
+                case RakNetBindings.ID_DATABASE_QUERY_REPLY:
+                    log("ID_DATABASE_QUERY_REPLY\n");
+                    namingComponent.OnDatabaseQueryReply(rakServerInterface, packet);
+                    break;
                 default:
                     log("Message with identifier {0} has arrived.", packetIdentifier);
                     break;
@@ -279,6 +296,7 @@ namespace EventSystem
         }
         string name;
         RakPeerInterface rakServerInterface;
+        INamingComponent namingComponent;
         #endregion
         #region ECC's Private Member
         bool isOnline;
@@ -290,4 +308,97 @@ namespace EventSystem
         // Add argument of service name to SendEvent, ReportEvent.
         // ...
     }
+
+    #region Naming Components
+    interface INamingComponent
+    {
+        void OnStartup(RakPeerInterface peer);
+        void OnDatabaseQueryReply(RakPeerInterface peer, Packet packet);
+    }
+    sealed class NamingClientComponent : INamingComponent
+    {
+        #region INamingComponent Members
+        public void OnStartup(RakPeerInterface peer)
+        {
+            peer.AttachPlugin(databaseClient);
+        }
+        public void OnDatabaseQueryReply(RakPeerInterface peer, Packet packet)
+        {
+            NamingComponentHelper.PrintIncomingTable(packet);
+        }
+        #endregion
+        LightweightDatabaseClient databaseClient = new LightweightDatabaseClient();
+    }
+    sealed class NamingServerComponent : INamingComponent
+    {
+        #region INamingComponent Members
+        public void OnStartup(RakPeerInterface peer)
+        {
+            peer.AttachPlugin(databaseServer);
+
+            string tableName = "Services";
+            Table table = databaseServer.AddTable(tableName, true, true, true, string.Empty, string.Empty, string.Empty, true, true, true, true, true);
+            if (table != null)
+            {
+                Console.Write("Table {0} created.\n", tableName);
+                table.AddColumn("Name", Table.ColumnType.STRING);
+            }
+        }
+        public void OnDatabaseQueryReply(RakPeerInterface peer, Packet packet)
+        {
+            NamingComponentHelper.PrintIncomingTable(packet);
+        }
+        #endregion
+        LightweightDatabaseServer databaseServer = new LightweightDatabaseServer();
+    }
+    sealed class NamingComponentHelper
+    {
+        public static bool PrintIncomingTable(Packet packet)
+        {
+            byte[] data = packet.data;
+            Console.Write("Incoming table:\n");
+            Table table = new Table();
+            byte[] serializedTable = new byte[data.Length - sizeof(byte)];
+            Array.Copy(data, sizeof(byte), serializedTable, 0, data.Length - sizeof(byte));  // ugly copy
+            if (TableSerializer.DeserializeTable(serializedTable, (uint)serializedTable.Length, table))
+            {
+                TableRowPage cur = table.GetListHead();
+                int i;
+
+                Console.Write("Columns:\n");
+                for (i = 0; i < table.GetColumns().Size(); i++)
+                {
+                    Console.Write("{0}. {1} : ", i + 1, table.GetColumns()[i].columnName);
+                    if (table.GetColumns()[i].columnType == Table.ColumnType.BINARY)
+                        Console.Write("BINARY");
+                    else if (table.GetColumns()[i].columnType == Table.ColumnType.NUMERIC)
+                        Console.Write("NUMERIC");
+                    else
+                        Console.Write("STRING");
+                    Console.Write("\n");
+                }
+                if (cur != null)
+                    Console.Write("Rows:\n");
+                else
+                    Console.Write("Table has no rows.\n");
+                while (cur != null)
+                {
+                    for (i = 0; i < cur.size; i++)
+                    {
+                        StringBuilder sb = new StringBuilder(256);
+                        table.PrintRow(sb, sb.Capacity, ',', true, cur.GetData(i));
+                        Console.Write("RowID {0}: {1}\n", cur.GetKey(i), sb.ToString());
+                    }
+                    cur = cur.next;
+                }
+                return true;
+            }
+            else
+            {
+                Console.Write("Deserialization of table failed.\n");
+                return false;
+            }
+        }
+    }
+    #endregion
 }
