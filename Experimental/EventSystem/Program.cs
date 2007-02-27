@@ -8,74 +8,67 @@ namespace EventSystem
     using Castle.MicroKernel;
     using RakNetDotNet;
     #region Castle MicroKernel
-    //[Transient]
+    static class Container
+    {
+        static Container()
+        {
+            AddComponent<Automobile>();
+            // Add more components.
+        }
+        public static ServiceType Get<ServiceType>()
+        {
+            return (ServiceType)kernel[typeof(ServiceType)];
+        }
+        public static ServiceType Get<ServiceType>(System.Collections.IDictionary arguments)
+        {
+            return (ServiceType)kernel.Resolve(typeof(ServiceType), arguments);
+        }
+        public static void AddComponent<ClassType>()
+        {
+            kernel.AddComponent(typeof(ClassType).FullName, typeof(ClassType));
+        }
+        public static void AddComponent<ServiceType, ClassType>()
+        {
+            kernel.AddComponent(typeof(ServiceType).FullName, typeof(ServiceType), typeof(ClassType));
+        }
+        public static void Dispose()
+        {
+            kernel.Dispose();
+        }
+        public static IKernel Kernel
+        {
+            get { return kernel; }
+        }
+        static readonly IKernel kernel = new DefaultKernel();
+    }
+    [Singleton]
     class Automobile : IDisposable
     {
-        public Automobile(IKernel kernel, Tire _tire, string _name)
+        public Automobile(string _name)
         {
-            tire = _tire;
+            Console.WriteLine("Ctor: Automobile {0}", _name);
+            name = _name;
         }
         public void Drive()
         {
             Console.WriteLine(name);
-            tire.Roll();
         }
-        public string Name
-        {
-            get { return name; }
-            set { name = value; }
-        }
-        string name;
-        Tire tire;
-
         public void Dispose()
         {
-            Console.WriteLine("Dispose");
+            Console.WriteLine("Dispose: Automobile");
         }
-
-        #region IStartable ÉÅÉìÉo
-
-        public void Start()
-        {
-            Console.WriteLine("Start");
-        }
-
-        public void Stop()
-        {
-            Console.WriteLine("Stop");
-        }
-
-        #endregion
-    }
-
-    class Tire
-    {
-        public void Roll()
-        {
-            Console.WriteLine("Rolling Tire.");
-        }
+        string name;
     }
 
     class Main
     {
         public void Test()
         {
-            IKernel k = ConfigureContainer();
-            //Automobile a = (Automobile)k[typeof(Automobile)];
-            Dictionary<string, object> arg = new Dictionary<string,object>();
-            arg["_name"] = "Mama";
-            Automobile a = (Automobile)k.Resolve("automobile", arg);
-            a.Name = "GT";
-            a.Drive();
-            k.ReleaseComponent(a);
-        }
-
-        IKernel ConfigureContainer()
-        {
-            IKernel kernel = new DefaultKernel();
-            kernel.AddComponent("tire", typeof(Tire));
-            kernel.AddComponent("automobile", typeof(Automobile));
-            return kernel;
+            Dictionary<string, object> arguments = new Dictionary<string,object>();
+            arguments["_name"] = "mama";
+            Container.Kernel.RegisterCustomDependencies(typeof(Automobile), arguments);
+            Container.Get<Automobile>().Drive();
+            Container.Dispose();
         }
     }
     #endregion
@@ -83,11 +76,12 @@ namespace EventSystem
     {
         static void Main(string[] args)
         {
-            //Main m = new Main();
-            //m.Test();
-            //char keyp = Console.ReadKey(true).KeyChar;
-            //return;
-
+#if true
+            Main m = new Main();
+            m.Test();
+            char keyp = Console.ReadKey(true).KeyChar;
+            return;
+#endif
             Console.WriteLine("(S)erver or (U)nifiedNetwork or (C)lient?");
             char key = Console.ReadKey(true).KeyChar;
             if (key == 's' || key == 'S')
