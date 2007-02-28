@@ -15,11 +15,11 @@ namespace EventSystem
             AddComponent<Automobile>();
             // Add more components.
         }
-        public static ServiceType Get<ServiceType>()
+        public static ServiceType Resolve<ServiceType>()
         {
             return (ServiceType)kernel[typeof(ServiceType)];
         }
-        public static ServiceType Get<ServiceType>(System.Collections.IDictionary arguments)
+        public static ServiceType Resolve<ServiceType>(System.Collections.IDictionary arguments)
         {
             return (ServiceType)kernel.Resolve(typeof(ServiceType), arguments);
         }
@@ -67,7 +67,7 @@ namespace EventSystem
             Dictionary<string, object> arguments = new Dictionary<string,object>();
             arguments["_name"] = "mama";
             Container.Kernel.RegisterCustomDependencies(typeof(Automobile), arguments);
-            Container.Get<Automobile>().Drive();
+            Container.Resolve<Automobile>().Drive();
             Container.Dispose();
         }
     }
