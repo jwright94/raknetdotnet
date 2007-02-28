@@ -43,6 +43,10 @@ namespace EventSystem
         {
             container.AddComponent(typeof(ServiceType).FullName, typeof(ServiceType), typeof(ClassType));
         }
+        public static void ReleaseComponent(object instance)
+        {
+            container.Release(instance);
+        }
         #endregion
         public static IWindsorContainer Container
         {
@@ -84,7 +88,9 @@ namespace EventSystem
             Dictionary<string, object> dependencies = new Dictionary<string, object>();
             dependencies["_name"] = "mama";
             ServiceConfigurator.RegisterCustomDependencies<Automobile>(dependencies);
-            ServiceConfigurator.Resolve<Automobile>().Drive();
+            Automobile automobile = ServiceConfigurator.Resolve<Automobile>();
+            automobile.Drive();
+            ServiceConfigurator.ReleaseComponent(automobile);
             ServiceConfigurator.Dispose();
         }
     }
