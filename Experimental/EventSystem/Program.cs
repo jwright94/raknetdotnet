@@ -5,58 +5,75 @@ using System.Text;
 namespace EventSystem
 {
     using Castle.Core;
+    using Castle.Core.Logging;
     using Castle.MicroKernel;
+    using Castle.Windsor;
+    using Castle.Windsor.Configuration.Interpreters;
     using RakNetDotNet;
     #region Castle MicroKernel
-    static class Container
+    static class ServiceConfigurator
     {
-        static Container()
+        static ServiceConfigurator()
         {
             AddComponent<Automobile>();
             // Add more components.
         }
+        public static void Dispose()
+        {
+            container.Dispose();
+        }
+        #region Generics API.
         public static ServiceType Resolve<ServiceType>()
         {
-            return (ServiceType)kernel[typeof(ServiceType)];
+            return container.Resolve<ServiceType>();
         }
         public static ServiceType Resolve<ServiceType>(System.Collections.IDictionary arguments)
         {
-            return (ServiceType)kernel.Resolve(typeof(ServiceType), arguments);
+            return (ServiceType)container.Kernel.Resolve(typeof(ServiceType), arguments);
+        }
+        public static void RegisterCustomDependencies<ServiceType>(System.Collections.IDictionary dependencies)
+        {
+            container.Kernel.RegisterCustomDependencies(typeof(ServiceType), dependencies);
         }
         public static void AddComponent<ClassType>()
         {
-            kernel.AddComponent(typeof(ClassType).FullName, typeof(ClassType));
+            container.AddComponent(typeof(ClassType).FullName, typeof(ClassType));
         }
         public static void AddComponent<ServiceType, ClassType>()
         {
-            kernel.AddComponent(typeof(ServiceType).FullName, typeof(ServiceType), typeof(ClassType));
+            container.AddComponent(typeof(ServiceType).FullName, typeof(ServiceType), typeof(ClassType));
         }
-        public static void Dispose()
+        #endregion
+        public static IWindsorContainer Container
         {
-            kernel.Dispose();
+            get { return container; }
         }
-        public static IKernel Kernel
+        public static ILoggerFactory LogFactory
         {
-            get { return kernel; }
+            get { return Resolve<ILoggerFactory>(); }
         }
-        static readonly IKernel kernel = new DefaultKernel();
+        static readonly IWindsorContainer container = new WindsorContainer(new XmlInterpreter("WindsorConfig.xml"));
     }
     [Singleton]
     class Automobile : IDisposable
     {
-        public Automobile(string _name)
+        public Automobile(ILogger logger, string _name)
         {
-            Console.WriteLine("Ctor: Automobile {0}", _name);
+            this.logger = logger;
+            logger.Debug("Ctor");
+            logger.Warn("first");
+            logger.CreateChildLogger("child").Warn("second");
             name = _name;
         }
         public void Drive()
         {
-            Console.WriteLine(name);
+            logger.Debug(name);
         }
         public void Dispose()
         {
-            Console.WriteLine("Dispose: Automobile");
+            logger.Debug("Dispose");
         }
+        readonly ILogger logger;
         string name;
     }
 
@@ -64,11 +81,11 @@ namespace EventSystem
     {
         public void Test()
         {
-            Dictionary<string, object> arguments = new Dictionary<string,object>();
-            arguments["_name"] = "mama";
-            Container.Kernel.RegisterCustomDependencies(typeof(Automobile), arguments);
-            Container.Resolve<Automobile>().Drive();
-            Container.Dispose();
+            Dictionary<string, object> dependencies = new Dictionary<string, object>();
+            dependencies["_name"] = "mama";
+            ServiceConfigurator.RegisterCustomDependencies<Automobile>(dependencies);
+            ServiceConfigurator.Resolve<Automobile>().Drive();
+            ServiceConfigurator.Dispose();
         }
     }
     #endregion
