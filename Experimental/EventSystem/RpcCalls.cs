@@ -14,8 +14,9 @@ namespace EventSystem
     [Singleton]
     sealed class RpcCalls
     {
-        public RpcCalls(ILogger logger)
+        public RpcCalls(AbstractEventFactory factory, ILogger logger)
         {
+            this.factory = factory;
             this.logger = logger;
         }
         public static void SendEventToClient(RPCParameters _params)
@@ -46,7 +47,6 @@ namespace EventSystem
         {
             ProcessEventOnClientSide = null;
             ProcessEventOnServerSide = null;
-            factory = null;
         }
         public IEvent RecreateEvent(BitStream source)
         {
@@ -55,10 +55,6 @@ namespace EventSystem
         public void WipeEvent(IEvent _event)
         {
             factory.WipeEvent(_event);
-        }
-        public AbstractEventFactory Handler
-        {
-            set { factory = value; }
         }
         public ILogger Logger
         {
@@ -73,9 +69,9 @@ namespace EventSystem
         /// if on client-side then null
         /// </summary>
         public event ProcessEventDelegate ProcessEventOnServerSide;
-        AbstractEventFactory factory;
         #endregion
         #region Eternal State
+        AbstractEventFactory factory;
         ILogger logger;
         #endregion
     }

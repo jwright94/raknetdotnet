@@ -49,12 +49,11 @@ namespace EventSystem
         static void ServerMain(string[] args)
         {
             EventCenterServer server = new EventCenterServer("server.xml");
+            SampleEventFactory factory = ServiceConfigurator.Resolve<SampleEventFactory>();
+            factory.Reset();
             RpcCalls rpcCalls = ServiceConfigurator.Resolve<RpcCalls>();
             rpcCalls.Reset();
             rpcCalls.ProcessEventOnServerSide += server.ProcessEvent;
-            SampleEventFactory factory = ServiceConfigurator.Resolve<SampleEventFactory>();
-            factory.Reset();
-            rpcCalls.Handler = factory;
 
             server.Start();
 
@@ -85,12 +84,11 @@ namespace EventSystem
             extendedProperties.Add("allowedPlayers", (ushort)10);
             extendedProperties.Add("port", serverPort);
             UnifiedNetwork unifiedNetwork = new UnifiedNetwork("server.xml", extendedProperties);
+            SampleEventFactory factory = ServiceConfigurator.Resolve<SampleEventFactory>();
+            factory.Reset();
             RpcCalls rpcCalls = ServiceConfigurator.Resolve<RpcCalls>();
             rpcCalls.Reset();
             rpcCalls.ProcessEventOnServerSide += unifiedNetwork.ProcessEvent;
-            SampleEventFactory factory = ServiceConfigurator.Resolve<SampleEventFactory>();
-            factory.Reset();
-            rpcCalls.Handler = factory;
 
             if (!isNS)
             {

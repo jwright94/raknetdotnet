@@ -101,7 +101,6 @@ namespace EventSystem
             factory.Reset();
             rpcCalls = ServiceConfigurator.Resolve<RpcCalls>();
             rpcCalls.Reset();
-            rpcCalls.Handler = factory;
 
             eventCenterClient = new EventCenterClient("client.xml");
             rpcCalls.ProcessEventOnClientSide += eventCenterClient.ProcessEvent;

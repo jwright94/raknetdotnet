@@ -18,6 +18,7 @@ namespace EventSystem
         {
             AddComponent<RpcCalls>();
             AddComponent<SampleEventFactory>();
+            AddComponent<AbstractEventFactory, SampleEventFactory>();
             // Add your components.
         }
         public static void Dispose()
