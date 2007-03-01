@@ -17,6 +17,7 @@ namespace EventSystem
         static ServiceConfigurator()
         {
             AddComponent<RpcCalls>();
+            AddComponent<SampleEventFactory>();
             // Add your components.
         }
         public static void Dispose()

@@ -6,30 +6,11 @@ namespace EventSystem
 {
     using System.Diagnostics;
     using RakNetDotNet;
+    using Castle.Core;
 
-    sealed class SampleEventFactory : AbstractEventFactory, IDisposable
+    [Singleton]
+    sealed class SampleEventFactory : AbstractEventFactory
     {
-        #region Ogre-like singleton implementation.
-        static SampleEventFactory instance;
-        public SampleEventFactory()
-        {
-            Debug.Assert(instance == null);
-            instance = this;
-        }
-        public void Dispose()
-        {
-            Debug.Assert(instance != null);
-            instance = null;
-        }
-        public static SampleEventFactory Instance
-        {
-            get
-            {
-                Debug.Assert(instance != null);
-                return instance;
-            }
-        }
-        #endregion
         public enum EventTypes
         {
             SERVERTOCLIENT,

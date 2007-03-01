@@ -35,7 +35,7 @@ namespace EventSystem
 
             IEvent _event = new TestConnectionEvent((int)SampleEventFactory.EventTypes.TESTCONNECTION);
 
-            SampleEventFactory.Instance.StoreExternallyCreatedEvent(_event);
+            ServiceConfigurator.Resolve<SampleEventFactory>().StoreExternallyCreatedEvent(_event);
             EventCenterClient.Instance.ReportEvent(_event);
         }
         public void SetTestReplyFromServer(bool flag)

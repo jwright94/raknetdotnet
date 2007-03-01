@@ -9,6 +9,11 @@ namespace EventSystem
     abstract class AbstractEventFactory : IEventFactory
     {
         public abstract IEvent RecreateEvent(BitStream source);
+        public void Reset()
+        {
+            counter = 0;
+            storage.Clear();
+        }
         public void WipeEvent(IEvent _event)
         {
             if (storage.Contains(_event))
@@ -21,7 +26,9 @@ namespace EventSystem
             ++counter;
             storage.Add(_event);
         }
+        #region Transient State
         ulong counter = 0;
         ICollection<IEvent> storage = new List<IEvent>();
+        #endregion
     }
 }

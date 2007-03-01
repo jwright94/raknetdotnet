@@ -50,13 +50,15 @@ namespace EventSystem
         {
             EventCenterServer server = new EventCenterServer("server.xml");
             RpcCalls rpcCalls = ServiceConfigurator.Resolve<RpcCalls>();
+            rpcCalls.Reset();
             rpcCalls.ProcessEventOnServerSide += server.ProcessEvent;
-            SampleEventFactory factory = new SampleEventFactory();
+            SampleEventFactory factory = ServiceConfigurator.Resolve<SampleEventFactory>();
+            factory.Reset();
             rpcCalls.Handler = factory;
 
             server.Start();
 
-            factory.Dispose();
+            factory.Reset();
             server.Dispose();
         }
         #region Unified Network
@@ -84,8 +86,10 @@ namespace EventSystem
             extendedProperties.Add("port", serverPort);
             UnifiedNetwork unifiedNetwork = new UnifiedNetwork("server.xml", extendedProperties);
             RpcCalls rpcCalls = ServiceConfigurator.Resolve<RpcCalls>();
+            rpcCalls.Reset();
             rpcCalls.ProcessEventOnServerSide += unifiedNetwork.ProcessEvent;
-            SampleEventFactory factory = new SampleEventFactory();
+            SampleEventFactory factory = ServiceConfigurator.Resolve<SampleEventFactory>();
+            factory.Reset();
             rpcCalls.Handler = factory;
 
             if (!isNS)
@@ -100,7 +104,7 @@ namespace EventSystem
                 System.Threading.Thread.Sleep(0);
             }
 
-            factory.Dispose();
+            factory.Reset();
             unifiedNetwork.Dispose();
         }
         static void PrintConnections()
@@ -131,7 +135,7 @@ namespace EventSystem
                 {
                     IEvent _event = new TestConnectionEvent2((int)SampleEventFactory.EventTypes.TESTCONNECTION2);
 
-                    SampleEventFactory.Instance.StoreExternallyCreatedEvent(_event);
+                    ServiceConfigurator.Resolve<SampleEventFactory>().StoreExternallyCreatedEvent(_event);
                     UnifiedNetwork.Instance.SendEvent(_event, RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS);
                 }
                 key = '\0';
