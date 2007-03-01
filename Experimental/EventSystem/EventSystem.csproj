@@ -66,7 +66,11 @@
     <Compile Include="IFrameListener.cs" />
     <Compile Include="IGameState.cs" />
     <Compile Include="IKeyListener.cs" />
+    <Compile Include="INamingComponent.cs" />
     <Compile Include="IntroState.cs" />
+    <Compile Include="NamingClientComponent.cs" />
+    <Compile Include="NamingComponentHelper.cs" />
+    <Compile Include="NamingServerComponent.cs" />
     <Compile Include="NetworkException.cs" />
     <Compile Include="PlayState.cs" />
     <Compile Include="Program.cs" />

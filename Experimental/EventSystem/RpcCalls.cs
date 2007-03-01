@@ -71,8 +71,8 @@ namespace EventSystem
         public event ProcessEventDelegate ProcessEventOnServerSide;
         #endregion
         #region Eternal State
-        AbstractEventFactory factory;
-        ILogger logger;
+        readonly AbstractEventFactory factory;
+        readonly ILogger logger;
         #endregion
     }
 }
