@@ -49,7 +49,7 @@ namespace EventSystem
         static void ServerMain(string[] args)
         {
             EventCenterServer server = new EventCenterServer("server.xml");
-            RpcCalls rpcCalls = new RpcCalls();
+            RpcCalls rpcCalls = ServiceConfigurator.Resolve<RpcCalls>();
             rpcCalls.ProcessEventOnServerSide += server.ProcessEvent;
             SampleEventFactory factory = new SampleEventFactory();
             rpcCalls.Handler = factory;
@@ -83,7 +83,7 @@ namespace EventSystem
             extendedProperties.Add("allowedPlayers", (ushort)10);
             extendedProperties.Add("port", serverPort);
             UnifiedNetwork unifiedNetwork = new UnifiedNetwork("server.xml", extendedProperties);
-            RpcCalls rpcCalls = new RpcCalls();
+            RpcCalls rpcCalls = ServiceConfigurator.Resolve<RpcCalls>();
             rpcCalls.ProcessEventOnServerSide += unifiedNetwork.ProcessEvent;
             SampleEventFactory factory = new SampleEventFactory();
             rpcCalls.Handler = factory;

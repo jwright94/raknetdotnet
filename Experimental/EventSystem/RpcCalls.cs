@@ -6,41 +6,23 @@ namespace EventSystem
 {
     using System.Diagnostics;
     using RakNetDotNet;
+    using Castle.Core;
 
     delegate void ProcessEventDelegate(IEvent _event);
 
-    sealed class RpcCalls : IDisposable
+    [Singleton]
+    sealed class RpcCalls
     {
-        #region Ogre-like singleton implementation.
-        static RpcCalls instance;
-        public RpcCalls()
-        {
-            Debug.Assert(instance == null);
-            instance = this;
-        }
-        public void Dispose()
-        {
-            Debug.Assert(instance != null);
-            instance = null;
-        }
-        public static RpcCalls Instance
-        {
-            get
-            {
-                Debug.Assert(instance != null);
-                return instance;
-            }
-        }
-        #endregion
         public static void SendEventToClient(RPCParameters _params)
         {
             BitStream source = new BitStream(_params, false);
-            IEvent _event = Instance.RecreateEvent(source);
+            RpcCalls instance = ServiceConfigurator.Resolve<RpcCalls>();
+            IEvent _event = instance.RecreateEvent(source);
 
-            Debug.Assert(Instance.ProcessEventOnClientSide != null);
-            Instance.ProcessEventOnClientSide(_event);
+            Debug.Assert(instance.ProcessEventOnClientSide != null);
+            instance.ProcessEventOnClientSide(_event);
 
-            Instance.WipeEvent(_event);
+            instance.WipeEvent(_event);
         }
         public static void SendEventToServer(RPCParameters _params)
         {
@@ -48,11 +30,18 @@ namespace EventSystem
 
             BitStream source = new BitStream(_params, false);
 
-            IEvent _event = RpcCalls.Instance.RecreateEvent(source);
+            RpcCalls instance = ServiceConfigurator.Resolve<RpcCalls>();
+            IEvent _event = instance.RecreateEvent(source);
             if (false) Console.WriteLine("EventCenterServer> {0}", _event.ToString());
             _event.OriginPlayer = sender;
-            Debug.Assert(Instance.ProcessEventOnServerSide != null);
-            Instance.ProcessEventOnServerSide(_event);
+            Debug.Assert(instance.ProcessEventOnServerSide != null);
+            instance.ProcessEventOnServerSide(_event);
+        }
+        public void Reset()
+        {
+            ProcessEventOnClientSide = null;
+            ProcessEventOnServerSide = null;
+            factory = null;
         }
         public IEvent RecreateEvent(BitStream source)
         {
