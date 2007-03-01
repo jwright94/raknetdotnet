@@ -61,7 +61,7 @@ namespace RakNet {
     <%= DirectiveHelper::member_template_specialize_in(TypeHelper::CTYPES, bs_template_functions_of_ctypes.grep(/Serialize\w*/)) %>
     <%= @type_mapper.end_scope %>
     
-    <%= DirectiveHelper::member_template_specialize_in(['NetworkID'], ['Write', 'Read', 'Serialize']) %>
+    <%= DirectiveHelper::member_template_specialize_in(['SystemAddress', 'NetworkID'], ['Write', 'Read', 'Serialize']) %>
     
     BitStream(Packet* packet, bool copyData) {
       return new RakNet::BitStream(packet->data, packet->length, copyData);

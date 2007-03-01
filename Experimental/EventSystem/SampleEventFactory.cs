@@ -8,6 +8,59 @@ namespace EventSystem
     using RakNetDotNet;
     using Castle.Core;
 
+    sealed class RegisterEvent : AbstractEvent
+    {
+        public RegisterEvent(int eventId)
+        {
+            eventStream = null;
+            Id = eventId;
+        }
+        public RegisterEvent(BitStream source)
+        {
+            int eventId;
+            source.Read(out eventId);
+            Id = eventId;
+
+            source.Read(out name);
+        }
+        public void SetData(string name, SystemAddress[] systemAddresses, byte serviceId)
+        {
+            this.name = name;
+            this.systemAddresses = systemAddresses;
+            this.serviceId = serviceId;
+        }
+        public override BitStream Stream
+        {
+            get { throw new Exception("The method or operation is not implemented."); }
+        }
+
+        public override void Perform()
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        public override bool IsBroadcast
+        {
+            get { throw new Exception("The method or operation is not implemented."); }
+        }
+
+        public override bool IsTwoWay
+        {
+            get { throw new Exception("The method or operation is not implemented."); }
+        }
+
+        public override bool RunOnServer
+        {
+            get { throw new Exception("The method or operation is not implemented."); }
+        }
+        #region Private Members
+        string name;
+        SystemAddress[] systemAddresses;
+        byte serviceId;
+        BitStream eventStream;
+        #endregion
+    }
+
     [Singleton]
     sealed class SampleEventFactory : AbstractEventFactory
     {
@@ -17,6 +70,7 @@ namespace EventSystem
             CLIENTTOSERVER,
             TESTCONNECTION,
             TESTCONNECTION2,
+            Register,
         }
         public IEvent CreateEvent(EventTypes eventType, uint objId)
         {
@@ -75,6 +129,10 @@ namespace EventSystem
 
                 case EventTypes.TESTCONNECTION2:
                     _event = new TestConnectionEvent2(source);
+                    break;
+
+                case EventTypes.Register:
+                    _event = new RegisterEvent(source);
                     break;
 
                 default:
