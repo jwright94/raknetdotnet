@@ -7,6 +7,7 @@ namespace EventSystem
     using System.Collections;
     using System.Diagnostics;
     using RakNetDotNet;
+    using Castle.Core.Logging;
 
     // NS(UN) - GS(UN) - FS(UN, ECS)
     // ReportEvent -> ProcessEventOnServerSide -> SendEvent -> ProcessEventOnClientSide
@@ -33,6 +34,7 @@ namespace EventSystem
         {
             Debug.Assert(instance == null);
             instance = this;
+            logger = ServiceConfigurator.LogFactory.Create(typeof(UnifiedNetwork));
 
             // TODO - Use xml reader
             name = "Zeus";
@@ -77,11 +79,11 @@ namespace EventSystem
 
             if (isOnline)
             {
-                log("Shutting down server...");
+                logger.Debug("Shutting down server...");
                 rakServerInterface.Shutdown(1);
                 rakServerInterface.UnregisterAsRemoteProcedureCall("sendeventtoserver");
                 RakNetworkFactory.DestroyRakPeerInterface(rakServerInterface);
-                log("Completed.");
+                logger.Debug("Completed.");
             }
         }
         public static UnifiedNetwork Instance
@@ -125,7 +127,7 @@ namespace EventSystem
 
                 bool broadcast = _event.IsBroadcast;
 
-                log("sending an event: [{0}], broadcast = {1}", _event.ToString(), broadcast);
+                logger.Debug("sending an event: [{0}], broadcast = {1}", _event.ToString(), broadcast);
 
                 bool result = rakServerInterface.RPC(
                     sendevent,
@@ -136,9 +138,9 @@ namespace EventSystem
                 if (false)
                 {
                     if (!result)
-                        log("could not send data to the server!");
+                        logger.Debug("could not send data to the server!");
                     else
-                        log("send data to the server...");
+                        logger.Debug("send data to the server...");
                 }
             }
         }
@@ -146,13 +148,13 @@ namespace EventSystem
         {
             if (isOnline)
             {
-                log("connecting to the server...");
+                logger.Debug("connecting to the server...");
 
                 //int internalSleep = threadSleepTimierMS;
                 //SocketDescriptor socketDescriptor = new SocketDescriptor(clientPort, string.Empty);
 
-                //log("starting client on port {0}", clientPort);
-                log("connecting to server on ip= {0}, port = {1}", ip, serverPort);
+                //logger.Debug("starting client on port {0}", clientPort);
+                logger.Debug("connecting to server on ip= {0}, port = {1}", ip, serverPort);
 
                 //rakClientInterface.Startup(1, internalSleep, new SocketDescriptor[] { socketDescriptor }, 1);
                 //bool success = rakClientInterface.Connect(ip, serverPort, string.Empty, 0);
@@ -160,7 +162,7 @@ namespace EventSystem
 
                 if (success)
                 {
-                    log("connected!");
+                    logger.Debug("connected!");
                     isConnected = true;
                     return true;
                 }
@@ -193,7 +195,7 @@ namespace EventSystem
                     //stream.Read(out packetIdentifier);
                     //message.AppendFormat(", stream = [{0}]", packetIdentifier);
 
-                    //if (true) log(message.ToString());
+                    //if (true) logger.Debug(message.ToString());
 
                     HandlePacket(packet);
 
@@ -210,7 +212,7 @@ namespace EventSystem
         {
             if (isOnline)
             {
-                log("running...");
+                logger.Debug("running...");
 
                 Packet packet = null;
 
@@ -236,62 +238,54 @@ namespace EventSystem
             get { return rakServerInterface; }
         }
         #region Private Members
-        void log(string message)
-        {
-            Console.WriteLine("UnifiedNetwork> {0}", message);
-        }
-        void log(string format, params object[] args)
-        {
-            log(string.Format(format, args));
-        }
         void HandlePacket(Packet packet)
         {
-            log("received Message:");
+            logger.Debug("received Message:");
             BitStream inBitStream = new BitStream(packet, false);
             byte packetIdentifier;
             inBitStream.Read(out packetIdentifier);
             switch (packetIdentifier)
             {
                 case RakNetBindings.ID_REMOTE_DISCONNECTION_NOTIFICATION:
-                    log("Another client has disconnected.\n");
+                    logger.Debug("Another client has disconnected.\n");
                     break;
                 case RakNetBindings.ID_REMOTE_CONNECTION_LOST:
-                    log("Another client has lost the connection.\n");
+                    logger.Debug("Another client has lost the connection.\n");
                     break;
                 case RakNetBindings.ID_REMOTE_NEW_INCOMING_CONNECTION:
-                    log("Another client has connected.\n");
+                    logger.Debug("Another client has connected.\n");
                     break;
                 case RakNetBindings.ID_CONNECTION_REQUEST_ACCEPTED:
-                    log("Our connection request has been accepted.");
+                    logger.Debug("Our connection request has been accepted.");
                     namingComponent.OnConnectionRequestAccepted(rakServerInterface, packet);
                     break;
                 case RakNetBindings.ID_NEW_INCOMING_CONNECTION:
-                    log("A connection is incoming.\n");
+                    logger.Debug("A connection is incoming.\n");
                     break;
                 case RakNetBindings.ID_NO_FREE_INCOMING_CONNECTIONS:
-                    log("The server is full.\n");
+                    logger.Debug("The server is full.\n");
                     break;
                 case RakNetBindings.ID_DISCONNECTION_NOTIFICATION:
-                    log("A client has disconnected.\n");
+                    logger.Debug("A client has disconnected.\n");
                     break;
                 case RakNetBindings.ID_CONNECTION_LOST:
-                    log("A client lost the connection.\n");
+                    logger.Debug("A client lost the connection.\n");
                     break;
                 //case RakNetBindings.ID_RECEIVED_STATIC_DATA:
-                //    log("Got static data.\n");
+                //    logger.Debug("Got static data.\n");
                 //    break;
                 case RakNetBindings.ID_DATABASE_UNKNOWN_TABLE:
-                    log("ID_DATABASE_UNKNOWN_TABLE\n");
+                    logger.Debug("ID_DATABASE_UNKNOWN_TABLE\n");
                     break;
                 case RakNetBindings.ID_DATABASE_INCORRECT_PASSWORD:
-                    log("ID_DATABASE_INCORRECT_PASSWORD\n");
+                    logger.Debug("ID_DATABASE_INCORRECT_PASSWORD\n");
                     break;
                 case RakNetBindings.ID_DATABASE_QUERY_REPLY:
-                    log("ID_DATABASE_QUERY_REPLY\n");
+                    logger.Debug("ID_DATABASE_QUERY_REPLY\n");
                     namingComponent.OnDatabaseQueryReply(rakServerInterface, packet);
                     break;
                 default:
-                    log("Message with identifier {0} has arrived.", packetIdentifier);
+                    logger.Debug("Message with identifier {0} has arrived.", packetIdentifier);
                     break;
             }
         }
@@ -302,6 +296,9 @@ namespace EventSystem
         #region ECC's Private Member
         bool isOnline;
         bool isConnected;
+        #endregion
+        #region Eternal State
+        ILogger logger;
         #endregion
 
         // Set FCM plugin to RakPeerInterface.
