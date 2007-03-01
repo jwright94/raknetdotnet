@@ -4,107 +4,12 @@ using System.Text;
 
 namespace EventSystem
 {
-    using Castle.Core;
-    using Castle.Core.Logging;
-    using Castle.MicroKernel;
-    using Castle.Windsor;
-    using Castle.Windsor.Configuration.Interpreters;
     using RakNetDotNet;
-    #region Castle MicroKernel
-    static class ServiceConfigurator
-    {
-        static ServiceConfigurator()
-        {
-            AddComponent<Automobile>();
-            // Add more components.
-        }
-        public static void Dispose()
-        {
-            container.Dispose();
-        }
-        #region Generics API.
-        public static ServiceType Resolve<ServiceType>()
-        {
-            return container.Resolve<ServiceType>();
-        }
-        public static ServiceType Resolve<ServiceType>(System.Collections.IDictionary arguments)
-        {
-            return (ServiceType)container.Kernel.Resolve(typeof(ServiceType), arguments);
-        }
-        public static void RegisterCustomDependencies<ServiceType>(System.Collections.IDictionary dependencies)
-        {
-            container.Kernel.RegisterCustomDependencies(typeof(ServiceType), dependencies);
-        }
-        public static void AddComponent<ClassType>()
-        {
-            container.AddComponent(typeof(ClassType).FullName, typeof(ClassType));
-        }
-        public static void AddComponent<ServiceType, ClassType>()
-        {
-            container.AddComponent(typeof(ServiceType).FullName, typeof(ServiceType), typeof(ClassType));
-        }
-        public static void ReleaseComponent(object instance)
-        {
-            container.Release(instance);
-        }
-        #endregion
-        public static IWindsorContainer Container
-        {
-            get { return container; }
-        }
-        public static ILoggerFactory LogFactory
-        {
-            get { return Resolve<ILoggerFactory>(); }
-        }
-        static readonly IWindsorContainer container = new WindsorContainer(new XmlInterpreter("WindsorConfig.xml"));
-    }
-    [Singleton]
-    class Automobile : IDisposable
-    {
-        public Automobile(ILogger logger, string _name)
-        {
-            this.logger = logger;
-            logger.Debug("Ctor");
-            logger.Warn("first");
-            logger.CreateChildLogger("child").Warn("second");
-            name = _name;
-        }
-        public void Drive()
-        {
-            logger.Debug(name);
-        }
-        public void Dispose()
-        {
-            logger.Debug("Dispose");
-        }
-        readonly ILogger logger;
-        string name;
-    }
-
-    class Main
-    {
-        public void Test()
-        {
-            Dictionary<string, object> dependencies = new Dictionary<string, object>();
-            dependencies["_name"] = "mama";
-            ServiceConfigurator.RegisterCustomDependencies<Automobile>(dependencies);
-            Automobile automobile = ServiceConfigurator.Resolve<Automobile>();
-            automobile.Drive();
-            ServiceConfigurator.ReleaseComponent(automobile);
-            ServiceConfigurator.Dispose();
-        }
-    }
-    #endregion
+    
     class Program
     {
         static void Main(string[] args)
         {
-#if true
-            Main m = new Main();
-            m.Test();
-            char keyp = Console.ReadKey(true).KeyChar;
-            return;
-#endif
             Console.WriteLine("(S)erver or (U)nifiedNetwork or (C)lient?");
             char key = Console.ReadKey(true).KeyChar;
             if (key == 's' || key == 'S')
