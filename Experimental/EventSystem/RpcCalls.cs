@@ -7,12 +7,17 @@ namespace EventSystem
     using System.Diagnostics;
     using RakNetDotNet;
     using Castle.Core;
+    using Castle.Core.Logging;
 
     delegate void ProcessEventDelegate(IEvent _event);
 
     [Singleton]
     sealed class RpcCalls
     {
+        public RpcCalls(ILogger logger)
+        {
+            this.logger = logger;
+        }
         public static void SendEventToClient(RPCParameters _params)
         {
             BitStream source = new BitStream(_params, false);
@@ -32,7 +37,7 @@ namespace EventSystem
 
             RpcCalls instance = ServiceConfigurator.Resolve<RpcCalls>();
             IEvent _event = instance.RecreateEvent(source);
-            if (false) Console.WriteLine("EventCenterServer> {0}", _event.ToString());
+            instance.Logger.Debug("EventCenterServer> {0}", _event.ToString());
             _event.OriginPlayer = sender;
             Debug.Assert(instance.ProcessEventOnServerSide != null);
             instance.ProcessEventOnServerSide(_event);
@@ -55,6 +60,11 @@ namespace EventSystem
         {
             set { factory = value; }
         }
+        public ILogger Logger
+        {
+            get { return logger; }
+        }
+        #region Transient State
         /// <summary>
         /// if on sever-side then null
         /// </summary>
@@ -64,5 +74,9 @@ namespace EventSystem
         /// </summary>
         public event ProcessEventDelegate ProcessEventOnServerSide;
         AbstractEventFactory factory;
+        #endregion
+        #region Eternal State
+        ILogger logger;
+        #endregion
     }
 }
