@@ -60,6 +60,7 @@
     <Compile Include="ClientWorld.cs" />
     <Compile Include="EventCenterClient.cs" />
     <Compile Include="EventCenterServer.cs" />
+    <None Include="EventTemplates.cs" />
     <Compile Include="GameManager.cs" />
     <Compile Include="IEvent.cs" />
     <Compile Include="IEventFactory.cs" />
