@@ -6,10 +6,10 @@ namespace EventTemplates
 {
     using RakNetDotNet;
 
-    public class RegisterEvent
+    public partial class RegisterEvent
     {
-        public string name;
-        public SystemAddress[] systemAddresses;
-        public byte serviceId;
+        string name;
+        SystemAddress[] systemAddresses;
+        byte serviceId;
     }
 }

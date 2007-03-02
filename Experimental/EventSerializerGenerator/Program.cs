@@ -18,13 +18,14 @@ namespace EventSerializerGenerator
             Console.WriteLine(@"
 using System;
 using System.Collections.Generic;
-using System.Text;
-
-namespace ");
+using System.Text;");
             foreach (Type t in template.GetTypes())
             {
-                Console.WriteLine(t.FullName);
+                Console.WriteLine("namespace {0} {{", t.Namespace);
+                Console.WriteLine("\tpublic partial class {0} \n{{\n}}", t.Name);
+                Console.WriteLine("}");
             }
+
             return 0;
         }
     }
