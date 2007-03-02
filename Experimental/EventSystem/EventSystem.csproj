@@ -60,7 +60,7 @@
     <Compile Include="ClientWorld.cs" />
     <Compile Include="EventCenterClient.cs" />
     <Compile Include="EventCenterServer.cs" />
-    <None Include="EventTemplates.cs" />
+    <Compile Include="EventTemplates.cs" />
     <Compile Include="GameManager.cs" />
     <Compile Include="IEvent.cs" />
     <Compile Include="IEventFactory.cs" />
@@ -106,5 +106,6 @@
     <PostBuildEvent>xcopy "$(TargetPath)" "$(ProjectDir)..\..\Bin\$(ConfigurationName)" /D /C /Y
 xcopy "$(ProjectDir)*.dll" "$(ProjectDir)..\..\Bin\$(ConfigurationName)" /D /C /Y
 xcopy "$(ProjectDir)WindsorConfig.xml" "$(ProjectDir)..\..\Bin\$(ConfigurationName)" /D /C /Y</PostBuildEvent>
+    <PreBuildEvent>"$(ProjectDir)..\..\Bin\$(ConfigurationName)\EventSerializerGenerator.exe" "$(ProjectDir)EventTemplates.cs"</PreBuildEvent>
   </PropertyGroup>
 </Project>

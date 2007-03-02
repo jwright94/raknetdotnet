@@ -31,6 +31,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Experimental", "Experimental", "{87927BEA-89A6-448F-BDD9-6094FEF4F723}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventSystem", "Experimental\EventSystem\EventSystem.csproj", "{58C036E6-FAA1-4FA5-8D20-C2B8147A564E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{36D7BF78-2B15-4FA5-8309-5A1FA1D2E1E9} = {36D7BF78-2B15-4FA5-8309-5A1FA1D2E1E9}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventSerializerGenerator", "Experimental\EventSerializerGenerator\EventSerializerGenerator.csproj", "{36D7BF78-2B15-4FA5-8309-5A1FA1D2E1E9}"
 EndProject
