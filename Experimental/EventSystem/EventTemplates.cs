@@ -13,3 +13,9 @@ namespace EventTemplates
         byte serviceId;
     }
 }
+namespace OtherNamespace
+{
+    public partial class OtherEvent
+    {
+    }
+}
