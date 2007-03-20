@@ -203,7 +203,10 @@ namespace EventSerializerGenerator
             {
                 referencedAssemblies = new List<string>(commaSeparatedReferencedAssemblies.Split(','));
             }
-            if (!referencedAssemblies.Contains("EventSerializerGenerator.exe"))
+            if (!referencedAssemblies.Exists(delegate(string asm)
+            {
+                return asm.Contains("EventSerializerGenerator.exe");
+            }))
             {
                 referencedAssemblies.Add("EventSerializerGenerator.exe");
             }
