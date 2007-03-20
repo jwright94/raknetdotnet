@@ -2,10 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace EventTemplates
+namespace SampleEvents
 {
     using RakNetDotNet;
+    using EventSerializerGenerator;
 
+    [Event(
+        IsBroadcast=true, 
+        IsTwoWay=false, 
+        PerformBeforeConnectOnClient=false, 
+        RunOnServer=true)]
     public partial class RegisterEvent
     {
         string name;
@@ -13,7 +19,7 @@ namespace EventTemplates
         byte serviceId;
     }
 }
-namespace OtherNamespace
+namespace AnotherSampleEvents
 {
     public partial class OtherEvent
     {

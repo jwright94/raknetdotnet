@@ -11,6 +11,15 @@ namespace EventSerializerGenerator
     using Microsoft.CSharp;
     using RJH.CommandLineHelper;
 
+    [AttributeUsage(AttributeTargets.Class)]
+    public class EventAttribute : Attribute
+    {
+        public bool IsBroadcast = false;
+        public bool IsTwoWay = false;
+        public bool RunOnServer = false;
+        public bool PerformBeforeConnectOnClient = false;
+    }
+
     // CodeDom is complicated. I use a simpler method. It is Console.WriteLine.
     class Program
     {
@@ -188,14 +197,18 @@ namespace EventSerializerGenerator
             }
 
             Assembly templateAssembly = null;
-            string[] referencedAssemblies = new string[0];
+            List<string> referencedAssemblies = new List<string>();
 
             if(commaSeparatedReferencedAssemblies != null)
             {
-                referencedAssemblies = commaSeparatedReferencedAssemblies.Split(',');
+                referencedAssemblies = new List<string>(commaSeparatedReferencedAssemblies.Split(','));
+            }
+            if (!referencedAssemblies.Contains("EventSerializerGenerator.exe"))
+            {
+                referencedAssemblies.Add("EventSerializerGenerator.exe");
             }
 
-            if (!CompileExecutable(eventTemplatePath, referencedAssemblies, out templateAssembly))
+            if (!CompileExecutable(eventTemplatePath, referencedAssemblies.ToArray(), out templateAssembly))
             {
                 Console.WriteLine("ERROR: TemplateFile compile error.");
                 return 2;
@@ -219,7 +232,7 @@ namespace EventSerializerGenerator
     {
         void AddChildGenerator(IGenerator generator);
         void RemoveChildGenerator(IGenerator generator);
-        void Write(ICodeWriter outWriter);
+        void Write(ICodeWriter o);
     }
     abstract class AbstractGenerator : IGenerator
     {
@@ -231,7 +244,7 @@ namespace EventSerializerGenerator
         {
             generators.Remove(generator);
         }
-        public abstract void Write(ICodeWriter outWriter);
+        public abstract void Write(ICodeWriter o);
         protected ICollection<IGenerator> generators = new List<IGenerator>();
     }
     sealed class RootGenerator : AbstractGenerator
@@ -256,15 +269,16 @@ namespace EventSerializerGenerator
                 AddChildGenerator(new NamespaceGenerator(namespaceTypes.Key, namespaceTypes.Value));
             }
         }
-        public override void Write(ICodeWriter outWriter)
+        public override void Write(ICodeWriter o)
         {
-            outWriter.WriteLine("using System;");
-            outWriter.WriteLine("using System.Collections.Generic;");
-            outWriter.WriteLine("using System.Text;");
-            outWriter.WriteLine("using RakNetDotNet;");
+            o.WriteLine("using System;");
+            o.WriteLine("using System.Collections.Generic;");
+            o.WriteLine("using System.Text;");
+            o.WriteLine("using RakNetDotNet;");
+            o.WriteLine("using EventSystem;");
             foreach (IGenerator generator in generators)
             {
-                generator.Write(outWriter);
+                generator.Write(o);
             }
         }
         Assembly templateAssembly;
@@ -274,29 +288,52 @@ namespace EventSerializerGenerator
         public NamespaceGenerator(string _namespace, IEnumerable<Type> typesInNamespace)  // TODO: I forgot how to use simbol.
         {
             this._namespace = _namespace;
+            IList<EventInfo> eventInfos = new List<EventInfo>();
             foreach (Type type in typesInNamespace)
             {
-                AddChildGenerator(new ClassGenerator(type));
+                EventInfo ei = new EventInfo();
+                ei.Type = type;
+                ei.EventId = eventInfos.Count;
+                eventInfos.Add(ei);
+                AddChildGenerator(new ClassGenerator(ei.Type, ei.EventId));
             }
+            AddChildGenerator(new EventFactoryGenerator(FactoryName, eventInfos));
         }
-        public override void Write(ICodeWriter outWriter)
+        public override void Write(ICodeWriter o)
         {
-            outWriter.WriteLine("namespace {0} {{", _namespace);
-            outWriter.Indent();
+            o.BeginBlock("namespace {0} {{", _namespace);
             foreach (IGenerator generator in generators)
             {
-                generator.Write(outWriter);
+                generator.Write(o);
             }
-            outWriter.Deindent();
-            outWriter.WriteLine("}");
+            o.EndBlock("}");
+        }
+        string FactoryName
+        {
+            get
+            {
+                string factoryName;
+                int pos = _namespace.LastIndexOf("Events");
+                if (0 < pos)
+                {
+                    factoryName = _namespace.Substring(0, pos);
+                }
+                else
+                {
+                    factoryName = _namespace;
+                }
+                factoryName += "EventFactory";
+                return factoryName;
+            }
         }
         string _namespace;
     }
     sealed class ClassGenerator : IGenerator
     {
-        public ClassGenerator(Type type)
+        public ClassGenerator(Type type, int eventId)
         {
             this.type = type;
+            this.eventId = eventId;
         }
         public void AddChildGenerator(IGenerator generator)
         {
@@ -306,37 +343,152 @@ namespace EventSerializerGenerator
         {
             throw new Exception("The method or operation is not implemented.");
         }
-        public void Write(ICodeWriter outWriter)
+        public void Write(ICodeWriter o)
         {
-            outWriter.WriteLine("public partial class {0} {{", type.Name);
-            outWriter.Indent();
-            WriteDeserializer(outWriter);
-            outWriter.Deindent();
-            outWriter.WriteLine("}");
+            o.BeginBlock("public partial class {0} : IEvent {{", type.Name);
+            WriteCtorWithId(o);
+            WriteCtorWithStream(o);
+            WriteSetData(o);
+            WriteGetStream(o);
+            WriteId(o);
+            WriteOriginPlayer(o);
+            o.EndBlock("}");
         }
-        void WriteDeserializer(ICodeWriter outWriter)
+        void WriteCtorWithId(ICodeWriter o)
         {
-            outWriter.WriteLine("public {0}(BitStream source) {{", type.Name);
-            outWriter.Indent();
-            FieldInfo[] fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            o.BeginBlock("public {0}() {{", type.Name);
+            o.WriteLine("id = {0};", eventId);
+            o.EndBlock("}");
+        }
+        void WriteCtorWithStream(ICodeWriter o)
+        {
+            o.BeginBlock("public {0}(BitStream source) {{", type.Name);
+            WriteStreamReadStatement(o, "id");
+            foreach (FieldInfo field in GetFields())
+            {
+                WriteStreamReadStatement(o, field.Name);
+            }
+            o.EndBlock("}");
+        }
+        void WriteSetData(ICodeWriter o)
+        {
+            StringBuilder arg = new StringBuilder();
+            FieldInfo[] fields = GetFields();
+            for (int i = 0; i < fields.Length; i++)
+            {
+                if (0 < i) arg.Append(", ");
+                arg.Append(fields[i].FieldType.ToString());
+                arg.Append(" ");
+                arg.Append(fields[i].Name);
+            }
+            o.BeginBlock("public void SetData({0}) {{", arg.ToString());
             foreach (FieldInfo field in fields)
             {
-                outWriter.WriteLine("source.Read(out {0});", field.Name);
+                o.WriteLine("this.{0} = {0};", field.Name);
             }
-            outWriter.Deindent();
-            outWriter.WriteLine("}");
+            o.EndBlock("}");
         }
-        void WriteSerializer(ICodeWriter outWriter)
+        void WriteStreamReadStatement(ICodeWriter o, string fieldName)
         {
-            outWriter.WriteLine("");
+            o.WriteLine("if (!source.Read(out {0})) {{ throw new NetworkException(\"Deserialization is failed.\"); }}", fieldName);
+        }
+        void WriteGetStream(ICodeWriter o)
+        {
+            o.BeginBlock("public void BitStream Stream {");
+            o.BeginBlock("get {");
+            o.WriteLine("BitStream eventStream = new BitStream();");
+            WriteStreamWriteStatement(o, "id");
+            foreach (FieldInfo field in GetFields())
+            {
+                WriteStreamWriteStatement(o, field.Name);
+            }
+            o.WriteLine("return eventStream;");
+            o.EndBlock("}");
+            o.EndBlock("}");
+        }
+        void WriteStreamWriteStatement(ICodeWriter o, string fieldName)
+        {
+            o.WriteLine("eventStream.Write({0});", fieldName);
+        }
+        void WriteId(ICodeWriter o)
+        {
+            o.BeginBlock("public int Id {");
+            o.WriteLine("get { return id; }");
+            o.WriteLine("protected set { id = value; }");
+            o.EndBlock("}");
+            o.WriteLine("int id;");
+        }
+        void WriteOriginPlayer(ICodeWriter o)
+        {
+            o.BeginBlock("public SystemAddress OriginPlayer {");
+            o.WriteLine("get { return originPlayer; }");
+            o.WriteLine("set { originPlayer = value; }");
+            o.EndBlock("}");
+            o.WriteLine("SystemAddress originPlayer = RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS;");
+        }
+        void WriteBehaviorFlags(ICodeWriter o)
+        {
+            //type.GetCustomAttributes(typeof(EventAttribute), true);
+        }
+        FieldInfo[] GetFields()
+        {
+            return type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
         }
         Type type;
+        int eventId;
+    }
+    sealed class EventFactoryGenerator : IGenerator
+    {
+        public EventFactoryGenerator(string factoryName, IList<EventInfo> eventInfos)
+        {
+            this.factoryName = factoryName;
+            this.eventInfos = eventInfos;
+        }
+        public void AddChildGenerator(IGenerator generator)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+        public void RemoveChildGenerator(IGenerator generator)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+        public void Write(ICodeWriter o)
+        {
+            o.WriteLine("[Singleton]");
+            o.BeginBlock("sealed class {0} : IEventFactory {{", factoryName);
+            WriteRecreateEvent(o);
+            o.EndBlock("}");
+        }
+        void WriteRecreateEvent(ICodeWriter o)
+        {
+            o.BeginBlock("public IEvent RecreateEvent(BitStream source) {");
+            o.WriteLine("Debug.Assert(source != null);");
+            o.WriteLine("IEvent _event;");
+            o.WriteLine("int id;");
+            o.WriteLine("if(!source.Read(out id)) throw new NetworkException(\"Deserialization is failed.\");");
+            o.WriteLine("source.ResetReadPointer();");
+            o.BeginBlock("switch (id) {");
+            foreach (EventInfo ei in eventInfos)
+            {
+                o.BeginBlock("case {0}:", ei.EventId);
+                o.WriteLine("_event = new {0}(source);", ei.Type.Name);
+                o.WriteLine("break;");
+                o.EndBlock("");
+            }
+            o.BeginBlock("default:");
+            o.WriteLine("throw new NetworkException(string.Format(\"Event id {{0}} not recognized by {0}.RecreateEvent()!\", id));", factoryName);
+            o.EndBlock("");
+            o.EndBlock("}");
+            o.WriteLine("return _event;");
+            o.EndBlock("}");
+        }
+        string factoryName;
+        IList<EventInfo> eventInfos;
     }
     interface ICodeWriter
     {
-        void Indent();
-        void Deindent();
-        void WriteLine(string value);
+        void BeginBlock(string format, params object[] arg);
+        void EndBlock(string format, params object[] arg);
         void WriteLine(string format, params object[] arg);
     }
     sealed class CodeWriter : ICodeWriter
@@ -345,22 +497,27 @@ namespace EventSerializerGenerator
         {
             this.textWriter = textWriter;
         }
-        public void Indent()
+        public void BeginBlock(string format, params object[] arg)
         {
+            WriteLine(format, arg);
             levelOfIndent++;
         }
-        public void Deindent()
+        public void EndBlock(string format, params object[] arg)
         {
             levelOfIndent = Math.Max(0, levelOfIndent - 1);
-        }
-        public void WriteLine(string value)
-        {
-            InsertTabs();
-            textWriter.WriteLine(value);
+            WriteLine(format, arg);
         }
         public void WriteLine(string format, params object[] arg)
         {
-            WriteLine(string.Format(format, arg));
+            InsertTabs();
+            if (0 < arg.Length)
+            {
+                textWriter.WriteLine(format, arg);
+            }
+            else
+            {
+                textWriter.WriteLine(format);
+            }
         }
         void InsertTabs()
         {
@@ -371,6 +528,11 @@ namespace EventSerializerGenerator
         }
         TextWriter textWriter;
         int levelOfIndent;
+    }
+    class EventInfo
+    {
+        public Type Type;
+        public int EventId;
     }
     #endregion
 

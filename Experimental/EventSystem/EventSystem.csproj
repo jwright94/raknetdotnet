@@ -89,6 +89,10 @@
       <Project>{F078BA68-B214-46E7-AB72-F3B99DF589B2}</Project>
       <Name>RakNetDotNet</Name>
     </ProjectReference>
+    <ProjectReference Include="..\EventSerializerGenerator\EventSerializerGenerator.csproj">
+      <Project>{36D7BF78-2B15-4FA5-8309-5A1FA1D2E1E9}</Project>
+      <Name>EventSerializerGenerator</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="WindsorConfig.xml">
