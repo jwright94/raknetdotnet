@@ -9,7 +9,7 @@ namespace EventSerializerGenerator
     using System.IO;
     using System.Globalization;
     using Microsoft.CSharp;
-    using RJH.CommandLineHelper;
+    using CommandLine;
 
     [AttributeUsage(AttributeTargets.Class)]
     public class EventAttribute : Attribute
@@ -18,6 +18,14 @@ namespace EventSerializerGenerator
         public bool IsTwoWay = false;
         public bool RunOnServer = false;
         public bool PerformBeforeConnectOnClient = false;
+    }
+
+    class AppArguments
+    {
+        [Argument(ArgumentType.MultipleUnique, ShortName = "refasm", HelpText = "Referenced assembly.")]
+        public string[] ReferencedAssemblies;
+        [DefaultArgumentAttribute(ArgumentType.Required, HelpText = "Event template source path.")]
+        public string EventTemplatePath;
     }
 
     // CodeDom is complicated. I use a simpler method. It is Console.WriteLine.
@@ -122,87 +130,16 @@ namespace EventSerializerGenerator
         }
         #endregion
 
-        #region Command Line SWitches
-        [CommandLineSwitch("help", "Show help.")]
-        [CommandLineAlias(@"\?")]
-        public bool ShowHelp
-        {
-            set { showHelp = value; }
-            get { return showHelp; }
-        }
-        [CommandLineSwitch("refasm", "A comma separated list of referenced assemblies.")]
-        public string CommaSeparatedReferencedAssemblies
-        {
-            set { commaSeparatedReferencedAssemblies = value; }
-            get { return commaSeparatedReferencedAssemblies; }
-        }
-        #endregion
-
         #region Private Utility Functions
         int Run(string[] cmdLine)
         {
-            // TODO: Automatic Command Line Parser doesn't treat double-quoted string. I parse cmdLine manually now.
-            //Parser parser = new Parser(System.Environment.CommandLine, this);
-
-            //parser.Parse();
-
-            //if (showHelp)
-            //{
-            //    Console.WriteLine("EventSerializerGenerator TemplateFile [Options] ...\n");
-            //    Console.WriteLine("---- Options ----");
-            //    foreach (Parser.SwitchInfo s in parser.Switches)
-            //    {
-            //        Console.WriteLine("{0} : {1}", s.Name, s.Description);
-            //    }
-            //    return 0;
-            //}
-
-            //if (parser.Parameters.Length <= 0)
-            //{
-            //    Console.WriteLine("ERROR: You must pass TemplateFile.");
-            //    return 1;
-            //}
-
-            //string eventTemplatePath = parser.Parameters[0];
-
-            string eventTemplatePath = null;
-            string mode = null;
-
-            for (int i = 0; i < cmdLine.Length; i++)
+            AppArguments parsedArgs = new AppArguments();
+            if (!Parser.ParseArgumentsWithUsage(cmdLine, parsedArgs))
             {
-                // Change mode.
-                if (cmdLine[i].Contains("help"))
-                {
-                    // Ignore this.
-                    continue;
-                }
-                else if (cmdLine[i].Contains("refasm"))
-                {
-                    mode = "refasm";
-                    continue;
-                }
-
-                // Store parameters.
-                string trimmedString = cmdLine[i].Trim(' ', '"');
-                switch (mode)
-                {
-                    case "refasm":
-                        commaSeparatedReferencedAssemblies = trimmedString;
-                        break;
-                    default:
-                        if (eventTemplatePath == null)
-                            eventTemplatePath = trimmedString;
-                        break;
-                }
+                return 1;
             }
 
-            Assembly templateAssembly = null;
-            List<string> referencedAssemblies = new List<string>();
-
-            if(commaSeparatedReferencedAssemblies != null)
-            {
-                referencedAssemblies = new List<string>(commaSeparatedReferencedAssemblies.Split(','));
-            }
+            List<string> referencedAssemblies = new List<string>(parsedArgs.ReferencedAssemblies);
             if (!referencedAssemblies.Exists(delegate(string asm)
             {
                 return asm.Contains("EventSerializerGenerator.exe");
@@ -211,7 +148,9 @@ namespace EventSerializerGenerator
                 referencedAssemblies.Add("EventSerializerGenerator.exe");
             }
 
-            if (!CompileExecutable(eventTemplatePath, referencedAssemblies.ToArray(), out templateAssembly))
+            Assembly templateAssembly = null;
+
+            if (!CompileExecutable(parsedArgs.EventTemplatePath, referencedAssemblies.ToArray(), out templateAssembly))
             {
                 Console.WriteLine("ERROR: TemplateFile compile error.");
                 return 2;
@@ -222,11 +161,6 @@ namespace EventSerializerGenerator
 
             return 0;
         }
-        #endregion
-
-        #region Private Variables
-        bool showHelp;
-        string commaSeparatedReferencedAssemblies;
         #endregion
     }
     #region Writers

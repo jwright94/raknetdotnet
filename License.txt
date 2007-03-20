@@ -13,4 +13,4 @@ RakNet 3.0 Beta (10/14/06)
 Copyright 2002-2005 Kevin Jenkins (rakkar@rakkarsoft.com).
 Licensed under the "RakNet" brand by Jenkins Software and subject to the terms of the relevant licensing agreement available at http://www.rakkarsoft.com
 
-Automatic Command Line Parsing in C# By Ray Hayes.
+Command Line Argument Parser by peterhal@microsoft.com.

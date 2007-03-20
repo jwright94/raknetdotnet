@@ -110,6 +110,6 @@
     <PostBuildEvent>xcopy "$(TargetPath)" "$(ProjectDir)..\..\Bin\$(ConfigurationName)" /D /C /Y
 xcopy "$(ProjectDir)*.dll" "$(ProjectDir)..\..\Bin\$(ConfigurationName)" /D /C /Y
 xcopy "$(ProjectDir)WindsorConfig.xml" "$(ProjectDir)..\..\Bin\$(ConfigurationName)" /D /C /Y</PostBuildEvent>
-    <PreBuildEvent>"$(ProjectDir)..\..\Bin\$(ConfigurationName)\EventSerializerGenerator.exe" "$(ProjectDir)EventTemplates.cs" --refasm "$(ProjectDir)..\..\Bin\$(ConfigurationName)\RakNetDotNet.dll,$(ProjectDir)..\..\Bin\$(ConfigurationName)\EventSerializerGenerator.exe"</PreBuildEvent>
+    <PreBuildEvent>"$(ProjectDir)..\..\Bin\$(ConfigurationName)\EventSerializerGenerator.exe" "$(ProjectDir)EventTemplates.cs" /refasm:"$(ProjectDir)..\..\Bin\$(ConfigurationName)\RakNetDotNet.dll" /refasm:"$(ProjectDir)..\..\Bin\$(ConfigurationName)\EventSerializerGenerator.exe"</PreBuildEvent>
   </PropertyGroup>
 </Project>
