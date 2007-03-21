@@ -105,7 +105,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy &quot;$(TargetPath)&quot; &quot;$(ProjectDir)..\Bin\$(ConfigurationName)&quot; /D /C /Y"
+				CommandLine="xcopy &quot;$(TargetPath)&quot; &quot;$(SolutionDir)Bin\$(ConfigurationName)&quot; /D /C /Y&#x0D;&#x0A;xcopy &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir)Bin\$(ConfigurationName)&quot; /D /C /Y"
 				ExecutionBucket="19"
 			/>
 		</Configuration>
@@ -195,7 +195,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy &quot;$(TargetPath)&quot; &quot;$(ProjectDir)..\Bin\$(ConfigurationName)&quot; /D /C /Y"
+				CommandLine="xcopy &quot;$(TargetPath)&quot; &quot;$(SolutionDir)Bin\$(ConfigurationName)&quot; /D /C /Y&#x0D;&#x0A;xcopy &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir)Bin\$(ConfigurationName)&quot; /D /C /Y"
 				ExecutionBucket="19"
 			/>
 		</Configuration>

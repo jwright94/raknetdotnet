@@ -53,6 +53,6 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(TargetPath)" "$(ProjectDir)..\..\Bin\$(ConfigurationName)" /D /C /Y</PostBuildEvent>
+    <PostBuildEvent>xcopy "$(TargetPath)" "$(SolutionDir)Bin\$(ConfigurationName)" /D /C /Y</PostBuildEvent>
   </PropertyGroup>
 </Project>
