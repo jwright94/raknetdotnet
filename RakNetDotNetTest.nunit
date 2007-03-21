@@ -1,7 +1,7 @@
 ﻿<NUnitProject>
-  <Settings activeconfig="Debug" />
-  <Config name="Debug" appbase="Bin\Debug" binpathtype="None">
+  <Settings activeconfig="Default" appbase="C:\Documents and Settings\calma\My Documents\raknetdotnet\Bin\Debug" />
+  <Config name="Default" binpathtype="Auto">
     <assembly path="EventSystem.exe" />
+    <assembly path="EventSerializerGenerator.exe" />
   </Config>
-  <Config name="Release" binpathtype="Auto" />
 </NUnitProject>
