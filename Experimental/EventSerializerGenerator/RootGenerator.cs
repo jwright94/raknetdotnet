@@ -30,6 +30,8 @@ namespace EventSerializerGenerator
             o.WriteLine("using System;");
             o.WriteLine("using System.Collections.Generic;");
             o.WriteLine("using System.Text;");
+            o.WriteLine("using System.Diagnostics;");
+            o.WriteLine("using Castle.Core;");
             o.WriteLine("using RakNetDotNet;");
             o.WriteLine("using EventSystem;");
         }

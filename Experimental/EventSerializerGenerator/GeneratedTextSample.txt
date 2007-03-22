@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Diagnostics;
+using Castle.Core;
 using RakNetDotNet;
 using EventSystem;
 namespace TestEvents {
-	public partial class SimpleEvent : IEvent {
+	public partial class SimpleEvent : ISimpleEvent {
 		public SimpleEvent() {
 			id = 0;
 		}
@@ -17,7 +19,7 @@ namespace TestEvents {
 			this.name = name;
 			this.age = age;
 		}
-		public void BitStream Stream {
+		public BitStream Stream {
 			get {
 				BitStream eventStream = new BitStream();
 				eventStream.Write(id);
@@ -39,9 +41,9 @@ namespace TestEvents {
 	}
 	[Singleton]
 	sealed class TestEventFactory : IEventFactory {
-		public IEvent RecreateEvent(BitStream source) {
+		public ISimpleEvent RecreateSimpleEvent(BitStream source) {
 			Debug.Assert(source != null);
-			IEvent _event;
+			ISimpleEvent _event;
 			int id;
 			if(!source.Read(out id)) throw new NetworkException("Deserialization is failed.");
 			source.ResetReadPointer();
@@ -56,5 +58,6 @@ namespace TestEvents {
 			}
 			return _event;
 		}
+		public IEvent RecreateEvent(BitStream source) { return null; }
 	}
 }

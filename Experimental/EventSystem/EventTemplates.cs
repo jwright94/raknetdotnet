@@ -15,7 +15,7 @@ namespace SampleEvents
     public partial class RegisterEvent
     {
         string name;
-        SystemAddress[] systemAddresses;
+        //SystemAddress[] systemAddresses;
         byte serviceId;
     }
 }

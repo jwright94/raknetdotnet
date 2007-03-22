@@ -65,6 +65,7 @@
     <Compile Include="EventCenterClient.cs" />
     <Compile Include="EventCenterServer.cs" />
     <Compile Include="EventTemplates.cs" />
+    <Compile Include="EventTemplates.generated.cs" />
     <Compile Include="GameManager.cs" />
     <Compile Include="IEvent.cs" />
     <Compile Include="IEventFactory.cs" />

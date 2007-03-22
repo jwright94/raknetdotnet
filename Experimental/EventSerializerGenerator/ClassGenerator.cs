@@ -22,7 +22,7 @@ namespace EventSerializerGenerator
         }
         public void Write(ICodeWriter o)
         {
-            o.BeginBlock("public partial class {0} : IEvent {{", type.Name);
+            o.BeginBlock("public partial class {0} : ISimpleEvent {{", type.Name);
             WriteCtorWithId(o);
             WriteCtorWithStream(o);
             WriteSetData(o);
@@ -71,7 +71,7 @@ namespace EventSerializerGenerator
         }
         void WriteGetStream(ICodeWriter o)
         {
-            o.BeginBlock("public void BitStream Stream {");
+            o.BeginBlock("public BitStream Stream {");
             o.BeginBlock("get {");
             o.WriteLine("BitStream eventStream = new BitStream();");
             WriteStreamWriteStatement(o, "id");

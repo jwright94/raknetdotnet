@@ -17,4 +17,11 @@ namespace EventSystem
         bool RunOnServer { get; }
         bool PerformBeforeConnectOnClient { get; }
     }
+
+    interface ISimpleEvent
+    {
+        BitStream Stream { get; }
+        int Id { get; }
+        SystemAddress OriginPlayer { get; set; }
+    }
 }

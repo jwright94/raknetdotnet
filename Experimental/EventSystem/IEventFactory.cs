@@ -8,6 +8,7 @@ namespace EventSystem
 
     interface IEventFactory
     {
+        ISimpleEvent RecreateSimpleEvent(BitStream source);
         IEvent RecreateEvent(BitStream source);
     }
 }

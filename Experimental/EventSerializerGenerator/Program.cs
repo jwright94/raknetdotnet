@@ -6,11 +6,11 @@ using System.CodeDom.Compiler;
 using System.IO;
 using System.Globalization;
 using Microsoft.CSharp;
+using NUnit.Framework;
 using CommandLine;
 
 namespace EventSerializerGenerator
 {
-
     // CodeDom is complicated. I use a simpler method. It is Console.WriteLine.
     class Program
     {
@@ -140,10 +140,32 @@ namespace EventSerializerGenerator
             }
 
             IGenerator rootWriter = new RootGenerator(templateAssembly.GetTypes());
-            rootWriter.Write(new CodeWriter(Console.Out));
-
+            string generatedFilePath = GetGeneratedFilePath(parsedArgs.EventTemplatePath);
+            using (StreamWriter sw = File.CreateText(generatedFilePath))
+            {
+                rootWriter.Write(new CodeWriter(sw));
+            }
             return 0;
         }
+        string GetGeneratedFilePath(string eventTemplatePath)
+        {
+            string dir = Path.GetDirectoryName(eventTemplatePath);
+            string file = Path.GetFileNameWithoutExtension(eventTemplatePath);
+            string ext = Path.GetExtension(eventTemplatePath);
+            return dir + "\\" + file + ".generated" + ext;
+        }
         #endregion
+    }
+
+    [TestFixture]
+    public sealed class ProgramTestCase
+    {
+        [Test]
+        public void GeneratedFileName()
+        {
+            string eventTemplatePath = @"c:\home\white space\sampleevents.cs";
+            string generatedFilePath = (string)PrivateAccessor.ExecuteMethod(new Program(), "GetGeneratedFilePath", eventTemplatePath);
+            Assert.AreEqual(@"c:\home\white space\sampleevents.generated.cs", generatedFilePath);
+        }
     }
 }

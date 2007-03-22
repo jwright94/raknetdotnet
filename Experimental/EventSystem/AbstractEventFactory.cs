@@ -8,6 +8,7 @@ namespace EventSystem
 
     abstract class AbstractEventFactory : IEventFactory
     {
+        public ISimpleEvent RecreateSimpleEvent(BitStream source) { return null; }
         public abstract IEvent RecreateEvent(BitStream source);
         public void Reset()
         {
