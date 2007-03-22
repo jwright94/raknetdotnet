@@ -48,9 +48,14 @@
     <Compile Include="ICodeWriter.cs" />
     <Compile Include="IGenerator.cs" />
     <Compile Include="NamespaceGenerator.cs" />
+    <Compile Include="NUnitHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RootGenerator.cs" />
+    <Compile Include="TestEvents.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="GeneratedTextSample.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
