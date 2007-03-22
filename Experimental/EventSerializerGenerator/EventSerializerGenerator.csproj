@@ -61,6 +61,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(TargetPath)" "$(SolutionDir)Bin\$(ConfigurationName)" /D /C /Y</PostBuildEvent>
+    <PostBuildEvent>xcopy "$(TargetPath)" "$(SolutionDir)Bin\$(ConfigurationName)" /D /C /Y
+xcopy "$(ProjectDir)GeneratedTextSample.txt" "$(SolutionDir)Bin\$(ConfigurationName)" /D /C /Y</PostBuildEvent>
   </PropertyGroup>
 </Project>

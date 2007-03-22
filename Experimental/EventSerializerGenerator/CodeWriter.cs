@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using NUnit.Framework;
 
 namespace EventSerializerGenerator
 {
@@ -42,5 +43,35 @@ namespace EventSerializerGenerator
         }
         TextWriter textWriter;
         int levelOfIndent;
+    }
+
+    [TestFixture]
+    public sealed class CodeWriteTestCase
+    {
+        [SetUp]
+        public void SetUp()
+        {
+            textWriter = new StringWriter();
+            codeWriter = new CodeWriter(textWriter);
+        }
+        [Test]
+        public void Block()
+        {
+            Assert.AreEqual(textWriter.ToString(), "");
+            codeWriter.WriteLine("// level 0");
+            codeWriter.BeginBlock("public string ToString() {");
+            codeWriter.WriteLine("return \"level 1\";");
+            codeWriter.EndBlock("}");
+            codeWriter.WriteLine("// level 0");
+            StringBuilder expected = new StringBuilder();
+            expected.AppendLine("// level 0");
+            expected.AppendLine("public string ToString() {");
+            expected.AppendLine("\treturn \"level 1\";");
+            expected.AppendLine("}");
+            expected.AppendLine("// level 0");
+            Assert.AreEqual(expected.ToString(), textWriter.ToString());
+        }
+        TextWriter textWriter;
+        ICodeWriter codeWriter;
     }
 }

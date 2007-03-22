@@ -139,7 +139,7 @@ namespace EventSerializerGenerator
                 return 2;
             }
 
-            IGenerator rootWriter = new RootGenerator(templateAssembly);
+            IGenerator rootWriter = new RootGenerator(templateAssembly.GetTypes());
             rootWriter.Write(new CodeWriter(Console.Out));
 
             return 0;

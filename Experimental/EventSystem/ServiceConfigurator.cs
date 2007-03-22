@@ -104,7 +104,7 @@ namespace EventSystem
         public class MicroKernelSingletonTestCase
         {
             [SetUp]
-            public void Init()
+            public void SetUp()
             {
                 container = new WindsorContainer(new XmlInterpreter("WindsorConfig.xml"));
                 container.AddComponent("atanytime", typeof(SingletonUsesAtAnyTime));
@@ -112,7 +112,7 @@ namespace EventSystem
                 container.AddComponent("incrementor", typeof(CountIncrementor));
             }
             [TearDown]
-            public void Dispose()
+            public void TearDown()
             {
                 container.Dispose();
             }

@@ -1,0 +1,60 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+using RakNetDotNet;
+using EventSystem;
+namespace TestEvents {
+	public partial class SimpleEvent : IEvent {
+		public SimpleEvent() {
+			id = 0;
+		}
+		public SimpleEvent(BitStream source) {
+			if (!source.Read(out id)) { throw new NetworkException("Deserialization is failed."); }
+			if (!source.Read(out name)) { throw new NetworkException("Deserialization is failed."); }
+			if (!source.Read(out age)) { throw new NetworkException("Deserialization is failed."); }
+		}
+		public void SetData(System.String name, System.Int32 age) {
+			this.name = name;
+			this.age = age;
+		}
+		public void BitStream Stream {
+			get {
+				BitStream eventStream = new BitStream();
+				eventStream.Write(id);
+				eventStream.Write(name);
+				eventStream.Write(age);
+				return eventStream;
+			}
+		}
+		public int Id {
+			get { return id; }
+			protected set { id = value; }
+		}
+		int id;
+		public SystemAddress OriginPlayer {
+			get { return originPlayer; }
+			set { originPlayer = value; }
+		}
+		SystemAddress originPlayer = RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS;
+	}
+	[Singleton]
+	sealed class TestEventFactory : IEventFactory {
+		public IEvent RecreateEvent(BitStream source) {
+			Debug.Assert(source != null);
+			IEvent _event;
+			int id;
+			if(!source.Read(out id)) throw new NetworkException("Deserialization is failed.");
+			source.ResetReadPointer();
+			switch (id) {
+				case 0:
+					_event = new SimpleEvent(source);
+					break;
+				
+				default:
+					throw new NetworkException(string.Format("Event id {0} not recognized by TestEventFactory.RecreateEvent()!", id));
+				
+			}
+			return _event;
+		}
+	}
+}
