@@ -19,6 +19,7 @@ namespace EventSerializerGenerator
                 AddChildGenerator(new ClassGenerator(ei.Type, ei.EventId));
             }
             AddChildGenerator(new EventFactoryGenerator(FactoryName, eventInfos));
+            AddChildGenerator(new EventHandlersGenerator(HandlersName, eventInfos));
         }
         public override void Write(ICodeWriter o)
         {
@@ -31,21 +32,15 @@ namespace EventSerializerGenerator
         }
         string FactoryName
         {
-            get
-            {
-                string factoryName;
-                int pos = _namespace.LastIndexOf("Events");
-                if (0 < pos)
-                {
-                    factoryName = _namespace.Substring(0, pos);
-                }
-                else
-                {
-                    factoryName = _namespace;
-                }
-                factoryName += "EventFactory";
-                return factoryName;
-            }
+            get { return Prefix + "EventFactory"; }
+        }
+        string HandlersName
+        {
+            get { return Prefix + "EventHandlers"; }
+        }
+        string Prefix
+        {
+            get { return NamingHelper.GetPrefix(_namespace, "Events"); }
         }
         string _namespace;
     }

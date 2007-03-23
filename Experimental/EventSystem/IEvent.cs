@@ -22,6 +22,6 @@ namespace EventSystem
     {
         BitStream Stream { get; }
         int Id { get; }
-        SystemAddress OriginPlayer { get; set; }
+        SystemAddress Sender { get; set; }
     }
 }

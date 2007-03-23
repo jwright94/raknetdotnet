@@ -69,6 +69,7 @@
     <Compile Include="GameManager.cs" />
     <Compile Include="IEvent.cs" />
     <Compile Include="IEventFactory.cs" />
+    <Compile Include="IEventHandlers.cs" />
     <Compile Include="IFrameListener.cs" />
     <Compile Include="IGameState.cs" />
     <Compile Include="IKeyListener.cs" />

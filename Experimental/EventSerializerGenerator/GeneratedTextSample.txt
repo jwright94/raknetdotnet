@@ -33,11 +33,11 @@ namespace TestEvents {
 			protected set { id = value; }
 		}
 		int id;
-		public SystemAddress OriginPlayer {
-			get { return originPlayer; }
-			set { originPlayer = value; }
+		public SystemAddress Sender {
+			get { return sender; }
+			set { sender = value; }
 		}
-		SystemAddress originPlayer = RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS;
+		SystemAddress sender = RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS;
 	}
 	[Singleton]
 	sealed class TestEventFactory : IEventFactory {
@@ -60,4 +60,21 @@ namespace TestEvents {
 		}
 		public IEvent RecreateEvent(BitStream source) { return null; }
 	}
+	[Singleton]
+	sealed class TestEventHandlers : IEventHandlers {
+		public void CallHandler(ISimpleEvent e) {
+			switch (e.Id) {
+				case 0:
+					if (Simple != null)
+						Simple((SimpleEvent)e);
+					break;
+				
+				default:
+					throw new NetworkException(string.Format("Event id {0} not recognized by TestEventHandlers.CallHandler()!", e.Id));
+				
+			}
+		}
+		public event EventHandler<SimpleEvent> Simple;
+	}
+	delegate void EventHandler<T>(T t) where T : ISimpleEvent;
 }

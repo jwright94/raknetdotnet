@@ -44,6 +44,7 @@
     <Compile Include="CommandLineArguments.cs" />
     <Compile Include="EventAttribute.cs" />
     <Compile Include="EventFactoryGenerator.cs" />
+    <Compile Include="EventHandlersGenerator.cs" />
     <Compile Include="EventInfo.cs" />
     <Compile Include="ICodeWriter.cs" />
     <Compile Include="IGenerator.cs" />

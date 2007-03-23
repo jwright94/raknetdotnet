@@ -5,7 +5,7 @@ using System.Text;
 namespace EventSystem
 {
     using RakNetDotNet;
-    
+
     class Program
     {
         static void Main(string[] args)

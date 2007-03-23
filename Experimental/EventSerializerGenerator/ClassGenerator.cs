@@ -97,11 +97,11 @@ namespace EventSerializerGenerator
         }
         void WriteOriginPlayer(ICodeWriter o)
         {
-            o.BeginBlock("public SystemAddress OriginPlayer {");
-            o.WriteLine("get { return originPlayer; }");
-            o.WriteLine("set { originPlayer = value; }");
+            o.BeginBlock("public SystemAddress Sender {");
+            o.WriteLine("get { return sender; }");
+            o.WriteLine("set { sender = value; }");
             o.EndBlock("}");
-            o.WriteLine("SystemAddress originPlayer = RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS;");
+            o.WriteLine("SystemAddress sender = RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS;");
         }
         void WriteBehaviorFlags(ICodeWriter o)
         {
