@@ -58,6 +58,12 @@
   <ItemGroup>
     <Content Include="GeneratedTextSample.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\RakNetDotNet\RakNetDotNet.csproj">
+      <Project>{F078BA68-B214-46E7-AB72-F3B99DF589B2}</Project>
+      <Name>RakNetDotNet</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
