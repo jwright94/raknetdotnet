@@ -4,12 +4,17 @@ using System.Text;
 
 namespace EventSerializerGenerator
 {
-    [AttributeUsage(AttributeTargets.Class)]
-    public class EventAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+    public sealed class SiteOfHandlingAttribute : Attribute
     {
-        public bool IsBroadcast = false;
-        public bool IsTwoWay = false;
-        public bool RunOnServer = false;
-        public bool PerformBeforeConnectOnClient = false;
+        public SiteOfHandlingAttribute(string site)
+        {
+            this.site = site;
+        }
+        public string Site
+        {
+            get { return site; }
+        }
+        string site;
     }
 }

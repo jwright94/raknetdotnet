@@ -1,17 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using RakNetDotNet;
+using EventSerializerGenerator;
 
 namespace SampleEvents
 {
-    using RakNetDotNet;
-    using EventSerializerGenerator;
-
-    [Event(
-        IsBroadcast=true, 
-        IsTwoWay=false, 
-        PerformBeforeConnectOnClient=false, 
-        RunOnServer=true)]
+    [SiteOfHandling("Server")]
     public partial class RegisterEvent
     {
         string name;
@@ -21,6 +16,8 @@ namespace SampleEvents
 }
 namespace AnotherSampleEvents
 {
+    [SiteOfHandling("Server")]
+    [SiteOfHandling("Client")]
     public partial class OtherEvent
     {
     }

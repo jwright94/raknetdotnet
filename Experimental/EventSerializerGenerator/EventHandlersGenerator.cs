@@ -26,7 +26,6 @@ namespace EventSerializerGenerator
             WriteCallHandler(o);
             WriteEvents(o);
             o.EndBlock("}");
-            WriteDelegate(o);
         }
         void WriteCallHandler(ICodeWriter o)
         {
@@ -42,7 +41,7 @@ namespace EventSerializerGenerator
                 o.EndBlock("");
             }
             o.BeginBlock("default:");
-            o.WriteLine("throw new NetworkException(string.Format(\"Event id {0} not recognized by TestEventHandlers.CallHandler()!\", e.Id));");
+            o.WriteLine("throw new NetworkException(string.Format(\"Event id {{0}} not recognized by {0}.CallHandler()!\", e.Id));", handlersName);
             o.EndBlock("");
             o.EndBlock("}");
             o.EndBlock("}");
@@ -53,10 +52,6 @@ namespace EventSerializerGenerator
             {
                 o.WriteLine("public event EventHandler<{0}> {1};", ei.Type.Name, GetHandlerName(ei.Type.Name));
             }
-        }
-        void WriteDelegate(ICodeWriter o)
-        {
-            o.WriteLine("delegate void EventHandler<T>(T t) where T : ISimpleEvent;");
         }
         string GetHandlerName(string typeName)
         {
