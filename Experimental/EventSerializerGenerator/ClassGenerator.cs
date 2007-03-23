@@ -43,7 +43,7 @@ namespace EventSerializerGenerator
             WriteStreamReadStatement(o, "id");
             foreach (FieldInfo field in GetFields())
             {
-                WriteStreamReadStatement(o, field.Name);
+                WriteSerializeFieldStatement(o, field, false);
             }
             o.EndBlock("}");
         }
@@ -77,7 +77,7 @@ namespace EventSerializerGenerator
             WriteStreamWriteStatement(o, "id");
             foreach (FieldInfo field in GetFields())
             {
-                WriteStreamWriteStatement(o, field.Name);
+                WriteSerializeFieldStatement(o, field, true);
             }
             o.WriteLine("return eventStream;");
             o.EndBlock("}");
@@ -86,6 +86,20 @@ namespace EventSerializerGenerator
         void WriteStreamWriteStatement(ICodeWriter o, string fieldName)
         {
             o.WriteLine("eventStream.Write({0});", fieldName);
+        }
+        void WriteSerializeFieldStatement(ICodeWriter o, FieldInfo fi, bool writeToBitstream)
+        {
+            if (BitstreamSerializationHelper.DoesSupportPrimitiveType(fi.FieldType))
+            {
+                if(writeToBitstream)
+                    WriteStreamWriteStatement(o, fi.Name);
+                else
+                    WriteStreamReadStatement(o, fi.Name);
+            }
+            else
+            {
+                throw new ApplicationException("This type " + fi.FieldType + " doesn't support.");
+            }
         }
         void WriteId(ICodeWriter o)
         {
@@ -113,5 +127,28 @@ namespace EventSerializerGenerator
         }
         Type type;
         int eventId;
+    }
+
+    static class BitstreamSerializationHelper
+    {
+        static BitstreamSerializationHelper()
+        {
+            supportingPrimitives = new List<Type>();
+            supportingPrimitives.Add(typeof(bool));
+            supportingPrimitives.Add(typeof(byte));
+            supportingPrimitives.Add(typeof(double));
+            supportingPrimitives.Add(typeof(float));
+            supportingPrimitives.Add(typeof(int));
+            supportingPrimitives.Add(typeof(sbyte));
+            supportingPrimitives.Add(typeof(short));
+            supportingPrimitives.Add(typeof(string));
+            supportingPrimitives.Add(typeof(uint));
+            supportingPrimitives.Add(typeof(ushort));
+        }
+        public static bool DoesSupportPrimitiveType(Type t)
+        {
+            return supportingPrimitives.Contains(t);
+        }
+        static IList<Type> supportingPrimitives;
     }
 }
