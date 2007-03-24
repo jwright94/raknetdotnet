@@ -1,23 +1,22 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Castle.Core.Logging;
+using RakNetDotNet;
 
 namespace EventSystem
 {
-    using Castle.Core.Logging;
-    using RakNetDotNet;
-
-    sealed class NamingClientComponent : INamingComponent
+    internal sealed class NamingClientComponent : INamingComponent
     {
         public NamingClientComponent(ILogger logger)
         {
             this.logger = logger;
         }
+
         #region INamingComponent Members
+
         public void OnStartup(RakPeerInterface peer)
         {
             peer.AttachPlugin(databaseClient);
         }
+
         public void OnConnectionRequestAccepted(RakPeerInterface peer, Packet packet)
         {
             byte numCellUpdates = 0;
@@ -27,14 +26,18 @@ namespace EventSystem
             cellUpdates[numCellUpdates].cellValue.Set("Unknown Service");
             numCellUpdates++;
 
-            databaseClient.UpdateRow("Services", string.Empty, RowUpdateMode.RUM_UPDATE_OR_ADD_ROW, false, 0, cellUpdates, numCellUpdates, packet.systemAddress, false);
+            databaseClient.UpdateRow("Services", string.Empty, RowUpdateMode.RUM_UPDATE_OR_ADD_ROW, false, 0,
+                                     cellUpdates, numCellUpdates, packet.systemAddress, false);
         }
+
         public void OnDatabaseQueryReply(RakPeerInterface peer, Packet packet)
         {
             NamingComponentHelper.PrintIncomingTable(packet);
         }
+
         #endregion
-        LightweightDatabaseClient databaseClient = new LightweightDatabaseClient();
-        readonly ILogger logger;
+
+        private LightweightDatabaseClient databaseClient = new LightweightDatabaseClient();
+        private readonly ILogger logger;
     }
 }

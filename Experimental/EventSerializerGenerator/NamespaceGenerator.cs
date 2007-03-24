@@ -1,18 +1,19 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace EventSerializerGenerator
 {
-    sealed class NamespaceGenerator : AbstractGenerator
+    internal sealed class NamespaceGenerator : AbstractGenerator
     {
-        public NamespaceGenerator(string _namespace, IEnumerable<Type> typesInNamespace)  // TODO: I forgot how to use simbol.
+        public NamespaceGenerator(string _namespace, IEnumerable<Type> typesInNamespace)
+            // TODO: I forgot how to use simbol.
         {
             this._namespace = _namespace;
             IList<EventInfo> eventInfos = GetEventInfos(typesInNamespace);
             AddClassGenerators(eventInfos);
             AddHandlersGenerators(ClassifyBySite(eventInfos));
         }
+
         public override void Write(ICodeWriter o)
         {
             o.BeginBlock("namespace {0} {{", _namespace);
@@ -23,18 +24,21 @@ namespace EventSerializerGenerator
             WriteEventHandlerDelegate(o);
             o.EndBlock("}");
         }
-        void WriteEventHandlerDelegate(ICodeWriter o)
+
+        private static void WriteEventHandlerDelegate(ICodeWriter o)
         {
             o.WriteLine("delegate void EventHandler<T>(T t) where T : ISimpleEvent;");
         }
-        void AddClassGenerators(IList<EventInfo> eventInfos)
+
+        private void AddClassGenerators(IList<EventInfo> eventInfos)
         {
             foreach (EventInfo ei in eventInfos)
             {
                 AddChildGenerator(new ClassGenerator(ei.Type, ei.EventId));
             }
         }
-        void AddHandlersGenerators(IDictionary<SiteOfHandlingAttribute, IList<EventInfo>> eventInfosBySite)
+
+        private void AddHandlersGenerators(IDictionary<SiteOfHandlingAttribute, IList<EventInfo>> eventInfosBySite)
         {
             foreach (KeyValuePair<SiteOfHandlingAttribute, IList<EventInfo>> site in eventInfosBySite)
             {
@@ -43,7 +47,8 @@ namespace EventSerializerGenerator
                 AddChildGenerator(new EventHandlersGenerator(BasicHandlersName + OnSomewhere, site.Value));
             }
         }
-        IList<EventInfo> GetEventInfos(IEnumerable<Type> typesInNamespace)
+
+        private static IList<EventInfo> GetEventInfos(IEnumerable<Type> typesInNamespace)
         {
             IList<EventInfo> eventInfos = new List<EventInfo>();
             foreach (Type type in typesInNamespace)
@@ -55,12 +60,14 @@ namespace EventSerializerGenerator
             }
             return eventInfos;
         }
-        IDictionary<SiteOfHandlingAttribute, IList<EventInfo>> ClassifyBySite(IList<EventInfo> eventInfos)
+
+        private static IDictionary<SiteOfHandlingAttribute, IList<EventInfo>> ClassifyBySite(IList<EventInfo> eventInfos)
         {
-            IDictionary<SiteOfHandlingAttribute, IList<EventInfo>> eventInfosBySite = new Dictionary<SiteOfHandlingAttribute, IList<EventInfo>>();
+            IDictionary<SiteOfHandlingAttribute, IList<EventInfo>> eventInfosBySite =
+                new Dictionary<SiteOfHandlingAttribute, IList<EventInfo>>();
             foreach (EventInfo ei in eventInfos)
             {
-                Attribute[] attributes = Attribute.GetCustomAttributes(ei.Type, typeof(SiteOfHandlingAttribute));
+                Attribute[] attributes = Attribute.GetCustomAttributes(ei.Type, typeof (SiteOfHandlingAttribute));
                 foreach (SiteOfHandlingAttribute siteAttribute in attributes)
                 {
                     if (eventInfosBySite.ContainsKey(siteAttribute))
@@ -77,18 +84,22 @@ namespace EventSerializerGenerator
             }
             return eventInfosBySite;
         }
-        string BasicFactoryName
+
+        private string BasicFactoryName
         {
             get { return Prefix + "EventFactory"; }
         }
-        string BasicHandlersName
+
+        private string BasicHandlersName
         {
             get { return Prefix + "EventHandlers"; }
         }
-        string Prefix
+
+        private string Prefix
         {
             get { return NamingHelper.GetPrefix(_namespace, "Events"); }
         }
-        string _namespace;
+
+        private string _namespace;
     }
 }

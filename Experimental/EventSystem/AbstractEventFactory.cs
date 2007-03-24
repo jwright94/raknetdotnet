@@ -1,20 +1,23 @@
-using System;
 using System.Collections.Generic;
-using System.Text;
+using RakNetDotNet;
 
 namespace EventSystem
 {
-    using RakNetDotNet;
-
-    abstract class AbstractEventFactory : IEventFactory
+    internal abstract class AbstractEventFactory : IEventFactory
     {
-        public ISimpleEvent RecreateSimpleEvent(BitStream source) { return null; }
+        public ISimpleEvent RecreateSimpleEvent(BitStream source)
+        {
+            return null;
+        }
+
         public abstract IEvent RecreateEvent(BitStream source);
+
         public void Reset()
         {
             counter = 0;
             storage.Clear();
         }
+
         public void WipeEvent(IEvent _event)
         {
             if (storage.Contains(_event))
@@ -22,14 +25,18 @@ namespace EventSystem
                 storage.Remove(_event);
             }
         }
+
         protected void StoreEvent(IEvent _event)
         {
             ++counter;
             storage.Add(_event);
         }
+
         #region Transient State
-        ulong counter = 0;
-        ICollection<IEvent> storage = new List<IEvent>();
+
+        private ulong counter = 0;
+        private ICollection<IEvent> storage = new List<IEvent>();
+
         #endregion
     }
 }

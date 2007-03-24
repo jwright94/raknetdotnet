@@ -1,20 +1,21 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Diagnostics;
 
 namespace EventSystem
 {
-    using System.Diagnostics;
-
-    sealed class GameManager : IDisposable, IKeyListener, IFrameListener
+    internal sealed class GameManager : IDisposable, IKeyListener, IFrameListener
     {
         #region Ogre-like singleton implementation.
-        static GameManager instance;
+
+        private static GameManager instance;
+
         public GameManager()
         {
             Debug.Assert(instance == null);
             instance = this;
         }
+
         public void Dispose()
         {
             Debug.Assert(instance != null);
@@ -28,6 +29,7 @@ namespace EventSystem
                 states.Pop();
             }
         }
+
         public static GameManager Instance
         {
             get
@@ -36,7 +38,9 @@ namespace EventSystem
                 return instance;
             }
         }
+
         #endregion
+
         public void Start(IGameState state)
         {
             log("starting...");
@@ -50,6 +54,7 @@ namespace EventSystem
 
             Root.Instance.StartRendering();
         }
+
         public void ChangeState(IGameState state)
         {
             Debug.Assert(state != null);
@@ -73,6 +78,7 @@ namespace EventSystem
             states.Push(state);
             states.Peek().Enter();
         }
+
         public void PushState(IGameState state)
         {
             Debug.Assert(state != null);
@@ -90,35 +96,47 @@ namespace EventSystem
             states.Push(state);
             states.Peek().Enter();
         }
+
         public void PopState()
         {
             log("popping state");
 
             // TODO - impl.
         }
+
         #region Private Members
-        void log(string message)
+
+        private void log(string message)
         {
             Console.WriteLine(message);
         }
-        void log(string format, params object[] args)
+
+        private void log(string format, params object[] args)
         {
             Console.WriteLine(string.Format(format, args));
         }
-        Stack<IGameState> states = new Stack<IGameState>();
+
+        private Stack<IGameState> states = new Stack<IGameState>();
+
         #endregion
+
         #region IFrameListener Members
+
         public bool FrameStarted()
         {
             return states.Peek().FrameStarted();
         }
+
         #endregion
+
         #region IKeyListener Members
+
         public bool KeyPressed(char key)
         {
             states.Peek().KeyPressed(key);
             return true;
         }
+
         #endregion
     }
 }

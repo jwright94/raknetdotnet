@@ -1,24 +1,26 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace EventSerializerGenerator
 {
-    sealed class EventHandlersGenerator : IGenerator
+    internal sealed class EventHandlersGenerator : IGenerator
     {
         public EventHandlersGenerator(string handlersName, IList<EventInfo> eventInfos)
         {
             this.handlersName = handlersName;
             this.eventInfos = eventInfos;
         }
+
         public void AddChildGenerator(IGenerator generator)
         {
             throw new Exception("The method or operation is not implemented.");
         }
+
         public void RemoveChildGenerator(IGenerator generator)
         {
             throw new Exception("The method or operation is not implemented.");
         }
+
         public void Write(ICodeWriter o)
         {
             o.WriteLine("[Singleton]");
@@ -27,7 +29,8 @@ namespace EventSerializerGenerator
             WriteEvents(o);
             o.EndBlock("}");
         }
-        void WriteCallHandler(ICodeWriter o)
+
+        private void WriteCallHandler(ICodeWriter o)
         {
             o.BeginBlock("public void CallHandler(ISimpleEvent e) {");
             o.BeginBlock("switch (e.Id) {");
@@ -41,23 +44,28 @@ namespace EventSerializerGenerator
                 o.EndBlock("");
             }
             o.BeginBlock("default:");
-            o.WriteLine("throw new NetworkException(string.Format(\"Event id {{0}} not recognized by {0}.CallHandler()!\", e.Id));", handlersName);
+            o.WriteLine(
+                "throw new NetworkException(string.Format(\"Event id {{0}} not recognized by {0}.CallHandler()!\", e.Id));",
+                handlersName);
             o.EndBlock("");
             o.EndBlock("}");
             o.EndBlock("}");
         }
-        void WriteEvents(ICodeWriter o)
+
+        private void WriteEvents(ICodeWriter o)
         {
             foreach (EventInfo ei in eventInfos)
             {
                 o.WriteLine("public event EventHandler<{0}> {1};", ei.Type.Name, GetHandlerName(ei.Type.Name));
             }
         }
-        string GetHandlerName(string typeName)
+
+        private static string GetHandlerName(string typeName)
         {
             return NamingHelper.GetPrefix(typeName, "Event");
         }
-        string handlersName;
-        IList<EventInfo> eventInfos;
+
+        private string handlersName;
+        private IList<EventInfo> eventInfos;
     }
 }

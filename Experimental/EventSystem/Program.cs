@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Runtime.InteropServices;
+using System.Threading;
+using RakNetDotNet;
 
 namespace EventSystem
 {
-    using RakNetDotNet;
-
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             Console.WriteLine("(S)erver or (U)nifiedNetwork or (C)lient?");
             char key = Console.ReadKey(true).KeyChar;
@@ -19,7 +19,8 @@ namespace EventSystem
             else
                 ClientMain(args);
         }
-        static void ClientMain(string[] args)
+
+        private static void ClientMain(string[] args)
         {
             // TODO - parse options
             ushort clientPort = 20000;
@@ -46,7 +47,8 @@ namespace EventSystem
 
             Console.WriteLine("Quiting...");
         }
-        static void ServerMain(string[] args)
+
+        private static void ServerMain(string[] args)
         {
             EventCenterServer server = new EventCenterServer("server.xml");
             SampleEventFactory factory = ServiceConfigurator.Resolve<SampleEventFactory>();
@@ -60,8 +62,10 @@ namespace EventSystem
             factory.Reset();
             server.Dispose();
         }
+
         #region Unified Network
-        static void UnifiedNetworkMain(string[] args)
+
+        private static void UnifiedNetworkMain(string[] args)
         {
             const ushort NAME_SERVICE_PORT = 6000;
             bool isNS;
@@ -81,7 +85,7 @@ namespace EventSystem
 
             Dictionary<string, object> extendedProperties = new Dictionary<string, object>();
             extendedProperties.Add("isNS", isNS);
-            extendedProperties.Add("allowedPlayers", (ushort)10);
+            extendedProperties.Add("allowedPlayers", (ushort) 10);
             extendedProperties.Add("port", serverPort);
             UnifiedNetwork unifiedNetwork = new UnifiedNetwork("server.xml", extendedProperties);
             SampleEventFactory factory = ServiceConfigurator.Resolve<SampleEventFactory>();
@@ -94,18 +98,19 @@ namespace EventSystem
             {
                 unifiedNetwork.ConnectPlayer("127.0.0.1", NAME_SERVICE_PORT);
             }
-            System.Console.WriteLine("running... Press space to see status.");
+            Console.WriteLine("running... Press space to see status.");
             while (true)
             {
                 PrintConnections();
                 unifiedNetwork.Update();
-                System.Threading.Thread.Sleep(0);
+                Thread.Sleep(0);
             }
 
             factory.Reset();
             unifiedNetwork.Dispose();
         }
-        static void PrintConnections()
+
+        private static void PrintConnections()
         {
             if (_kbhit() != 0)
             {
@@ -119,7 +124,8 @@ namespace EventSystem
                     Console.Write("{0} (Conn): ", serverPort);
                     for (int j = 0; j < numPeers; j++)
                     {
-                        SystemAddress systemAddress = UnifiedNetwork.Instance.ServerInterface.GetSystemAddressFromIndex(j);
+                        SystemAddress systemAddress =
+                            UnifiedNetwork.Instance.ServerInterface.GetSystemAddressFromIndex(j);
                         if (!systemAddress.Equals(RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS))
                             Console.Write("{0} ", systemAddress.port);
                     }
@@ -131,7 +137,7 @@ namespace EventSystem
                 }
                 else if (key == 't')
                 {
-                    IEvent _event = new TestConnectionEvent2((int)SampleEventFactory.EventTypes.TESTCONNECTION2);
+                    IEvent _event = new TestConnectionEvent2((int) SampleEventFactory.EventTypes.TESTCONNECTION2);
 
                     ServiceConfigurator.Resolve<SampleEventFactory>().StoreExternallyCreatedEvent(_event);
                     UnifiedNetwork.Instance.SendEvent(_event, RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS);
@@ -139,9 +145,11 @@ namespace EventSystem
                 key = '\0';
             }
         }
-        [System.Runtime.InteropServices.DllImport("crtdll.dll")]
-        public static extern int _kbhit();  // I do not want to use this.
-        static ushort serverPort;
+
+        [DllImport("crtdll.dll")]
+        public static extern int _kbhit(); // I do not want to use this.
+        private static ushort serverPort;
+
         #endregion
     }
 }

@@ -1,15 +1,15 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Diagnostics;
+using System.Threading;
 
 namespace EventSystem
 {
-    using System.Diagnostics;
-
-    class PlayState : AbstractGameState, IDisposable
+    internal class PlayState : AbstractGameState, IDisposable
     {
         #region Ogre-like singleton implementation.
-        static PlayState instance;
+
+        private static PlayState instance;
+
         public PlayState(ushort _clientPort, string _serverIP)
             : base("Play")
         {
@@ -19,11 +19,13 @@ namespace EventSystem
             clientPort = _clientPort;
             serverIP = _serverIP;
         }
+
         public void Dispose()
         {
             Debug.Assert(instance != null);
             instance = null;
         }
+
         public static PlayState Instance
         {
             get
@@ -32,8 +34,11 @@ namespace EventSystem
                 return instance;
             }
         }
+
         #endregion
+
         #region IGameState Members
+
         public override void Enter()
         {
             log("starting...");
@@ -50,6 +55,7 @@ namespace EventSystem
                 return;
             }
         }
+
         public override void Exit()
         {
             ServiceConfigurator.Resolve<SampleEventFactory>().Reset();
@@ -58,39 +64,49 @@ namespace EventSystem
 
             eventCenterClient.Dispose();
         }
+
         public override void Pause()
         {
         }
+
         public override void Resume()
         {
         }
+
         public override bool KeyPressed(char key)
         {
             return true;
         }
+
         public override bool FrameStarted()
         {
-            Update(0.0f);  // hmm
+            Update(0.0f); // hmm
 
             return true;
         }
+
         #endregion
+
         #region Protected Members
+
         protected void Update(float dt)
         {
             UpdateNetwork();
 
             EventCenterClient.Instance.Update();
         }
+
         protected void UpdateNetwork()
         {
             EventCenterClient.Instance.Update();
         }
+
         protected void Load(string xmlFile)
         {
             // TODO - use xml reader
             networkConnectTimeout = 100;
         }
+
         protected void ConnectToServer()
         {
             log("starting network...");
@@ -121,30 +137,34 @@ namespace EventSystem
                 while (!reply && i <= milliSecondWait)
                 {
                     reply = ClientWorld.Instance.GetTestResponseFromServer();
-                    System.Threading.Thread.Sleep(1);
+                    Thread.Sleep(1);
                     EventCenterClient.Instance.Update();
                     ++i;
 
-                    if (i % 10 == 0) Console.WriteLine("{0} {1}", i, networkConnectTimeout);
+                    if (i%10 == 0) Console.WriteLine("{0} {1}", i, networkConnectTimeout);
                 }
 
                 if (reply) success = true;
             }
         }
+
         #endregion
+
         #region Private Members
-        void log(string message)
+
+        private void log(string message)
         {
             Console.WriteLine(message);
         }
 
-        long networkConnectTimeout;
+        private long networkConnectTimeout;
 
-        ushort clientPort;
-        string serverIP;
+        private ushort clientPort;
+        private string serverIP;
 
-        EventCenterClient eventCenterClient;
-        RpcCalls rpcCalls;
+        private EventCenterClient eventCenterClient;
+        private RpcCalls rpcCalls;
+
         #endregion
     }
 }

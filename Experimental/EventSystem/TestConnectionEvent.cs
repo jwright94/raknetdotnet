@@ -1,12 +1,9 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
+using RakNetDotNet;
 
 namespace EventSystem
 {
-    using RakNetDotNet;
-
-    sealed class TestConnectionEvent : AbstractEvent
+    internal sealed class TestConnectionEvent : AbstractEvent
     {
         public TestConnectionEvent(int uniqueId)
         {
@@ -14,6 +11,7 @@ namespace EventSystem
 
             Id = uniqueId;
         }
+
         public TestConnectionEvent(BitStream stream)
         {
             eventStream = stream;
@@ -24,11 +22,16 @@ namespace EventSystem
 
             eventStream.Read(out cameBackFromServer);
         }
+
         #region Private Members
-        BitStream eventStream;
-        bool cameBackFromServer;
+
+        private BitStream eventStream;
+        private bool cameBackFromServer;
+
         #endregion
+
         #region AbstractEvent Methods
+
         public override BitStream Stream
         {
             get
@@ -41,6 +44,7 @@ namespace EventSystem
                 return eventStream;
             }
         }
+
         public override void Perform()
         {
             if (cameBackFromServer)
@@ -54,26 +58,31 @@ namespace EventSystem
                 cameBackFromServer = true;
             }
         }
+
         public override bool IsBroadcast
         {
             get { return false; }
         }
+
         public override bool IsTwoWay
         {
             get { return true; }
         }
+
         public override bool RunOnServer
         {
             get { return true; }
         }
+
         public override bool PerformBeforeConnectOnClient
         {
             get { return false; }
         }
+
         #endregion
     }
 
-    sealed class TestConnectionEvent2 : AbstractEvent
+    internal sealed class TestConnectionEvent2 : AbstractEvent
     {
         public TestConnectionEvent2(int uniqueId)
         {
@@ -81,6 +90,7 @@ namespace EventSystem
 
             Id = uniqueId;
         }
+
         public TestConnectionEvent2(BitStream stream)
         {
             eventStream = stream;
@@ -91,11 +101,16 @@ namespace EventSystem
 
             eventStream.Read(out cameBackFromServer);
         }
+
         #region Private Members
-        BitStream eventStream;
-        bool cameBackFromServer;
+
+        private BitStream eventStream;
+        private bool cameBackFromServer;
+
         #endregion
+
         #region AbstractEvent Methods
+
         public override BitStream Stream
         {
             get
@@ -108,6 +123,7 @@ namespace EventSystem
                 return eventStream;
             }
         }
+
         public override void Perform()
         {
             if (cameBackFromServer)
@@ -121,24 +137,29 @@ namespace EventSystem
                 cameBackFromServer = true;
             }
         }
+
         public override bool IsBroadcast
         {
             //get { return false; }
             get { return true; }
         }
+
         public override bool IsTwoWay
         {
             //get { return true; }
             get { return false; }
         }
+
         public override bool RunOnServer
         {
             get { return true; }
         }
+
         public override bool PerformBeforeConnectOnClient
         {
             get { return false; }
         }
+
         #endregion
     }
 }

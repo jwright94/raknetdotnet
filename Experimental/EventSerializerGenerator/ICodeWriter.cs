@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace EventSerializerGenerator
 {
-    interface ICodeWriter
+    internal interface ICodeWriter
     {
         void BeginBlock(string format, params object[] arg);
         void EndBlock(string format, params object[] arg);

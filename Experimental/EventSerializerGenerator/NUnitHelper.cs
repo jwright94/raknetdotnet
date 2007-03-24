@@ -1,23 +1,22 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Reflection;
 using NUnit.Framework;
 
 namespace EventSerializerGenerator
 {
-    static class PrivateAccessor
+    internal static class PrivateAccessor
     {
         public static object GetField(object instance, string name)
         {
             Type t = instance.GetType();
 
             FieldInfo f = t.GetField(name, BindingFlags.Instance
-                                   | BindingFlags.NonPublic
-                                   | BindingFlags.Public);
+                                           | BindingFlags.NonPublic
+                                           | BindingFlags.Public);
 
             return f.GetValue(instance);
         }
+
         public static object ExecuteMethod(object instance, string name, params object[] paramList)
         {
             Type t = instance.GetType();
@@ -28,31 +27,36 @@ namespace EventSerializerGenerator
                 paramTypes[i] = paramList[i].GetType();
 
             MethodInfo m = t.GetMethod(name, BindingFlags.Instance
-                                     | BindingFlags.NonPublic
-                                     | BindingFlags.Public,
-                                    null,
-                                    paramTypes,
-                                    null);
+                                             | BindingFlags.NonPublic
+                                             | BindingFlags.Public,
+                                       null,
+                                       paramTypes,
+                                       null);
 
             return m.Invoke(instance, paramList);
         }
     }
-    sealed class NonPublic
+
+    internal sealed class NonPublic
     {
         public int GetPrivateValue()
         {
             return privateValue;
         }
-        int privateValue;
-        void Increment()
+
+        private int privateValue;
+
+        private void Increment()
         {
             privateValue++;
         }
-        void SetValue(int value)
+
+        private void SetValue(int value)
         {
             privateValue = value;
         }
     }
+
     [TestFixture]
     public sealed class PrivateAccessorTestCase
     {
@@ -61,12 +65,14 @@ namespace EventSerializerGenerator
         {
             nonPublic = new NonPublic();
         }
+
         [Test]
         public void GetField()
         {
-            int privateValue = (int)PrivateAccessor.GetField(nonPublic, "privateValue");
+            int privateValue = (int) PrivateAccessor.GetField(nonPublic, "privateValue");
             Assert.AreEqual(0, privateValue);
         }
+
         [Test]
         public void WithoutArg()
         {
@@ -74,6 +80,7 @@ namespace EventSerializerGenerator
             PrivateAccessor.ExecuteMethod(nonPublic, "Increment");
             Assert.AreEqual(1, nonPublic.GetPrivateValue());
         }
+
         [Test]
         public void WithArg()
         {
@@ -81,6 +88,7 @@ namespace EventSerializerGenerator
             PrivateAccessor.ExecuteMethod(nonPublic, "SetValue", 1);
             Assert.AreEqual(1, nonPublic.GetPrivateValue());
         }
-        NonPublic nonPublic;
+
+        private NonPublic nonPublic;
     }
 }

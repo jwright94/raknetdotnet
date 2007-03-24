@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Reflection;
 using System.IO;
 using NUnit.Framework;
+using TestEvents;
+using TestEvents2;
 
 namespace EventSerializerGenerator
 {
-    sealed class RootGenerator : AbstractGenerator
+    internal sealed class RootGenerator : AbstractGenerator
     {
         public RootGenerator(Type[] allTypes)
         {
@@ -18,6 +18,7 @@ namespace EventSerializerGenerator
                 AddChildGenerator(new NamespaceGenerator(namespaceTypes.Key, namespaceTypes.Value));
             }
         }
+
         public override void Write(ICodeWriter o)
         {
             WriteUsing(o);
@@ -26,7 +27,8 @@ namespace EventSerializerGenerator
                 generator.Write(o);
             }
         }
-        void WriteUsing(ICodeWriter o)
+
+        private static void WriteUsing(ICodeWriter o)
         {
             o.WriteLine("using System;");
             o.WriteLine("using System.Collections.Generic;");
@@ -36,7 +38,8 @@ namespace EventSerializerGenerator
             o.WriteLine("using RakNetDotNet;");
             o.WriteLine("using EventSystem;");
         }
-        IDictionary<string, ICollection<Type>> GetNamespaceTypesHash(Type[] allTypes)
+
+        private static IDictionary<string, ICollection<Type>> GetNamespaceTypesHash(Type[] allTypes)
         {
             IDictionary<string, ICollection<Type>> namespaceTypesHash = new Dictionary<string, ICollection<Type>>();
             foreach (Type type in allTypes)
@@ -51,7 +54,8 @@ namespace EventSerializerGenerator
             }
             return namespaceTypesHash;
         }
-        Type[] GetEventClasses(Type[] types)
+
+        private static Type[] GetEventClasses(Type[] types)
         {
             List<Type> filtered = new List<Type>();
             foreach (Type t in types)
@@ -73,19 +77,21 @@ namespace EventSerializerGenerator
         [Test]
         public void ClassifyTypes()
         {
-            Type[] types = new Type[] { typeof(TestEvents.SimpleEvent), typeof(TestEvents2.SimpleEvent2) };
+            Type[] types = new Type[] {typeof (SimpleEvent), typeof (SimpleEvent2)};
             IGenerator rootGenerator = new RootGenerator(types);
             IDictionary<string, ICollection<Type>> namespaceTypesHash =
-                (IDictionary<string, ICollection<Type>>)PrivateAccessor.ExecuteMethod(rootGenerator, "GetNamespaceTypesHash", (object)types);
+                (IDictionary<string, ICollection<Type>>)
+                PrivateAccessor.ExecuteMethod(rootGenerator, "GetNamespaceTypesHash", types);
             Assert.IsTrue(namespaceTypesHash.ContainsKey("TestEvents"));
             Assert.IsTrue(namespaceTypesHash.ContainsKey("TestEvents2"));
-            Assert.IsTrue(namespaceTypesHash["TestEvents"].Contains(typeof(TestEvents.SimpleEvent)));
-            Assert.IsTrue(namespaceTypesHash["TestEvents2"].Contains(typeof(TestEvents2.SimpleEvent2)));
+            Assert.IsTrue(namespaceTypesHash["TestEvents"].Contains(typeof (SimpleEvent)));
+            Assert.IsTrue(namespaceTypesHash["TestEvents2"].Contains(typeof (SimpleEvent2)));
         }
+
         [Test]
         public void FinalOutput()
         {
-            Type[] types = new Type[] { typeof(TestEvents.SimpleEvent) };
+            Type[] types = new Type[] {typeof (SimpleEvent)};
             IGenerator rootGenerator = new RootGenerator(types);
             TextWriter textWriter = new StringWriter();
             rootGenerator.Write(new CodeWriter(textWriter));

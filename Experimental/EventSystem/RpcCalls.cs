@@ -1,24 +1,21 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Diagnostics;
+using Castle.Core;
+using Castle.Core.Logging;
+using RakNetDotNet;
 
 namespace EventSystem
 {
-    using System.Diagnostics;
-    using RakNetDotNet;
-    using Castle.Core;
-    using Castle.Core.Logging;
-
-    delegate void ProcessEventDelegate(IEvent _event);
+    internal delegate void ProcessEventDelegate(IEvent _event);
 
     [Singleton]
-    sealed class RpcCalls
+    internal sealed class RpcCalls
     {
         public RpcCalls(AbstractEventFactory factory, ILogger logger)
         {
             this.factory = factory;
             this.logger = logger;
         }
+
         public static void SendEventToClient(RPCParameters _params)
         {
             BitStream source = new BitStream(_params, false);
@@ -30,6 +27,7 @@ namespace EventSystem
 
             instance.WipeEvent(_event);
         }
+
         public static void SendEventToServer(RPCParameters _params)
         {
             SystemAddress sender = _params.sender;
@@ -43,36 +41,47 @@ namespace EventSystem
             Debug.Assert(instance.ProcessEventOnServerSide != null);
             instance.ProcessEventOnServerSide(_event);
         }
+
         public void Reset()
         {
             ProcessEventOnClientSide = null;
             ProcessEventOnServerSide = null;
         }
+
         public IEvent RecreateEvent(BitStream source)
         {
             return factory.RecreateEvent(source);
         }
+
         public void WipeEvent(IEvent _event)
         {
             factory.WipeEvent(_event);
         }
+
         public ILogger Logger
         {
             get { return logger; }
         }
+
         #region Transient State
+
         /// <summary>
         /// if on sever-side then null
         /// </summary>
         public event ProcessEventDelegate ProcessEventOnClientSide;
+
         /// <summary>
         /// if on client-side then null
         /// </summary>
         public event ProcessEventDelegate ProcessEventOnServerSide;
+
         #endregion
+
         #region Eternal State
-        readonly AbstractEventFactory factory;
-        readonly ILogger logger;
+
+        private readonly AbstractEventFactory factory;
+        private readonly ILogger logger;
+
         #endregion
     }
 }

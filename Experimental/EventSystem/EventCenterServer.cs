@@ -1,16 +1,16 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Diagnostics;
+using System.Threading;
+using RakNetDotNet;
 
 namespace EventSystem
 {
-    using System.Diagnostics;
-    using RakNetDotNet;
-
-    sealed class EventCenterServer : IDisposable
+    internal sealed class EventCenterServer : IDisposable
     {
         #region Ogre-like singleton implementation.
-        static EventCenterServer instance;
+
+        private static EventCenterServer instance;
+
         public EventCenterServer(string configFile)
         {
             Debug.Assert(instance == null);
@@ -25,11 +25,13 @@ namespace EventSystem
             int threadSleepTimer = 0;
             ushort port = 6000;
             SocketDescriptor socketDescriptor = new SocketDescriptor(port, string.Empty);
-            rakServerInterface.Startup(allowedPlayers, threadSleepTimer, new SocketDescriptor[] { socketDescriptor }, 1);
+            rakServerInterface.Startup(allowedPlayers, threadSleepTimer, new SocketDescriptor[] {socketDescriptor}, 1);
             rakServerInterface.SetMaximumIncomingConnections(allowedPlayers);
 
-            rakServerInterface.RegisterAsRemoteProcedureCall("sendeventtoserver", typeof(RpcCalls).GetMethod("SendEventToServer"));
+            rakServerInterface.RegisterAsRemoteProcedureCall("sendeventtoserver",
+                                                             typeof (RpcCalls).GetMethod("SendEventToServer"));
         }
+
         public void Dispose()
         {
             Debug.Assert(instance != null);
@@ -41,6 +43,7 @@ namespace EventSystem
             RakNetworkFactory.DestroyRakPeerInterface(rakServerInterface);
             log("Completed.");
         }
+
         public static EventCenterServer Instance
         {
             get
@@ -49,11 +52,14 @@ namespace EventSystem
                 return instance;
             }
         }
+
         #endregion
+
         public string Name
         {
             get { return name; }
         }
+
         public void ProcessEvent(IEvent _event)
         {
             Debug.Assert(_event != null);
@@ -65,6 +71,7 @@ namespace EventSystem
                 SendEvent(_event);
             }
         }
+
         public void SendEvent(IEvent _event)
         {
             PacketPriority priority = PacketPriority.HIGH_PRIORITY;
@@ -78,7 +85,7 @@ namespace EventSystem
 
             log("sending an event: [{0}], broadcast = {1}", _event.ToString(), broadcast);
 
-            bool result = EventCenterServer.Instance.ServerInterface.RPC(
+            bool result = Instance.ServerInterface.RPC(
                 sendevent,
                 _event.Stream, priority, reliability, orderingChannel,
                 player, broadcast, shiftTimestamp,
@@ -92,6 +99,7 @@ namespace EventSystem
                     log("send data to the client...");
             }
         }
+
         public void Start()
         {
             log("running...");
@@ -134,9 +142,9 @@ namespace EventSystem
                         case RakNetBindings.ID_CONNECTION_LOST:
                             log("A client lost the connection.\n");
                             break;
-                        //case RakNetBindings.ID_RECEIVED_STATIC_DATA:
-                        //    log("Got static data.\n");
-                        //    break;
+                            //case RakNetBindings.ID_RECEIVED_STATIC_DATA:
+                            //    log("Got static data.\n");
+                            //    break;
                         default:
                             log("Message with identifier {0} has arrived.", packetIdentifier);
                             break;
@@ -146,25 +154,31 @@ namespace EventSystem
                 }
                 else
                 {
-                    System.Threading.Thread.Sleep(1);
+                    Thread.Sleep(1);
                 }
             }
         }
+
         public RakPeerInterface ServerInterface
         {
             get { return rakServerInterface; }
         }
+
         #region Private Members
-        void log(string message)
+
+        private void log(string message)
         {
             Console.WriteLine("EventCenterServer> {0}", message);
         }
-        void log(string format, params object[] args)
+
+        private void log(string format, params object[] args)
         {
             log(string.Format(format, args));
         }
-        string name;
-        RakPeerInterface rakServerInterface;
+
+        private string name;
+        private RakPeerInterface rakServerInterface;
+
         #endregion
     }
 }

@@ -1,12 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
+using RakNetDotNet;
 
 namespace EventSystem
 {
-    using RakNetDotNet;
-
-    interface IEvent
+    internal interface IEvent
     {
         BitStream Stream { get; }
         int Id { get; }
@@ -18,7 +14,7 @@ namespace EventSystem
         bool PerformBeforeConnectOnClient { get; }
     }
 
-    interface ISimpleEvent
+    internal interface ISimpleEvent
     {
         BitStream Stream { get; }
         int Id { get; }

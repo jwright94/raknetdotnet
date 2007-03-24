@@ -1,11 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace EventSerializerGenerator
 {
     // I use the composit pattern.
-    interface IGenerator
+    internal interface IGenerator
     {
         void AddChildGenerator(IGenerator generator);
         void RemoveChildGenerator(IGenerator generator);

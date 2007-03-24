@@ -1,20 +1,18 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Diagnostics;
+using Castle.Core;
+using RakNetDotNet;
 
 namespace EventSystem
 {
-    using System.Diagnostics;
-    using RakNetDotNet;
-    using Castle.Core;
-
-    sealed class RegisterEvent : AbstractEvent
+    internal sealed class RegisterEvent : AbstractEvent
     {
         public RegisterEvent(int eventId)
         {
             eventStream = null;
             Id = eventId;
         }
+
         public RegisterEvent(BitStream source)
         {
             int eventId;
@@ -23,12 +21,14 @@ namespace EventSystem
 
             source.Read(out name);
         }
+
         public void SetData(string name, SystemAddress[] systemAddresses, byte serviceId)
         {
             this.name = name;
             this.systemAddresses = systemAddresses;
             this.serviceId = serviceId;
         }
+
         public override BitStream Stream
         {
             get { throw new Exception("The method or operation is not implemented."); }
@@ -53,16 +53,19 @@ namespace EventSystem
         {
             get { throw new Exception("The method or operation is not implemented."); }
         }
+
         #region Private Members
-        string name;
-        SystemAddress[] systemAddresses;
-        byte serviceId;
-        BitStream eventStream;
+
+        private string name;
+        private SystemAddress[] systemAddresses;
+        private byte serviceId;
+        private BitStream eventStream;
+
         #endregion
     }
 
     [Singleton]
-    sealed class SampleEventFactory : AbstractEventFactory
+    internal sealed class SampleEventFactory : AbstractEventFactory
     {
         public enum EventTypes
         {
@@ -72,6 +75,7 @@ namespace EventSystem
             TESTCONNECTION2,
             Register,
         }
+
         public IEvent CreateEvent(EventTypes eventType, uint objId)
         {
             IEvent _event = null;
@@ -79,16 +83,16 @@ namespace EventSystem
             switch (eventType)
             {
                 case EventTypes.SERVERTOCLIENT:
-                    _event = new ServerToClientEvent((int)EventTypes.SERVERTOCLIENT, objId);
+                    _event = new ServerToClientEvent((int) EventTypes.SERVERTOCLIENT, objId);
                     break;
 
                 case EventTypes.CLIENTTOSERVER:
-                    _event = new ClientToServerEvent((int)EventTypes.CLIENTTOSERVER);
+                    _event = new ClientToServerEvent((int) EventTypes.CLIENTTOSERVER);
                     break;
 
-                //case EventTypes.TESTCONNECTION:  // NOTE - this type shuld be created externally.
+                    //case EventTypes.TESTCONNECTION:  // NOTE - this type shuld be created externally.
 
-                //case EventTypes.TESTCONNECTION2:  // NOTE - this type shuld be created externally.
+                    //case EventTypes.TESTCONNECTION2:  // NOTE - this type shuld be created externally.
 
                 default:
                     throw new NetworkException(
@@ -98,10 +102,12 @@ namespace EventSystem
             StoreEvent(_event);
             return _event;
         }
+
         public void StoreExternallyCreatedEvent(IEvent _event)
         {
             StoreEvent(_event);
         }
+
         public override IEvent RecreateEvent(BitStream source)
         {
             Debug.Assert(source != null);
@@ -110,7 +116,7 @@ namespace EventSystem
 
             int ID;
             source.Read(out ID);
-            EventTypes eventType = (EventTypes)ID;
+            EventTypes eventType = (EventTypes) ID;
             source.ResetReadPointer();
 
             switch (eventType)

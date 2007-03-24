@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace EventSystem
 {
-    interface IGameState
+    internal interface IGameState
     {
         string Name { get; }
         void Enter();

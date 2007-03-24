@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace EventSystem
 {
-    interface IFrameListener
+    internal interface IFrameListener
     {
         bool FrameStarted();
     }

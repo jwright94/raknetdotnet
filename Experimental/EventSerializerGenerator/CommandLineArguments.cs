@@ -46,7 +46,7 @@
 //    pursuant to a solicitation issued on or after December 1, 1995, is
 //    provided with the commercial license rights set forth in this license,
 //    and (ii) Software provided pursuant to a solicitation issued prior to
-//    December 1, 1995, is provided with ìRestricted Rightsî as set forth in
+//    December 1, 1995, is provided with ìRestricted RightsÅEas set forth in
 //    FAR, 48 C.F.R. 52.227-14 (June 1987) or DFAR, 48 C.F.R. 252.227-7013
 //    (Oct 1988), as applicable.
 //    9. That your rights under this License end automatically if you breach it in
@@ -200,44 +200,44 @@
 //            screen width. Added ParseHelp for /?.
 //    11/23/2004 Added support for default values.
 //////////////////////////////////////////////////////////////////////////////
+using System;
+using System.Collections;
+using System.Diagnostics;
+using System.IO;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Text;
+
 namespace CommandLine
 {
-    using System;
-    using System.Diagnostics;
-    using System.Reflection;
-    using System.Collections;
-    using System.IO;
-    using System.Text;
-    using System.Runtime.InteropServices;
-
     /// <summary>
     /// Used to control parsing of command line arguments.
     /// </summary>
-    [Flags]    
+    [Flags]
     public enum ArgumentType
     {
         /// <summary>
         /// Indicates that this field is required. An error will be displayed
         /// if it is not present when parsing arguments.
         /// </summary>
-        Required    = 0x01,
+        Required = 0x01,
         /// <summary>
         /// Only valid in conjunction with Multiple.
         /// Duplicate values will result in an error.
         /// </summary>
-        Unique      = 0x02,
+        Unique = 0x02,
         /// <summary>
         /// Inidicates that the argument may be specified more than once.
         /// Only valid if the argument is a collection
         /// </summary>
-        Multiple    = 0x04,
+        Multiple = 0x04,
 
         /// <summary>
         /// The default type for non-collection arguments.
         /// The argument is not required, but an error will be reported if it is specified more than once.
         /// </summary>
-        AtMostOnce  = 0x00,
-        
+        AtMostOnce = 0x00,
+
         /// <summary>
         /// For non-collection arguments, when the argument is specified more than
         /// once no error is reported and the value of the argument is the last
@@ -250,9 +250,9 @@ namespace CommandLine
         /// The argument is permitted to occur multiple times, but duplicate 
         /// values will cause an error to be reported.
         /// </summary>
-        MultipleUnique  = Multiple | Unique,
+        MultipleUnique = Multiple | Unique,
     }
-    
+
     /// <summary>
     /// Allows control of command line parsing.
     /// Attach this attribute to instance fields of types used
@@ -269,7 +269,7 @@ namespace CommandLine
         {
             this.type = type;
         }
-        
+
         /// <summary>
         /// The error checking to be done on the argument.
         /// </summary>
@@ -277,11 +277,15 @@ namespace CommandLine
         {
             get { return this.type; }
         }
+
         /// <summary>
         /// Returns true if the argument did not have an explicit short name specified.
         /// </summary>
-        public bool DefaultShortName    { get { return null == this.shortName; } }
-        
+        public bool DefaultShortName
+        {
+            get { return null == this.shortName; }
+        }
+
         /// <summary>
         /// The short name of the argument.
         /// Set to null means use the default short name if it does not
@@ -292,14 +296,21 @@ namespace CommandLine
         public string ShortName
         {
             get { return this.shortName; }
-            set { Debug.Assert(value == null || !(this is DefaultArgumentAttribute)); this.shortName = value; }
+            set
+            {
+                Debug.Assert(value == null || !(this is DefaultArgumentAttribute));
+                this.shortName = value;
+            }
         }
 
         /// <summary>
         /// Returns true if the argument did not have an explicit long name specified.
         /// </summary>
-        public bool DefaultLongName     { get { return null == this.longName; } }
-        
+        public bool DefaultLongName
+        {
+            get { return null == this.longName; }
+        }
+
         /// <summary>
         /// The long name of the argument.
         /// Set to null means use the default long name.
@@ -308,8 +319,16 @@ namespace CommandLine
         /// </summary>
         public string LongName
         {
-            get { Debug.Assert(!this.DefaultLongName); return this.longName; }
-            set { Debug.Assert(value != ""); this.longName = value; }
+            get
+            {
+                Debug.Assert(!this.DefaultLongName);
+                return this.longName;
+            }
+            set
+            {
+                Debug.Assert(value != "");
+                this.longName = value;
+            }
         }
 
         /// <summary>
@@ -320,17 +339,23 @@ namespace CommandLine
             get { return this.defaultValue; }
             set { this.defaultValue = value; }
         }
-        
+
         /// <summary>
         /// Returns true if the argument has a default value.
         /// </summary>
-        public bool HasDefaultValue     { get { return null != this.defaultValue; } }
+        public bool HasDefaultValue
+        {
+            get { return null != this.defaultValue; }
+        }
 
         /// <summary>
         /// Returns true if the argument has help text specified.
         /// </summary>
-        public bool HasHelpText         { get { return null != this.helpText; } }
-        
+        public bool HasHelpText
+        {
+            get { return null != this.helpText; }
+        }
+
         /// <summary>
         /// The help text for the argument.
         /// </summary>
@@ -339,7 +364,7 @@ namespace CommandLine
             get { return this.helpText; }
             set { this.helpText = value; }
         }
-        
+
         private string shortName;
         private string longName;
         private string helpText;
@@ -362,7 +387,7 @@ namespace CommandLine
         /// </summary>
         /// <param name="type"> Specifies the error checking to be done on the argument. </param>
         public DefaultArgumentAttribute(ArgumentType type)
-            : base (type)
+            : base(type)
         {
         }
     }
@@ -402,12 +427,14 @@ namespace CommandLine
         /// The System Defined new line string.
         /// </summary>
         public const string NewLine = "\r\n";
-        
+
         /// <summary>
         /// Don't ever call this.
         /// </summary>
-        private Parser() { }
-        
+        private Parser()
+        {
+        }
+
         /// <summary>
         /// Parses Command Line Arguments. Displays usage message to Console.Out
         /// if /?, /help or invalid arguments are encounterd.
@@ -417,15 +444,15 @@ namespace CommandLine
         /// <param name="arguments"> The actual arguments. </param>
         /// <param name="destination"> The resulting parsed arguments. </param>
         /// <returns> true if no errors were detected. </returns>
-        public static bool ParseArgumentsWithUsage(string [] arguments, object destination)
+        public static bool ParseArgumentsWithUsage(string[] arguments, object destination)
         {
-            if (Parser.ParseHelp(arguments) || !Parser.ParseArguments(arguments, destination))
+            if (ParseHelp(arguments) || !ParseArguments(arguments, destination))
             {
                 // error encountered in arguments. Display usage message
-                System.Console.Write(Parser.ArgumentsUsage(destination.GetType()));
+                Console.Write(ArgumentsUsage(destination.GetType()));
                 return false;
             }
-            
+
             return true;
         }
 
@@ -437,11 +464,11 @@ namespace CommandLine
         /// <param name="arguments"> The actual arguments. </param>
         /// <param name="destination"> The resulting parsed arguments. </param>
         /// <returns> true if no errors were detected. </returns>
-        public static bool ParseArguments(string [] arguments, object destination)
+        public static bool ParseArguments(string[] arguments, object destination)
         {
-            return Parser.ParseArguments(arguments, destination, new ErrorReporter(Console.Error.WriteLine));
+            return ParseArguments(arguments, destination, new ErrorReporter(Console.Error.WriteLine));
         }
-        
+
         /// <summary>
         /// Parses Command Line Arguments. 
         /// Use ArgumentAttributes to control parsing behaviour.
@@ -456,15 +483,14 @@ namespace CommandLine
             return parser.Parse(arguments, destination);
         }
 
-        private static void NullErrorReporter(string message) 
-        { 
-        } 
+        private static void NullErrorReporter(string message)
+        {
+        }
 
-        private class HelpArgument 
-        { 
-            [ArgumentAttribute(ArgumentType.AtMostOnce, ShortName="?")] 
-            public bool help = false; 
-        } 
+        private class HelpArgument
+        {
+            [ArgumentAttribute(ArgumentType.AtMostOnce, ShortName="?")] public bool help = false;
+        }
 
         /// <summary>
         /// Checks if a set of arguments asks for help.
@@ -473,7 +499,7 @@ namespace CommandLine
         /// <returns> Returns true if args contains /? or /help. </returns>
         public static bool ParseHelp(string[] args)
         {
-            Parser helpParser = new Parser(typeof(HelpArgument), new ErrorReporter(NullErrorReporter));
+            Parser helpParser = new Parser(typeof (HelpArgument), new ErrorReporter(NullErrorReporter));
             HelpArgument helpArgument = new HelpArgument();
             helpParser.Parse(args, helpArgument);
             return helpArgument.help;
@@ -489,7 +515,7 @@ namespace CommandLine
         /// <returns> Printable string containing a user friendly description of command line arguments. </returns>
         public static string ArgumentsUsage(Type argumentType)
         {
-            int screenWidth = Parser.GetConsoleWindowWidth();
+            int screenWidth = GetConsoleWindowWidth();
             if (screenWidth == 0)
                 screenWidth = 80;
             return ArgumentsUsage(argumentType, screenWidth);
@@ -507,7 +533,7 @@ namespace CommandLine
             return (new Parser(argumentType, null)).GetUsageString(columns);
         }
 
-        private const int STD_OUTPUT_HANDLE  = -11;
+        private const int STD_OUTPUT_HANDLE = -11;
 
         private struct COORD
         {
@@ -532,11 +558,14 @@ namespace CommandLine
             internal COORD dwMaximumWindowSize;
         }
 
-        [DllImport("kernel32.dll", EntryPoint="GetStdHandle", SetLastError=true, CharSet=CharSet.Auto, CallingConvention=CallingConvention.StdCall)]
+        [DllImport("kernel32.dll", EntryPoint="GetStdHandle", SetLastError=true, CharSet=CharSet.Auto,
+            CallingConvention=CallingConvention.StdCall)]
         private static extern int GetStdHandle(int nStdHandle);
 
-        [DllImport("kernel32.dll", EntryPoint="GetConsoleScreenBufferInfo", SetLastError=true, CharSet=CharSet.Auto, CallingConvention=CallingConvention.StdCall)]
-        private static extern int GetConsoleScreenBufferInfo(int hConsoleOutput, ref CONSOLE_SCREEN_BUFFER_INFO lpConsoleScreenBufferInfo);
+        [DllImport("kernel32.dll", EntryPoint="GetConsoleScreenBufferInfo", SetLastError=true, CharSet=CharSet.Auto,
+            CallingConvention=CallingConvention.StdCall)]
+        private static extern int GetConsoleScreenBufferInfo(int hConsoleOutput,
+                                                             ref CONSOLE_SCREEN_BUFFER_INFO lpConsoleScreenBufferInfo);
 
         /// <summary>
         /// Returns the number of columns in the current console window
@@ -552,7 +581,7 @@ namespace CommandLine
             screenWidth = csbi.dwSize.x;
             return screenWidth;
         }
-        
+
         /// <summary>
         /// Searches a StringBuilder for a character
         /// </summary>
@@ -585,10 +614,10 @@ namespace CommandLine
                 if (text[index] == value)
                     return index;
             }
-            
+
             return -1;
         }
- 
+
         private const int spaceBeforeParam = 2;
 
         /// <summary>
@@ -601,7 +630,7 @@ namespace CommandLine
             this.reporter = reporter;
             this.arguments = new ArrayList();
             this.argumentMap = new Hashtable();
-            
+
             foreach (FieldInfo field in argumentSpecification.GetFields())
             {
                 if (!field.IsStatic && !field.IsInitOnly && !field.IsLiteral)
@@ -618,7 +647,7 @@ namespace CommandLine
                     }
                 }
             }
-            
+
             // add explicit names to map
             foreach (Argument argument in this.arguments)
             {
@@ -637,35 +666,36 @@ namespace CommandLine
                     }
                 }
             }
-            
+
             // add implicit names which don't collide to map
             foreach (Argument argument in this.arguments)
             {
                 if (!argument.ExplicitShortName)
                 {
-                    if (argument.ShortName != null && argument.ShortName.Length > 0 && !argumentMap.ContainsKey(argument.ShortName))
+                    if (argument.ShortName != null && argument.ShortName.Length > 0 &&
+                        !argumentMap.ContainsKey(argument.ShortName))
                         this.argumentMap[argument.ShortName] = argument;
                     else
                         argument.ClearShortName();
                 }
             }
         }
-        
+
         private static ArgumentAttribute GetAttribute(FieldInfo field)
         {
-            object[] attributes = field.GetCustomAttributes(typeof(ArgumentAttribute), false);
+            object[] attributes = field.GetCustomAttributes(typeof (ArgumentAttribute), false);
             if (attributes.Length == 1)
                 return (ArgumentAttribute) attributes[0];
 
             Debug.Assert(attributes.Length == 0);
             return null;
         }
-        
+
         private void ReportUnrecognizedArgument(string argument)
         {
             this.reporter(string.Format("Unrecognized command line argument '{0}'", argument));
         }
-        
+
         /// <summary>
         /// Parses an argument list into an object
         /// </summary>
@@ -686,7 +716,8 @@ namespace CommandLine
                             case '-':
                             case '/':
                                 int endIndex = argument.IndexOfAny(new char[] {':', '+', '-'}, 1);
-                                string option = argument.Substring(1, endIndex == -1 ? argument.Length - 1 : endIndex - 1);
+                                string option =
+                                    argument.Substring(1, endIndex == -1 ? argument.Length - 1 : endIndex - 1);
                                 string optionArgument;
                                 if (option.Length + 1 == argument.Length)
                                 {
@@ -700,7 +731,7 @@ namespace CommandLine
                                 {
                                     optionArgument = argument.Substring(option.Length + 1);
                                 }
-                                
+
                                 Argument arg = (Argument) this.argumentMap[option];
                                 if (arg == null)
                                 {
@@ -732,10 +763,10 @@ namespace CommandLine
                     }
                 }
             }
-            
+
             return hadError;
         }
-        
+
         /// <summary>
         /// Parses an argument list.
         /// </summary>
@@ -755,7 +786,7 @@ namespace CommandLine
             {
                 hadError |= this.defaultArgument.Finish(destination);
             }
-            
+
             return !hadError;
         }
 
@@ -766,11 +797,11 @@ namespace CommandLine
                 this.syntax = syntax;
                 this.help = help;
             }
-            
+
             public string syntax;
             public string help;
         }
-        
+
         /// <summary>
         /// A user firendly usage string describing the command line argument syntax.
         /// </summary>
@@ -783,7 +814,7 @@ namespace CommandLine
             {
                 maxParamLen = Math.Max(maxParamLen, helpString.syntax.Length);
             }
-            
+
             const int minimumNumberOfCharsForHelpText = 10;
             const int minimumHelpTextColumn = 5;
             const int minimumScreenWidth = minimumHelpTextColumn + minimumNumberOfCharsForHelpText;
@@ -803,7 +834,7 @@ namespace CommandLine
                 // add syntax string
                 int syntaxLength = helpStrings.syntax.Length;
                 builder.Append(helpStrings.syntax);
-                
+
                 // start help text on new line if syntax string is too long
                 int currentColumn = syntaxLength;
                 if (syntaxLength >= helpTextColumn)
@@ -811,7 +842,7 @@ namespace CommandLine
                     builder.Append(newLine);
                     currentColumn = 0;
                 }
-                
+
                 // add help text broken on spaces
                 int charsPerLine = screenWidth - helpTextColumn;
                 int index = 0;
@@ -820,7 +851,7 @@ namespace CommandLine
                     // tab to start column
                     builder.Append(' ', helpTextColumn - currentColumn);
                     currentColumn = helpTextColumn;
-                    
+
                     // find number of chars to display on this line
                     int endIndex = index + charsPerLine;
                     if (endIndex >= helpStrings.help.Length)
@@ -830,18 +861,19 @@ namespace CommandLine
                     }
                     else
                     {
-                        endIndex = helpStrings.help.LastIndexOf(' ', endIndex - 1, Math.Min(endIndex - index, charsPerLine));
+                        endIndex =
+                            helpStrings.help.LastIndexOf(' ', endIndex - 1, Math.Min(endIndex - index, charsPerLine));
                         if (endIndex <= index)
                         {
                             // no spaces on this line, append full set of chars
                             endIndex = index + charsPerLine;
                         }
                     }
-                    
+
                     // add chars
                     builder.Append(helpStrings.help, index, endIndex - index);
                     index = endIndex;
-                    
+
                     // do new line
                     AddNewLine(newLine, builder, ref currentColumn);
 
@@ -856,14 +888,16 @@ namespace CommandLine
                     builder.Append(newLine);
                 }
             }
-            
+
             return builder.ToString();
         }
+
         private static void AddNewLine(string newLine, StringBuilder builder, ref int currentColumn)
         {
             builder.Append(newLine);
             currentColumn = 0;
         }
+
         private ArgumentHelpStrings[] GetAllHelpStrings()
         {
             ArgumentHelpStrings[] strings = new ArgumentHelpStrings[NumberOfParametersToDisplay()];
@@ -880,12 +914,12 @@ namespace CommandLine
 
             return strings;
         }
-        
+
         private static ArgumentHelpStrings GetHelpStrings(Argument arg)
         {
             return new ArgumentHelpStrings(arg.SyntaxHelp, arg.FullHelpText);
         }
-        
+
         private int NumberOfParametersToDisplay()
         {
             int numberOfParameters = this.arguments.Count + 1;
@@ -893,7 +927,7 @@ namespace CommandLine
                 numberOfParameters += 1;
             return numberOfParameters;
         }
-        
+
         /// <summary>
         /// Does this parser have a default argument.
         /// </summary>
@@ -905,8 +939,8 @@ namespace CommandLine
 
         private bool LexFileArguments(string fileName, out string[] arguments)
         {
-            string args  = null;
-                    
+            string args = null;
+
             try
             {
                 using (FileStream file = new FileStream(fileName, FileMode.Open, FileAccess.Read))
@@ -916,17 +950,18 @@ namespace CommandLine
             }
             catch (Exception e)
             {
-                this.reporter(string.Format("Error: Can't open command line argument file '{0}' : '{1}'", fileName, e.Message));
+                this.reporter(
+                    string.Format("Error: Can't open command line argument file '{0}' : '{1}'", fileName, e.Message));
                 arguments = null;
                 return false;
             }
 
-            bool hadError = false;                    
+            bool hadError = false;
             ArrayList argArray = new ArrayList();
             StringBuilder currentArg = new StringBuilder();
             bool inQuotes = false;
             int index = 0;
-            
+
             // while (index < args.Length)
             try
             {
@@ -937,7 +972,7 @@ namespace CommandLine
                     {
                         index += 1;
                     }
-                    
+
                     // # - comment to end of line
                     if (args[index] == '#')
                     {
@@ -948,7 +983,7 @@ namespace CommandLine
                         }
                         continue;
                     }
-                    
+
                     // do one argument
                     do
                     {
@@ -993,7 +1028,7 @@ namespace CommandLine
                     currentArg.Length = 0;
                 }
             }
-            catch (System.IndexOutOfRangeException)
+            catch (IndexOutOfRangeException)
             {
                 // got EOF 
                 if (inQuotes)
@@ -1007,25 +1042,25 @@ namespace CommandLine
                     argArray.Add(currentArg.ToString());
                 }
             }
-            
+
             arguments = (string[]) argArray.ToArray(typeof (string));
             return hadError;
         }
-        
+
         private static string LongName(ArgumentAttribute attribute, FieldInfo field)
         {
             return (attribute == null || attribute.DefaultLongName) ? field.Name : attribute.LongName;
         }
-        
+
         private static string ShortName(ArgumentAttribute attribute, FieldInfo field)
         {
             if (attribute is DefaultArgumentAttribute)
                 return null;
             if (!ExplicitShortName(attribute))
-                return LongName(attribute, field).Substring(0,1);
+                return LongName(attribute, field).Substring(0, 1);
             return attribute.ShortName;
         }
-        
+
         private static string HelpText(ArgumentAttribute attribute, FieldInfo field)
         {
             if (attribute == null)
@@ -1033,12 +1068,12 @@ namespace CommandLine
             else
                 return attribute.HelpText;
         }
-        
+
         private static bool HasHelpText(ArgumentAttribute attribute)
         {
             return (attribute != null && attribute.HasHelpText);
         }
-        
+
         private static bool ExplicitShortName(ArgumentAttribute attribute)
         {
             return (attribute != null && !attribute.DefaultShortName);
@@ -1056,7 +1091,7 @@ namespace CommandLine
             else
                 return null;
         }
-        
+
         private static ArgumentType Flags(ArgumentAttribute attribute, FieldInfo field)
         {
             if (attribute != null)
@@ -1066,22 +1101,22 @@ namespace CommandLine
             else
                 return ArgumentType.AtMostOnce;
         }
-        
+
         private static bool IsCollectionType(Type type)
         {
             return type.IsArray;
         }
-            
+
         private static bool IsValidElementType(Type type)
         {
             return type != null && (
-                type == typeof(int) ||
-                type == typeof(uint) ||
-                type == typeof(string) ||
-                type == typeof(bool) ||
-                type.IsEnum);
+                                       type == typeof (int) ||
+                                       type == typeof (uint) ||
+                                       type == typeof (string) ||
+                                       type == typeof (bool) ||
+                                       type.IsEnum);
         }
-        
+
         private class Argument
         {
             public Argument(ArgumentAttribute attribute, FieldInfo field, ErrorReporter reporter)
@@ -1098,24 +1133,25 @@ namespace CommandLine
                 this.seenValue = false;
                 this.reporter = reporter;
                 this.isDefault = attribute != null && attribute is DefaultArgumentAttribute;
-                
+
                 if (IsCollection)
                 {
                     this.collectionValues = new ArrayList();
                 }
-                
+
                 Debug.Assert(this.longName != null && this.longName != "");
                 Debug.Assert(!this.isDefault || !this.ExplicitShortName);
                 Debug.Assert(!IsCollection || AllowMultiple, "Collection arguments must have allow multiple");
                 Debug.Assert(!Unique || IsCollection, "Unique only applicable to collection arguments");
                 Debug.Assert(IsValidElementType(Type) ||
-                    IsCollectionType(Type));
+                             IsCollectionType(Type));
                 Debug.Assert((IsCollection && IsValidElementType(elementType)) ||
-                    (!IsCollection && elementType == null));
+                             (!IsCollection && elementType == null));
                 Debug.Assert(!(this.IsRequired && this.HasDefaultValue), "Required arguments cannot have default value");
-                Debug.Assert(!this.HasDefaultValue || (this.defaultValue.GetType() == field.FieldType), "Type of default value must match field type");
+                Debug.Assert(!this.HasDefaultValue || (this.defaultValue.GetType() == field.FieldType),
+                             "Type of default value must match field type");
             }
-            
+
             public bool Finish(object destination)
             {
                 if (!this.SeenValue && this.HasDefaultValue)
@@ -1126,10 +1162,10 @@ namespace CommandLine
                 {
                     this.field.SetValue(destination, this.collectionValues.ToArray(this.elementType));
                 }
-                
+
                 return ReportMissingRequiredArgument();
             }
-            
+
             private bool ReportMissingRequiredArgument()
             {
                 if (this.IsRequired && !this.SeenValue)
@@ -1142,12 +1178,12 @@ namespace CommandLine
                 }
                 return false;
             }
-            
+
             private void ReportDuplicateArgumentValue(string value)
             {
                 this.reporter(string.Format("Duplicate '{0}' argument '{1}'", this.LongName, value));
             }
-            
+
             public bool SetValue(string value, object destination)
             {
                 if (SeenValue && !AllowMultiple)
@@ -1156,7 +1192,7 @@ namespace CommandLine
                     return false;
                 }
                 this.seenValue = true;
-                
+
                 object newValue;
                 if (!ParseValue(this.ValueType, value, out newValue))
                     return false;
@@ -1176,34 +1212,35 @@ namespace CommandLine
                 {
                     this.field.SetValue(destination, newValue);
                 }
-                
+
                 return true;
             }
-            
+
             public Type ValueType
             {
                 get { return this.IsCollection ? this.elementType : this.Type; }
             }
-            
+
             private void ReportBadArgumentValue(string value)
             {
-                this.reporter(string.Format("'{0}' is not a valid value for the '{1}' command line option", value, this.LongName));
+                this.reporter(
+                    string.Format("'{0}' is not a valid value for the '{1}' command line option", value, this.LongName));
             }
-            
+
             private bool ParseValue(Type type, string stringData, out object value)
             {
                 // null is only valid for bool variables
                 // empty string is never valid
-                if ((stringData != null || type == typeof(bool)) && (stringData == null || stringData.Length > 0))
+                if ((stringData != null || type == typeof (bool)) && (stringData == null || stringData.Length > 0))
                 {
                     try
                     {
-                        if (type == typeof(string))
+                        if (type == typeof (string))
                         {
                             value = stringData;
                             return true;
                         }
-                        else if (type == typeof(bool))
+                        else if (type == typeof (bool))
                         {
                             if (stringData == null || stringData == "+")
                             {
@@ -1216,12 +1253,12 @@ namespace CommandLine
                                 return true;
                             }
                         }
-                        else if (type == typeof(int))
+                        else if (type == typeof (int))
                         {
                             value = int.Parse(stringData);
                             return true;
                         }
-                        else if (type == typeof(uint))
+                        else if (type == typeof (uint))
                         {
                             value = int.Parse(stringData);
                             return true;
@@ -1238,12 +1275,12 @@ namespace CommandLine
                         // catch parse errors
                     }
                 }
-                                
+
                 ReportBadArgumentValue(stringData);
                 value = null;
                 return false;
             }
-            
+
             private void AppendValue(StringBuilder builder, object value)
             {
                 if (value is string || value is int || value is uint || value.GetType().IsEnum)
@@ -1257,7 +1294,7 @@ namespace CommandLine
                 else
                 {
                     bool first = true;
-                    foreach (object o in (System.Array) value)
+                    foreach (object o in (Array) value)
                     {
                         if (!first)
                         {
@@ -1268,7 +1305,7 @@ namespace CommandLine
                     }
                 }
             }
-            
+
             public string LongName
             {
                 get { return this.longName; }
@@ -1278,17 +1315,17 @@ namespace CommandLine
             {
                 get { return this.explicitShortName; }
             }
-            
+
             public string ShortName
             {
                 get { return this.shortName; }
             }
-            
+
             public bool HasShortName
             {
                 get { return this.shortName != null; }
             }
-            
+
             public void ClearShortName()
             {
                 this.shortName = null;
@@ -1298,17 +1335,17 @@ namespace CommandLine
             {
                 get { return this.hasHelpText; }
             }
-            
+
             public string HelpText
             {
                 get { return this.helpText; }
             }
-            
+
             public object DefaultValue
             {
                 get { return this.defaultValue; }
             }
-            
+
             public bool HasDefaultValue
             {
                 get { return null != this.defaultValue; }
@@ -1316,7 +1353,8 @@ namespace CommandLine
 
             public string FullHelpText
             {
-                get {
+                get
+                {
                     StringBuilder builder = new StringBuilder();
                     if (this.HasHelpText)
                     {
@@ -1359,19 +1397,19 @@ namespace CommandLine
                         builder.Append("/");
                         builder.Append(this.LongName);
                         Type valueType = this.ValueType;
-                        if (valueType == typeof(int))
+                        if (valueType == typeof (int))
                         {
                             builder.Append(":<int>");
                         }
-                        else if (valueType == typeof(uint))
+                        else if (valueType == typeof (uint))
                         {
                             builder.Append(":<uint>");
                         }
-                        else if (valueType == typeof(bool))
+                        else if (valueType == typeof (bool))
                         {
                             builder.Append("[+|-]");
                         }
-                        else if (valueType == typeof(string))
+                        else if (valueType == typeof (string))
                         {
                             builder.Append(":<string>");
                         }
@@ -1395,7 +1433,7 @@ namespace CommandLine
                             builder.Append('}');
                         }
                     }
-                    
+
                     return builder.ToString();
                 }
             }
@@ -1404,37 +1442,37 @@ namespace CommandLine
             {
                 get { return 0 != (this.flags & ArgumentType.Required); }
             }
-            
+
             public bool SeenValue
             {
                 get { return this.seenValue; }
             }
-            
+
             public bool AllowMultiple
             {
                 get { return 0 != (this.flags & ArgumentType.Multiple); }
             }
-            
+
             public bool Unique
             {
                 get { return 0 != (this.flags & ArgumentType.Unique); }
             }
-            
+
             public Type Type
             {
                 get { return field.FieldType; }
             }
-            
+
             public bool IsCollection
             {
                 get { return IsCollectionType(Type); }
             }
-            
+
             public bool IsDefault
             {
                 get { return this.isDefault; }
             }
-            
+
             private string longName;
             private string shortName;
             private string helpText;
@@ -1449,7 +1487,7 @@ namespace CommandLine
             private ErrorReporter reporter;
             private bool isDefault;
         }
-        
+
         private ArrayList arguments;
         private Hashtable argumentMap;
         private Argument defaultArgument;

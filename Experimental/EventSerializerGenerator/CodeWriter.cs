@@ -1,27 +1,29 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
+using System.Text;
 using NUnit.Framework;
 
 namespace EventSerializerGenerator
 {
-    sealed class CodeWriter : ICodeWriter
+    internal sealed class CodeWriter : ICodeWriter
     {
         public CodeWriter(TextWriter textWriter)
         {
             this.textWriter = textWriter;
         }
+
         public void BeginBlock(string format, params object[] arg)
         {
             WriteLine(format, arg);
             levelOfIndent++;
         }
+
         public void EndBlock(string format, params object[] arg)
         {
             levelOfIndent = Math.Max(0, levelOfIndent - 1);
             WriteLine(format, arg);
         }
+
         public void WriteLine(string format, params object[] arg)
         {
             InsertTabs();
@@ -34,15 +36,17 @@ namespace EventSerializerGenerator
                 textWriter.WriteLine(format);
             }
         }
-        void InsertTabs()
+
+        private void InsertTabs()
         {
             for (int i = 0; i < levelOfIndent; i++)
             {
                 textWriter.Write("\t");
             }
         }
-        TextWriter textWriter;
-        int levelOfIndent;
+
+        private TextWriter textWriter;
+        private int levelOfIndent;
     }
 
     [TestFixture]
@@ -54,6 +58,7 @@ namespace EventSerializerGenerator
             textWriter = new StringWriter();
             codeWriter = new CodeWriter(textWriter);
         }
+
         [Test]
         public void Block()
         {
@@ -71,7 +76,8 @@ namespace EventSerializerGenerator
             expected.AppendLine("// level 0");
             Assert.AreEqual(expected.ToString(), textWriter.ToString());
         }
-        TextWriter textWriter;
-        ICodeWriter codeWriter;
+
+        private TextWriter textWriter;
+        private ICodeWriter codeWriter;
     }
 }

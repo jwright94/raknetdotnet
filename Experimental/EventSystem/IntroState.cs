@@ -1,26 +1,27 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Diagnostics;
 
 namespace EventSystem
 {
-    using System.Diagnostics;
-
-    sealed class IntroState : AbstractGameState, IDisposable
+    internal sealed class IntroState : AbstractGameState, IDisposable
     {
         #region Ogre-like singleton implementation.
-        static IntroState instance;
+
+        private static IntroState instance;
+
         public IntroState()
             : base("Intro")
         {
             Debug.Assert(instance == null);
             instance = this;
         }
+
         public void Dispose()
         {
             Debug.Assert(instance != null);
             instance = null;
         }
+
         public static IntroState Instance
         {
             get
@@ -29,20 +30,27 @@ namespace EventSystem
                 return instance;
             }
         }
+
         #endregion
+
         #region IGameState Members
+
         public override void Enter()
         {
         }
+
         public override void Exit()
         {
         }
+
         public override void Pause()
         {
         }
+
         public override void Resume()
         {
         }
+
         public override bool KeyPressed(char key)
         {
             if (key == 'p')
@@ -51,10 +59,12 @@ namespace EventSystem
             }
             return true;
         }
+
         public override bool FrameStarted()
         {
             return true;
         }
+
         #endregion
     }
 }

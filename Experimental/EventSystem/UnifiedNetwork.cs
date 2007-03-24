@@ -1,40 +1,60 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Collections;
+using System.Diagnostics;
+using System.Threading;
+using Castle.Core.Logging;
+using RakNetDotNet;
 
 namespace EventSystem
 {
-    using System.Collections;
-    using System.Diagnostics;
-    using RakNetDotNet;
-    using Castle.Core.Logging;
-
     // NS(UN) - GS(UN) - FS(UN, ECS)
     // ReportEvent -> ProcessEventOnServerSide -> SendEvent -> ProcessEventOnClientSide
-    sealed class UN
+    internal sealed class UN
     {
-        public string Name { get { return ""; } }
-        void ReportEvent(IEvent _event) { }               // unicast to connected server.
-        void SendEvent(IEvent _event) { }                 // unicast, broadcast to connected systems.
-        void ProcessEventOnClientSide(IEvent _event) { }  // only do perform.
-        void ProcessEventOnServerSide(IEvent _event) { }  // RunOnServer, TwoWay. echo back.
-        void ConnectNameService() { }
-        void Start() { }
-        void Update() { }
+        public string Name
+        {
+            get { return ""; }
+        }
+
+        private void ReportEvent(IEvent _event)
+        {
+        } // unicast to connected server.
+        private void SendEvent(IEvent _event)
+        {
+        } // unicast, broadcast to connected systems.
+        private void ProcessEventOnClientSide(IEvent _event)
+        {
+        } // only do perform.
+        private void ProcessEventOnServerSide(IEvent _event)
+        {
+        } // RunOnServer, TwoWay. echo back.
+        private void ConnectNameService()
+        {
+        }
+
+        private void Start()
+        {
+        }
+
+        private void Update()
+        {
+        }
     }
 
     // Based on ECS
     // TODO - Query service port to name service.
     // TODO - Rename 'player' related methods.
-    sealed class UnifiedNetwork : IDisposable
+    internal sealed class UnifiedNetwork : IDisposable
     {
         #region Ogre-like singleton implementation.
-        static UnifiedNetwork instance;
+
+        private static UnifiedNetwork instance;
+
         public UnifiedNetwork(string configFile, IDictionary extendedProperties)
         {
             Debug.Assert(instance == null);
             instance = this;
-            logger = ServiceConfigurator.LogFactory.Create(typeof(UnifiedNetwork));
+            logger = ServiceConfigurator.LogFactory.Create(typeof (UnifiedNetwork));
 
             // TODO - Use xml reader
             name = "Zeus";
@@ -43,15 +63,15 @@ namespace EventSystem
 
             if (isOnline)
             {
-                bool isNS = (bool)extendedProperties["isNS"];
+                bool isNS = (bool) extendedProperties["isNS"];
                 if (isNS)
                     namingComponent = new NamingServerComponent(logger.CreateChildLogger("namingserver"));
                 else
                     namingComponent = new NamingClientComponent(logger.CreateChildLogger("namingclient"));
 
                 rakServerInterface = RakNetworkFactory.GetRakPeerInterface();
-                ConnectionGraph connectionGraphPlugin = RakNetworkFactory.GetConnectionGraph();  // TODO - Do Destroy?
-                FullyConnectedMesh fullyConnectedMeshPlugin = new FullyConnectedMesh();          // TODO - Do Dispose?
+                ConnectionGraph connectionGraphPlugin = RakNetworkFactory.GetConnectionGraph(); // TODO - Do Destroy?
+                FullyConnectedMesh fullyConnectedMeshPlugin = new FullyConnectedMesh(); // TODO - Do Dispose?
 
                 // Initialize the message handlers
                 fullyConnectedMeshPlugin.Startup(string.Empty);
@@ -60,18 +80,21 @@ namespace EventSystem
 
                 // Initialize the peers
                 //ushort allowedPlayers = 5;
-                ushort allowedPlayers = (ushort)extendedProperties["allowedPlayers"];
+                ushort allowedPlayers = (ushort) extendedProperties["allowedPlayers"];
                 int threadSleepTimer = 0;
                 //ushort port = 6000;
-                ushort port = (ushort)extendedProperties["port"];
+                ushort port = (ushort) extendedProperties["port"];
                 SocketDescriptor socketDescriptor = new SocketDescriptor(port, string.Empty);
-                rakServerInterface.Startup(allowedPlayers, threadSleepTimer, new SocketDescriptor[] { socketDescriptor }, 1);
+                rakServerInterface.Startup(allowedPlayers, threadSleepTimer, new SocketDescriptor[] {socketDescriptor},
+                                           1);
                 namingComponent.OnStartup(rakServerInterface);
                 rakServerInterface.SetMaximumIncomingConnections(allowedPlayers);
 
-                rakServerInterface.RegisterAsRemoteProcedureCall("sendeventtoserver", typeof(RpcCalls).GetMethod("SendEventToServer"));
+                rakServerInterface.RegisterAsRemoteProcedureCall("sendeventtoserver",
+                                                                 typeof (RpcCalls).GetMethod("SendEventToServer"));
             }
         }
+
         public void Dispose()
         {
             Debug.Assert(instance != null);
@@ -86,6 +109,7 @@ namespace EventSystem
                 logger.Debug("Completed.");
             }
         }
+
         public static UnifiedNetwork Instance
         {
             get
@@ -94,18 +118,21 @@ namespace EventSystem
                 return instance;
             }
         }
+
         #endregion
+
         public string Name
         {
             get { return name; }
         }
+
         public void ProcessEvent(IEvent _event)
         {
             if (isOnline)
             {
                 Debug.Assert(_event != null);
 
-                if (_event.RunOnServer) _event.Perform();  // TODO - Check isConnected
+                if (_event.RunOnServer) _event.Perform(); // TODO - Check isConnected
 
                 if (_event.IsTwoWay)
                 {
@@ -113,6 +140,7 @@ namespace EventSystem
                 }
             }
         }
+
         public void SendEvent(IEvent _event, SystemAddress _player)
         {
             if (isOnline)
@@ -144,6 +172,7 @@ namespace EventSystem
                 }
             }
         }
+
         public bool ConnectPlayer(string ip, ushort serverPort)
         {
             if (isOnline)
@@ -178,12 +207,13 @@ namespace EventSystem
                 return false;
             }
         }
+
         public void Update()
         {
             if (IsOnline)
             {
                 Packet packet = rakServerInterface.Receive();
-                while (packet != null)  // Process all incoming packets. Do we need to switch other thread ?
+                while (packet != null) // Process all incoming packets. Do we need to switch other thread ?
                 {
                     //StringBuilder message = new StringBuilder("recieved Message from player ");
                     //message.Append(packet.systemAddress.ToString());
@@ -204,10 +234,12 @@ namespace EventSystem
                 }
             }
         }
+
         public bool IsOnline
         {
             get { return isOnline; }
         }
+
         public void Start()
         {
             if (isOnline)
@@ -228,17 +260,20 @@ namespace EventSystem
                     }
                     else
                     {
-                        System.Threading.Thread.Sleep(1);
+                        Thread.Sleep(1);
                     }
                 }
             }
         }
+
         public RakPeerInterface ServerInterface
         {
             get { return rakServerInterface; }
         }
+
         #region Private Members
-        void HandlePacket(Packet packet)
+
+        private void HandlePacket(Packet packet)
         {
             logger.Debug("received Message:");
             BitStream inBitStream = new BitStream(packet, false);
@@ -271,9 +306,9 @@ namespace EventSystem
                 case RakNetBindings.ID_CONNECTION_LOST:
                     logger.Debug("A client lost the connection.\n");
                     break;
-                //case RakNetBindings.ID_RECEIVED_STATIC_DATA:
-                //    logger.Debug("Got static data.\n");
-                //    break;
+                    //case RakNetBindings.ID_RECEIVED_STATIC_DATA:
+                    //    logger.Debug("Got static data.\n");
+                    //    break;
                 case RakNetBindings.ID_DATABASE_UNKNOWN_TABLE:
                     logger.Debug("ID_DATABASE_UNKNOWN_TABLE\n");
                     break;
@@ -289,16 +324,24 @@ namespace EventSystem
                     break;
             }
         }
-        string name;
-        RakPeerInterface rakServerInterface;
-        INamingComponent namingComponent;
+
+        private string name;
+        private RakPeerInterface rakServerInterface;
+        private INamingComponent namingComponent;
+
         #endregion
+
         #region ECC's Private Member
-        bool isOnline;
-        bool isConnected;
+
+        private bool isOnline;
+        private bool isConnected;
+
         #endregion
+
         #region Eternal State
-        readonly ILogger logger;
+
+        private readonly ILogger logger;
+
         #endregion
 
         // Set FCM plugin to RakPeerInterface.

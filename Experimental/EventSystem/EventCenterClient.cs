@@ -1,16 +1,16 @@
 using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
+using RakNetDotNet;
 
 namespace EventSystem
 {
-    using System.Diagnostics;
-    using RakNetDotNet;
-
-    sealed class EventCenterClient : IDisposable
+    internal sealed class EventCenterClient : IDisposable
     {
         #region Ogre-like singleton implementation.
-        static EventCenterClient instance;
+
+        private static EventCenterClient instance;
+
         public EventCenterClient(string xmlFile)
         {
             Debug.Assert(instance == null);
@@ -22,9 +22,11 @@ namespace EventSystem
             if (isOnline)
             {
                 rakClientInterface = RakNetworkFactory.GetRakPeerInterface();
-                rakClientInterface.RegisterAsRemoteProcedureCall("sendeventtoclient", typeof(RpcCalls).GetMethod("SendEventToClient"));
+                rakClientInterface.RegisterAsRemoteProcedureCall("sendeventtoclient",
+                                                                 typeof (RpcCalls).GetMethod("SendEventToClient"));
             }
         }
+
         public void Dispose()
         {
             Debug.Assert(instance != null);
@@ -39,6 +41,7 @@ namespace EventSystem
                 log("Closed.");
             }
         }
+
         public static EventCenterClient Instance
         {
             get
@@ -47,17 +50,21 @@ namespace EventSystem
                 return instance;
             }
         }
+
         #endregion
+
         public void OverrideClientPort(ushort newPort)
         {
             clientPort = newPort;
             log("Overwrote client port = {0}", clientPort);
         }
+
         public void OverrideServerPort(string serverIP)
         {
             ipString = serverIP;
             log("Overwrote server IP = {0}", ipString);
         }
+
         public void ReportEvent(IEvent _event)
         {
             if (isOnline)
@@ -85,6 +92,7 @@ namespace EventSystem
                 log("not connected");
             }
         }
+
         public void ProcessEvent(IEvent _event)
         {
             if (isOnline)
@@ -98,6 +106,7 @@ namespace EventSystem
                 }
             }
         }
+
         public bool ConnectPlayer()
         {
             if (isOnline)
@@ -105,6 +114,7 @@ namespace EventSystem
             else
                 return false;
         }
+
         public bool ConnectPlayer(string ip)
         {
             if (isOnline)
@@ -112,6 +122,7 @@ namespace EventSystem
             else
                 return false;
         }
+
         public bool ConnectPlayer(string ip, ushort serverPort)
         {
             if (isOnline)
@@ -124,7 +135,7 @@ namespace EventSystem
                 log("starting client on port {0}", clientPort);
                 log("connecting to server on ip= {0}, port = {1}", ip, serverPort);
 
-                rakClientInterface.Startup(1, internalSleep, new SocketDescriptor[] { socketDescriptor }, 1);
+                rakClientInterface.Startup(1, internalSleep, new SocketDescriptor[] {socketDescriptor}, 1);
                 bool success = rakClientInterface.Connect(ip, serverPort, string.Empty, 0);
 
                 if (success)
@@ -145,6 +156,7 @@ namespace EventSystem
                 return false;
             }
         }
+
         public void Update()
         {
             if (IsOnline)
@@ -169,12 +181,15 @@ namespace EventSystem
                 }
             }
         }
+
         public bool IsOnline
         {
             get { return isOnline; }
         }
+
         #region Private Members
-        void Load(string xmlFile)
+
+        private void Load(string xmlFile)
         {
             // TODO - Use xml reader.
             ipString = "127.0.0.1";
@@ -183,21 +198,25 @@ namespace EventSystem
             clientPort = 20000;
             threadSleepTimierMS = 0;
         }
-        void log(string message)
+
+        private void log(string message)
         {
             Console.WriteLine(message);
         }
-        void log(string format, params object[] args)
+
+        private void log(string format, params object[] args)
         {
             log(string.Format(format, args));
         }
-        RakPeerInterface rakClientInterface;
-        string ipString;
-        ushort serverPort;
-        ushort clientPort;
-        int threadSleepTimierMS;
-        bool isOnline;
-        bool isConnected;
+
+        private RakPeerInterface rakClientInterface;
+        private string ipString;
+        private ushort serverPort;
+        private ushort clientPort;
+        private int threadSleepTimierMS;
+        private bool isOnline;
+        private bool isConnected;
+
         #endregion
     }
 }

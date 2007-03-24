@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace EventSystem
 {
-    interface IKeyListener
+    internal interface IKeyListener
     {
         bool KeyPressed(char key);
     }

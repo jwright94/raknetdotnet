@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace EventSerializerGenerator
 {
@@ -11,10 +9,12 @@ namespace EventSerializerGenerator
         {
             this.site = site;
         }
+
         public string Site
         {
             get { return site; }
         }
-        string site;
+
+        private string site;
     }
 }

@@ -1,12 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
+using RakNetDotNet;
 
 namespace EventSystem
 {
-    using RakNetDotNet;
-
-    interface IEventFactory
+    internal interface IEventFactory
     {
         ISimpleEvent RecreateSimpleEvent(BitStream source);
         IEvent RecreateEvent(BitStream source);

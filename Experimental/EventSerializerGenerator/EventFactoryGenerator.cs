@@ -1,24 +1,26 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace EventSerializerGenerator
 {
-    sealed class EventFactoryGenerator : IGenerator
+    internal sealed class EventFactoryGenerator : IGenerator
     {
         public EventFactoryGenerator(string factoryName, IList<EventInfo> eventInfos)
         {
             this.factoryName = factoryName;
             this.eventInfos = eventInfos;
         }
+
         public void AddChildGenerator(IGenerator generator)
         {
             throw new Exception("The method or operation is not implemented.");
         }
+
         public void RemoveChildGenerator(IGenerator generator)
         {
             throw new Exception("The method or operation is not implemented.");
         }
+
         public void Write(ICodeWriter o)
         {
             o.WriteLine("[Singleton]");
@@ -27,7 +29,8 @@ namespace EventSerializerGenerator
             o.WriteLine("public IEvent RecreateEvent(BitStream source) { return null; }");
             o.EndBlock("}");
         }
-        void WriteRecreateEvent(ICodeWriter o)
+
+        private void WriteRecreateEvent(ICodeWriter o)
         {
             o.BeginBlock("public ISimpleEvent RecreateSimpleEvent(BitStream source) {");
             o.WriteLine("Debug.Assert(source != null);");
@@ -44,13 +47,16 @@ namespace EventSerializerGenerator
                 o.EndBlock("");
             }
             o.BeginBlock("default:");
-            o.WriteLine("throw new NetworkException(string.Format(\"Event id {{0}} not recognized by {0}.RecreateEvent()!\", id));", factoryName);
+            o.WriteLine(
+                "throw new NetworkException(string.Format(\"Event id {{0}} not recognized by {0}.RecreateEvent()!\", id));",
+                factoryName);
             o.EndBlock("");
             o.EndBlock("}");
             o.WriteLine("return _event;");
             o.EndBlock("}");
         }
-        string factoryName;
-        IList<EventInfo> eventInfos;
+
+        private string factoryName;
+        private IList<EventInfo> eventInfos;
     }
 }

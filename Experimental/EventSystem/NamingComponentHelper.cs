@@ -1,21 +1,19 @@
 using System;
-using System.Collections.Generic;
 using System.Text;
+using RakNetDotNet;
 
 namespace EventSystem
 {
-    using RakNetDotNet;
-
-    sealed class NamingComponentHelper
+    internal sealed class NamingComponentHelper
     {
         public static bool PrintIncomingTable(Packet packet)
         {
             byte[] data = packet.data;
             Console.Write("Incoming table:\n");
             Table table = new Table();
-            byte[] serializedTable = new byte[data.Length - sizeof(byte)];
-            Array.Copy(data, sizeof(byte), serializedTable, 0, data.Length - sizeof(byte));  // ugly copy
-            if (TableSerializer.DeserializeTable(serializedTable, (uint)serializedTable.Length, table))
+            byte[] serializedTable = new byte[data.Length - sizeof (byte)];
+            Array.Copy(data, sizeof (byte), serializedTable, 0, data.Length - sizeof (byte)); // ugly copy
+            if (TableSerializer.DeserializeTable(serializedTable, (uint) serializedTable.Length, table))
             {
                 TableRowPage cur = table.GetListHead();
                 int i;
