@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
+using RakNetDotNet;
 
 namespace EventSerializerGenerator
 {
@@ -40,10 +41,10 @@ namespace EventSerializerGenerator
         void WriteCtorWithStream(ICodeWriter o)
         {
             o.BeginBlock("public {0}(BitStream source) {{", type.Name);
-            WriteStreamReadStatement(o, "id");
+            WriteStreamReadStatement(o, "out", "id");
             foreach (FieldInfo field in GetFields())
             {
-                WriteSerializeFieldStatement(o, field, false);
+                WriteSerializeFieldStatement(o, false, field);
             }
             o.EndBlock("}");
         }
@@ -65,9 +66,9 @@ namespace EventSerializerGenerator
             }
             o.EndBlock("}");
         }
-        void WriteStreamReadStatement(ICodeWriter o, string fieldName)
+        void WriteStreamReadStatement(ICodeWriter o, string modifier, string variableName)
         {
-            o.WriteLine("if (!source.Read(out {0})) {{ throw new NetworkException(\"Deserialization is failed.\"); }}", fieldName);
+            o.WriteLine("if (!source.Read({0} {1})) {{ throw new NetworkException(\"Deserialization is failed.\"); }}", modifier, variableName);
         }
         void WriteGetStream(ICodeWriter o)
         {
@@ -77,29 +78,71 @@ namespace EventSerializerGenerator
             WriteStreamWriteStatement(o, "id");
             foreach (FieldInfo field in GetFields())
             {
-                WriteSerializeFieldStatement(o, field, true);
+                WriteSerializeFieldStatement(o, true, field);
             }
             o.WriteLine("return eventStream;");
             o.EndBlock("}");
             o.EndBlock("}");
         }
-        void WriteStreamWriteStatement(ICodeWriter o, string fieldName)
+        void WriteStreamWriteStatement(ICodeWriter o, string variableName)
         {
-            o.WriteLine("eventStream.Write({0});", fieldName);
+            o.WriteLine("eventStream.Write({0});", variableName);
         }
-        void WriteSerializeFieldStatement(ICodeWriter o, FieldInfo fi, bool writeToBitstream)
+        void WriteSerializeFieldStatement(ICodeWriter o, bool writeToBitstream, FieldInfo fi)
         {
-            if (BitstreamSerializationHelper.DoesSupportPrimitiveType(fi.FieldType))
+            Type fieldType = fi.FieldType;
+            string fieldName = fi.Name;
+            if (BitstreamSerializationHelper.DoesSupportPrimitiveType(fieldType))
             {
-                if(writeToBitstream)
-                    WriteStreamWriteStatement(o, fi.Name);
+                WriteStreamWriteOrReadStatement(o, writeToBitstream, "out", fieldName);
+            }
+            else if (fieldType.Equals(typeof(NetworkID)) || fieldType.Equals(typeof(SystemAddress)))
+            {
+                WriteStreamWriteOrReadStatement(o, writeToBitstream, "", fieldName);
+            }
+            else if (fieldType.IsArray)
+            {
+                Type elemType = fieldType.GetElementType();
+                if (BitstreamSerializationHelper.DoesSupportPrimitiveType(elemType))
+                {
+                    if (writeToBitstream)
+                    {
+                        WriteStreamWriteStatement(o, fieldName + ".Length");
+                        o.BeginBlock("for (int i = 0; i < {0}.Length; i++) {{", fieldName);
+                        WriteStreamWriteStatement(o, fieldName + "[i]");
+                        o.EndBlock("}");
+                    }
+                    else
+                    {
+                        string lengthVariableName = "_" + fieldName + "Length";
+                        o.WriteLine("int {0};", lengthVariableName);
+                        WriteStreamReadStatement(o, "out", lengthVariableName);
+                        o.WriteLine("{0} = new {1}[{2}];", fieldName, elemType.ToString(), lengthVariableName);
+                        o.BeginBlock("for (int i = 0; i < {0}; i++) {{", lengthVariableName);
+                        WriteStreamReadStatement(o, "out", fieldName + "[i]");
+                        o.EndBlock("}");
+                    }
+                }
                 else
-                    WriteStreamReadStatement(o, fi.Name);
+                {
+                    throw new ApplicationException("This type " + elemType + " doesn't support.");
+                }
+            }
+            else if (fieldType.IsEnum)
+            {
+                // TODO
             }
             else
             {
-                throw new ApplicationException("This type " + fi.FieldType + " doesn't support.");
+                throw new ApplicationException("This type " + fieldType + " doesn't support.");
             }
+        }
+        void WriteStreamWriteOrReadStatement(ICodeWriter o, bool writeToBitstream, string modifier, string variableName)
+        {
+            if (writeToBitstream)
+                WriteStreamWriteStatement(o, variableName);
+            else
+                WriteStreamReadStatement(o, modifier, variableName);
         }
         void WriteId(ICodeWriter o)
         {
@@ -116,10 +159,6 @@ namespace EventSerializerGenerator
             o.WriteLine("set { sender = value; }");
             o.EndBlock("}");
             o.WriteLine("SystemAddress sender = RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS;");
-        }
-        void WriteBehaviorFlags(ICodeWriter o)
-        {
-            //type.GetCustomAttributes(typeof(EventAttribute), true);
         }
         FieldInfo[] GetFields()
         {

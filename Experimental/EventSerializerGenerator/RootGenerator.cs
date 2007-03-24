@@ -11,7 +11,8 @@ namespace EventSerializerGenerator
     {
         public RootGenerator(Type[] allTypes)
         {
-            IDictionary<string, ICollection<Type>> namespaceTypesHash = GetNamespaceTypesHash(allTypes);
+            Type[] allEventClasses = GetEventClasses(allTypes);
+            IDictionary<string, ICollection<Type>> namespaceTypesHash = GetNamespaceTypesHash(allEventClasses);
             foreach (KeyValuePair<string, ICollection<Type>> namespaceTypes in namespaceTypesHash)
             {
                 AddChildGenerator(new NamespaceGenerator(namespaceTypes.Key, namespaceTypes.Value));
@@ -49,6 +50,20 @@ namespace EventSerializerGenerator
                 typesInNamespace.Add(type);
             }
             return namespaceTypesHash;
+        }
+        Type[] GetEventClasses(Type[] types)
+        {
+            List<Type> filtered = new List<Type>();
+            foreach (Type t in types)
+            {
+                bool isSimpleEvent = (t.GetInterface("ISimpleEvent") != null);
+                bool doesNameEndWithEvent = t.Name.EndsWith("Event");
+                if (t.IsClass && (isSimpleEvent || doesNameEndWithEvent))
+                {
+                    filtered.Add(t);
+                }
+            }
+            return filtered.ToArray();
         }
     }
 
