@@ -18,15 +18,7 @@ namespace EventSystem
             AddComponent<RpcCalls>();
             AddComponent<SampleEventFactory>();
             AddComponent<AbstractEventFactory, SampleEventFactory>();
-            // namingserver
-            AddComponent<EventFactoryOnNamingServer>();
-            AddComponent<EventHandlersOnNamingServer>();
-            AddComponent<IProtocolProcessor, ProtocolProcessor>("ProcessorOnNamingServer");
-            Hashtable namingServerDependencies = new Hashtable();
-            namingServerDependencies["factory"] = Resolve<EventFactoryOnNamingServer>();
-            namingServerDependencies["handlers"] = Resolve<EventHandlersOnNamingServer>();
-            RegisterCustomDependencies("ProcessorOnNamingServer", namingServerDependencies);
-            // Add your components.
+            // hmm, I don't know best practice for using container yet.
         }
 
         public static void Dispose()
@@ -162,6 +154,7 @@ namespace EventSystem
             {
                 container = new WindsorContainer(new XmlInterpreter("WindsorConfig.xml"));
                 container.AddComponent("atanytime", typeof (SingletonUsesAtAnyTime));
+                container.AddComponent("anotherinstance", typeof(SingletonUsesAtAnyTime));
                 container.AddComponent("resettable", typeof (ResettableSingleton));
                 container.AddComponent("incrementor", typeof (CountIncrementor));
             }
@@ -175,31 +168,39 @@ namespace EventSystem
             [Test]
             public void SameInstance()
             {
-                SingletonUsesAtAnyTime first = container[typeof (SingletonUsesAtAnyTime)] as SingletonUsesAtAnyTime;
-                SingletonUsesAtAnyTime second = container[typeof (SingletonUsesAtAnyTime)] as SingletonUsesAtAnyTime;
+                SingletonUsesAtAnyTime first = container.Resolve<SingletonUsesAtAnyTime>();
+                SingletonUsesAtAnyTime second = container.Resolve<SingletonUsesAtAnyTime>();
                 Assert.AreSame(first, second);
+            }
+
+            [Test]
+            public void TwoInstanceOfSingleton()
+            {
+                SingletonUsesAtAnyTime atAnyTime = container.Resolve<SingletonUsesAtAnyTime>("atanytime");
+                SingletonUsesAtAnyTime anotherInstance = container.Resolve<SingletonUsesAtAnyTime>("anotherinstance");
+                Assert.AreNotSame(atAnyTime, anotherInstance);
             }
 
             [Test]
             public void HoldingCount()
             {
-                SingletonUsesAtAnyTime first = container[typeof (SingletonUsesAtAnyTime)] as SingletonUsesAtAnyTime;
+                SingletonUsesAtAnyTime first = container.Resolve<SingletonUsesAtAnyTime>();
                 Assert.AreEqual(first.Count, 0);
                 first.Increment();
                 Assert.AreEqual(first.Count, 1);
 
-                SingletonUsesAtAnyTime second = container[typeof (SingletonUsesAtAnyTime)] as SingletonUsesAtAnyTime;
+                SingletonUsesAtAnyTime second = container.Resolve<SingletonUsesAtAnyTime>();
                 Assert.AreEqual(second.Count, 1);
             }
 
             [Test]
             public void ResetCount()
             {
-                ResettableSingleton first = container[typeof (ResettableSingleton)] as ResettableSingleton;
+                ResettableSingleton first = container.Resolve<ResettableSingleton>();
                 first.Increment();
                 Assert.AreEqual(first.Count, 1);
 
-                ResettableSingleton second = container[typeof (ResettableSingleton)] as ResettableSingleton;
+                ResettableSingleton second = container.Resolve<ResettableSingleton>();
                 Assert.AreEqual(second.Count, 1);
                 second.Reset();
 
@@ -210,9 +211,9 @@ namespace EventSystem
             [Test]
             public void Dependency()
             {
-                SingletonUsesAtAnyTime singleton = container[typeof (SingletonUsesAtAnyTime)] as SingletonUsesAtAnyTime;
+                SingletonUsesAtAnyTime singleton = container.Resolve<SingletonUsesAtAnyTime>();
                 Assert.AreEqual(singleton.Count, 0);
-                CountIncrementor incrementor = container[typeof (CountIncrementor)] as CountIncrementor;
+                CountIncrementor incrementor = container.Resolve<CountIncrementor>();
                 Assert.AreEqual(singleton.Count, 1);
             }
 
@@ -225,7 +226,7 @@ namespace EventSystem
             [Test]
             public void ResolveProcessorOnNamingServer()
             {
-                IProtocolProcessor processor = ServiceConfigurator.Resolve<IProtocolProcessor>("ProcessorOnNamingServer");
+                IProtocolProcessor processor = ServiceConfigurator.Resolve<IProtocolProcessor>("namingserver.processor");
                 Assert.IsNotNull(processor);
             }
         }

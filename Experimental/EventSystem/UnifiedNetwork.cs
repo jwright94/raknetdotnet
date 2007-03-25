@@ -45,7 +45,7 @@ namespace EventSystem
     {
         public static void SendToNamingServer(RPCParameters _params)
         {
-            IProtocolProcessor processor = ServiceConfigurator.Resolve<IProtocolProcessor>("ProcessorOnNamingServer");
+            IProtocolProcessor processor = ServiceConfigurator.Resolve<IProtocolProcessor>("namingserver.processor");
             processor.ProcessReceiveParams(_params);
         }
         public static void SendToNamingClient(RPCParameters _params)

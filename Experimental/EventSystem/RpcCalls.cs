@@ -21,26 +21,26 @@ namespace EventSystem
     {
         private readonly IEventFactory factory;
         private readonly IEventHandlers handlers;
-        private readonly IEventExceptionCallbacks callbacks;
         private readonly ILogger logger;
-
-        public ProtocolProcessor(IEventFactory factory, IEventHandlers handlers, ILogger logger) : this(factory, handlers, null, logger)
-        {
-        }
+        private IEventExceptionCallbacks callbacks;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="factory"></param>
         /// <param name="handlers"></param>
-        /// <param name="callbacks">Accept null.</param>
         /// <param name="logger"></param>
-        public ProtocolProcessor(IEventFactory factory, IEventHandlers handlers, IEventExceptionCallbacks callbacks, ILogger logger)
+        public ProtocolProcessor(IEventFactory factory, IEventHandlers handlers, ILogger logger)
         {
             this.factory = factory;
             this.handlers = handlers;
-            this.callbacks = callbacks;
             this.logger = logger;
+        }
+
+        public IEventExceptionCallbacks Callbacks
+        {
+            get { return callbacks; }
+            set { callbacks = value; }
         }
 
         public void ProcessReceiveParams(RPCParameters _params)
@@ -55,9 +55,9 @@ namespace EventSystem
             catch (NetworkException)  // TODO: Add new type of network exception. Call accurate callback.
             {
                 logger.Warn("Ran off end of packet.");
-                if(callbacks != null)
+                if(Callbacks != null)
                 {
-                    callbacks.OnRanOffEndOfBitstream(_params.sender);  // TODO: This is ad-hoc.
+                    Callbacks.OnRanOffEndOfBitstream(_params.sender);  // TODO: This is ad-hoc.
                 }
             }
         }

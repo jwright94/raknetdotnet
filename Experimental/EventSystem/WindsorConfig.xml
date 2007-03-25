@@ -1,8 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <configuration>
   <facilities>
-    <facility id="Logging"
+    <facility id="logging"
               type="Castle.Facilities.Logging.LoggingFacility, Castle.Facilities.Logging"
               loggingApi="console" />
   </facilities>
+  <components>
+    <component id="namingserver.eventfactory"
+               type="SampleEvents.EventFactoryOnNamingServer, EventSystem" />
+    <component id="namingserver.eventhandlers"
+               type="SampleEvents.EventHandlersOnNamingServer, EventSystem" />
+    <component id="namingserver.processor"
+               service="EventSystem.IProtocolProcessor, EventSystem"
+               type="EventSystem.ProtocolProcessor, EventSystem"
+               >
+      <parameters>
+        <factory>${namingserver.eventfactory}</factory>
+        <handlers>${namingserver.eventhandlers}</handlers>
+      </parameters>
+    </component>
+  </components>
 </configuration>
