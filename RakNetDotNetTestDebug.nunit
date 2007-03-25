@@ -2,6 +2,6 @@
   <Settings activeconfig="Default" appbase="C:\Documents and Settings\calma\My Documents\raknetdotnet\Bin\Debug" />
   <Config name="Default" binpathtype="Auto">
     <assembly path="EventSystem.exe" />
-    <assembly path="EventSerializerGenerator.exe" />
+    <assembly path="ProtocolGenerator.exe" />
   </Config>
 </NUnitProject>

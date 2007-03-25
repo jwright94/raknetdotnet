@@ -7,8 +7,8 @@
     <ProjectGuid>{36D7BF78-2B15-4FA5-8309-5A1FA1D2E1E9}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>EventSerializerGenerator</RootNamespace>
-    <AssemblyName>EventSerializerGenerator</AssemblyName>
+    <RootNamespace>ProtocolGenerator</RootNamespace>
+    <AssemblyName>ProtocolGenerator</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

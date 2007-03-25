@@ -3,11 +3,11 @@ using System.Runtime.InteropServices;
 // アセンブリに関する一般情報は以下の属性セットをとおして制御されます。 
 // アセンブリに関連付けられている情報を変更するには、
 // これらの属性値を変更してください。
-[assembly : AssemblyTitle("EventSerializerGenerator")]
+[assembly: AssemblyTitle("ProtocolGenerator")]
 [assembly : AssemblyDescription("")]
 [assembly : AssemblyConfiguration("")]
 [assembly : AssemblyCompany("")]
-[assembly : AssemblyProduct("EventSerializerGenerator")]
+[assembly: AssemblyProduct("ProtocolGenerator")]
 [assembly : AssemblyCopyright("Copyright (C)  2007")]
 [assembly : AssemblyTrademark("")]
 [assembly : AssemblyCulture("")]
