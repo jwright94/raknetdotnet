@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Threading;
 using RakNetDotNet;
 
 namespace StressTest
@@ -131,7 +131,7 @@ namespace StressTest
                         }
                     }
                 }
-                System.Threading.Thread.Sleep(0);
+                Thread.Sleep(0);
             }
 
             //foreach (RakPeerInterface clientRakPeer in clientRakPeers)

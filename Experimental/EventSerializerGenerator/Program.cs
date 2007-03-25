@@ -179,7 +179,7 @@ namespace EventSerializerGenerator
         {
             string eventTemplatePath = @"c:\home\white space\sampleevents.cs";
             string generatedFilePath =
-                (string) PrivateAccessor.ExecuteMethod(new Program(), "GetGeneratedFilePath", eventTemplatePath);
+                (string)PrivateAccessor.ExecuteStaticMethod(typeof(Program), "GetGeneratedFilePath", new object[] { eventTemplatePath });
             Assert.AreEqual(@"c:\home\white space\sampleevents.generated.cs", generatedFilePath);
         }
     }

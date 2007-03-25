@@ -78,10 +78,9 @@ namespace EventSerializerGenerator
         public void ClassifyTypes()
         {
             Type[] types = new Type[] {typeof (SimpleEvent), typeof (SimpleEvent2)};
-            IGenerator rootGenerator = new RootGenerator(types);
             IDictionary<string, ICollection<Type>> namespaceTypesHash =
                 (IDictionary<string, ICollection<Type>>)
-                PrivateAccessor.ExecuteMethod(rootGenerator, "GetNamespaceTypesHash", types);
+                PrivateAccessor.ExecuteStaticMethod(typeof(RootGenerator), "GetNamespaceTypesHash", new object[] { types });
             Assert.IsTrue(namespaceTypesHash.ContainsKey("TestEvents"));
             Assert.IsTrue(namespaceTypesHash.ContainsKey("TestEvents2"));
             Assert.IsTrue(namespaceTypesHash["TestEvents"].Contains(typeof (SimpleEvent)));
