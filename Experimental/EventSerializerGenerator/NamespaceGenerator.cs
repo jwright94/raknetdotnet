@@ -85,19 +85,14 @@ namespace EventSerializerGenerator
             return eventInfosBySite;
         }
 
-        private string BasicFactoryName
+        private static string BasicFactoryName
         {
-            get { return Prefix + "EventFactory"; }
+            get { return "EventFactory"; }
         }
 
-        private string BasicHandlersName
+        private static string BasicHandlersName
         {
-            get { return Prefix + "EventHandlers"; }
-        }
-
-        private string Prefix
-        {
-            get { return NamingHelper.GetPrefix(_namespace, "Events"); }
+            get { return "EventHandlers"; }
         }
 
         private string _namespace;

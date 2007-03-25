@@ -51,7 +51,7 @@ namespace TestEvents {
 		SystemAddress sender = RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS;
 	}
 	[Singleton]
-	sealed class TestEventFactoryOnServer : IEventFactory {
+	sealed class EventFactoryOnServer : IEventFactory {
 		public ISimpleEvent RecreateSimpleEvent(BitStream source) {
 			Debug.Assert(source != null);
 			ISimpleEvent _event;
@@ -64,7 +64,7 @@ namespace TestEvents {
 					break;
 				
 				default:
-					throw new NetworkException(string.Format("Event id {0} not recognized by TestEventFactoryOnServer.RecreateEvent()!", id));
+					throw new NetworkException(string.Format("Event id {0} not recognized by EventFactoryOnServer.RecreateEvent()!", id));
 				
 			}
 			return _event;
@@ -72,7 +72,7 @@ namespace TestEvents {
 		public IEvent RecreateEvent(BitStream source) { return null; }
 	}
 	[Singleton]
-	sealed class TestEventHandlersOnServer : IEventHandlers {
+	sealed class EventHandlersOnServer : IEventHandlers {
 		public void CallHandler(ISimpleEvent e) {
 			switch (e.Id) {
 				case 0:
@@ -81,7 +81,7 @@ namespace TestEvents {
 					break;
 				
 				default:
-					throw new NetworkException(string.Format("Event id {0} not recognized by TestEventHandlersOnServer.CallHandler()!", e.Id));
+					throw new NetworkException(string.Format("Event id {0} not recognized by EventHandlersOnServer.CallHandler()!", e.Id));
 				
 			}
 		}
