@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <configuration>
   <facilities>
-    <facility id="logging"
+    <facility id="Logging"
               type="Castle.Facilities.Logging.LoggingFacility, Castle.Facilities.Logging"
               loggingApi="console" />
   </facilities>

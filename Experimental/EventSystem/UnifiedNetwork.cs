@@ -45,12 +45,12 @@ namespace EventSystem
     {
         public static void SendToNamingServer(RPCParameters _params)
         {
-            IProtocolProcessor processor = ServiceConfigurator.Resolve<IProtocolProcessor>("namingserver");
+            IProtocolProcessor processor = ServiceConfigurator.Resolve<IProtocolProcessor>("ProcessorOnNamingServer");
             processor.ProcessReceiveParams(_params);
         }
         public static void SendToNamingClient(RPCParameters _params)
         {
-            IProtocolProcessor processor = ServiceConfigurator.Resolve<IProtocolProcessor>("namingclient");
+            IProtocolProcessor processor = ServiceConfigurator.Resolve<IProtocolProcessor>("ProcessorOnNamingClient");
             processor.ProcessReceiveParams(_params);
         }
     }

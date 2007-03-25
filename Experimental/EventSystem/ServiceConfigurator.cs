@@ -4,6 +4,7 @@ using Castle.Core.Logging;
 using Castle.Windsor;
 using Castle.Windsor.Configuration.Interpreters;
 using NUnit.Framework;
+using SampleEvents;
 
 namespace EventSystem
 {
@@ -17,6 +18,14 @@ namespace EventSystem
             AddComponent<RpcCalls>();
             AddComponent<SampleEventFactory>();
             AddComponent<AbstractEventFactory, SampleEventFactory>();
+            // namingserver
+            AddComponent<EventFactoryOnNamingServer>();
+            AddComponent<EventHandlersOnNamingServer>();
+            AddComponent<IProtocolProcessor, ProtocolProcessor>("ProcessorOnNamingServer");
+            Hashtable namingServerDependencies = new Hashtable();
+            namingServerDependencies["factory"] = Resolve<EventFactoryOnNamingServer>();
+            namingServerDependencies["handlers"] = Resolve<EventHandlersOnNamingServer>();
+            RegisterCustomDependencies("ProcessorOnNamingServer", namingServerDependencies);
             // Add your components.
         }
 
@@ -146,7 +155,7 @@ namespace EventSystem
         }
 
         [TestFixture]
-        public class MicroKernelSingletonTestCase
+        public sealed class MicroKernelSingletonTestCase
         {
             [SetUp]
             public void SetUp()
@@ -208,6 +217,17 @@ namespace EventSystem
             }
 
             private IWindsorContainer container;
+        }
+
+        [TestFixture]
+        public sealed class ServiceConfiguratorTestCase
+        {
+            [Test]
+            public void ResolveProcessorOnNamingServer()
+            {
+                IProtocolProcessor processor = ServiceConfigurator.Resolve<IProtocolProcessor>("ProcessorOnNamingServer");
+                Assert.IsNotNull(processor);
+            }
         }
     }
 

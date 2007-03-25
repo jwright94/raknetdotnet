@@ -24,6 +24,10 @@ namespace EventSystem
         private readonly IEventExceptionCallbacks callbacks;
         private readonly ILogger logger;
 
+        public ProtocolProcessor(IEventFactory factory, IEventHandlers handlers, ILogger logger) : this(factory, handlers, null, logger)
+        {
+        }
+
         /// <summary>
         /// 
         /// </summary>
