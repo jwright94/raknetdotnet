@@ -1,4 +1,5 @@
 using EventSerializerGenerator;
+using RakNetDotNet;
 
 namespace TestEvents
 {
@@ -7,6 +8,7 @@ namespace TestEvents
     {
         private string name;
         private int age;
+        private SystemAddress[] systemAddresses;
     }
 }
 

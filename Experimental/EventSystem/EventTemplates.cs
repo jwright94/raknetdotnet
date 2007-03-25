@@ -1,21 +1,14 @@
 using EventSerializerGenerator;
+using RakNetDotNet;
 
 namespace SampleEvents
 {
-    internal enum MyEnum
-    {
-        Foo,
-        Bar,
-        FooBar,
-    }
-
     [SiteOfHandling("Server")]
     public partial class RegisterEvent
     {
         private string name;
-        //SystemAddress[] systemAddresses;
+        SystemAddress[] systemAddresses;
         private byte serviceId;
-        private int[] intArray;
     }
 }
 

@@ -14,10 +14,17 @@ namespace TestEvents {
 			if (!source.Read(out id)) { throw new NetworkException("Deserialization is failed."); }
 			if (!source.Read(out name)) { throw new NetworkException("Deserialization is failed."); }
 			if (!source.Read(out age)) { throw new NetworkException("Deserialization is failed."); }
+			int _systemAddressesLength;
+			if (!source.Read(out _systemAddressesLength)) { throw new NetworkException("Deserialization is failed."); }
+			systemAddresses = new RakNetDotNet.SystemAddress[_systemAddressesLength];
+			for (int i = 0; i < _systemAddressesLength; i++) {
+				if (!source.Read( systemAddresses[i])) { throw new NetworkException("Deserialization is failed."); }
+			}
 		}
-		public void SetData(System.String name, System.Int32 age) {
+		public void SetData(System.String name, System.Int32 age, RakNetDotNet.SystemAddress[] systemAddresses) {
 			this.name = name;
 			this.age = age;
+			this.systemAddresses = systemAddresses;
 		}
 		public BitStream Stream {
 			get {
@@ -25,6 +32,10 @@ namespace TestEvents {
 				eventStream.Write(id);
 				eventStream.Write(name);
 				eventStream.Write(age);
+				eventStream.Write(systemAddresses.Length);
+				for (int i = 0; i < systemAddresses.Length; i++) {
+					eventStream.Write(systemAddresses[i]);
+				}
 				return eventStream;
 			}
 		}

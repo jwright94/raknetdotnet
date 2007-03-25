@@ -49,7 +49,7 @@ namespace EventSerializerGenerator
             WriteStreamReadStatement(o, "out", "id");
             foreach (FieldInfo field in GetFields())
             {
-                WriteSerializeFieldStatement(o, false, field);
+                WriteSerializeFieldStatementRecursive(o, false, field.FieldType, field.Name);
             }
             o.EndBlock("}");
         }
@@ -87,7 +87,7 @@ namespace EventSerializerGenerator
             WriteStreamWriteStatement(o, "id");
             foreach (FieldInfo field in GetFields())
             {
-                WriteSerializeFieldStatement(o, true, field);
+                WriteSerializeFieldStatementRecursive(o, true, field.FieldType, field.Name);
             }
             o.WriteLine("return eventStream;");
             o.EndBlock("}");
@@ -99,58 +99,52 @@ namespace EventSerializerGenerator
             o.WriteLine("eventStream.Write({0});", variableName);
         }
 
-        private static void WriteSerializeFieldStatement(ICodeWriter o, bool writeToBitstream, FieldInfo fi)
+        private static void WriteSerializeNonCollectionStatement(ICodeWriter o, bool writeToBitstream, Type variableType, string variableName)
         {
-            Type fieldType = fi.FieldType;
-            string fieldName = fi.Name;
-            if (BitstreamSerializationHelper.DoesSupportPrimitiveType(fieldType))
+            if (BitstreamSerializationHelper.DoesSupportPrimitiveType(variableType))
             {
-                WriteStreamWriteOrReadStatement(o, writeToBitstream, "out", fieldName);
+                WriteStreamWriteOrReadStatement(o, writeToBitstream, "out", variableName);
             }
-            else if (fieldType.Equals(typeof (NetworkID)) || fieldType.Equals(typeof (SystemAddress)))
+            else if (variableType.Equals(typeof (NetworkID)) || variableType.Equals(typeof (SystemAddress)))
             {
-                WriteStreamWriteOrReadStatement(o, writeToBitstream, "", fieldName);
+                WriteStreamWriteOrReadStatement(o, writeToBitstream, "", variableName);
             }
-            else if (fieldType.IsArray)
-            {
-                WriteSerializeArrayStatement(o, writeToBitstream, fieldType, fieldName);
-            }
-            else if (fieldType.IsEnum)
+            else if (variableType.IsEnum)
             {
                 // TODO
             }
             else
             {
-                throw new ApplicationException("This type " + fieldType + " doesn't support.");
+                throw new ApplicationException("This type " + variableType + " doesn't support.");
             }
         }
 
-        private static void WriteSerializeArrayStatement(ICodeWriter o, bool writeToBitstream, Type fieldType, string fieldName)
+        private static void WriteSerializeFieldStatementRecursive(ICodeWriter o, bool writeToBitstream, Type variableType, string variableName)
         {
-            Type elemType = fieldType.GetElementType();
-            if (BitstreamSerializationHelper.DoesSupportPrimitiveType(elemType))
+            if (variableType.IsArray)
             {
+                Type elemType = variableType.GetElementType();
                 if (writeToBitstream)
                 {
-                    WriteStreamWriteStatement(o, fieldName + ".Length");
-                    o.BeginBlock("for (int i = 0; i < {0}.Length; i++) {{", fieldName);
-                    WriteStreamWriteStatement(o, fieldName + "[i]");
+                    WriteStreamWriteStatement(o, variableName + ".Length");
+                    o.BeginBlock("for (int i = 0; i < {0}.Length; i++) {{", variableName);
+                    WriteSerializeFieldStatementRecursive(o, writeToBitstream, elemType, variableName + "[i]");
                     o.EndBlock("}");
                 }
                 else
                 {
-                    string lengthVariableName = "_" + fieldName + "Length";
+                    string lengthVariableName = "_" + variableName + "Length";
                     o.WriteLine("int {0};", lengthVariableName);
                     WriteStreamReadStatement(o, "out", lengthVariableName);
-                    o.WriteLine("{0} = new {1}[{2}];", fieldName, elemType.ToString(), lengthVariableName);
+                    o.WriteLine("{0} = new {1}[{2}];", variableName, elemType.ToString(), lengthVariableName);
                     o.BeginBlock("for (int i = 0; i < {0}; i++) {{", lengthVariableName);
-                    WriteStreamReadStatement(o, "out", fieldName + "[i]");
+                    WriteSerializeFieldStatementRecursive(o, writeToBitstream, elemType, variableName + "[i]");
                     o.EndBlock("}");
                 }
             }
             else
             {
-                throw new ApplicationException("This type " + elemType + " doesn't support.");
+                WriteSerializeNonCollectionStatement(o, writeToBitstream, variableType, variableName);
             }
         }
 
