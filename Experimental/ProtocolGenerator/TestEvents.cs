@@ -1,4 +1,4 @@
-using EventSerializerGenerator;
+using ProtocolGenerator;
 using RakNetDotNet;
 
 namespace TestEvents

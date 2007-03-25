@@ -9,7 +9,7 @@ using Microsoft.CSharp;
 using Microsoft.VisualBasic;
 using NUnit.Framework;
 
-namespace EventSerializerGenerator
+namespace ProtocolGenerator
 {
     // CodeDom is complicated. I use a simpler method. It is Console.WriteLine.
     internal class Program
@@ -27,9 +27,9 @@ namespace EventSerializerGenerator
             List<string> referencedAssemblies = new List<string>(parsedArgs.ReferencedAssemblies);
             if (
                 !referencedAssemblies.Exists(
-                     delegate(string asm) { return asm.Contains("EventSerializerGenerator.exe"); }))
+                     delegate(string asm) { return asm.Contains("ProtocolGenerator.exe"); }))
             {
-                referencedAssemblies.Add("EventSerializerGenerator.exe");
+                referencedAssemblies.Add("ProtocolGenerator.exe");
             }
 
             Assembly templateAssembly;

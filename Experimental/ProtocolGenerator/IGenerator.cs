@@ -1,4 +1,4 @@
-namespace EventSerializerGenerator
+namespace ProtocolGenerator
 {
     // I use the composit pattern.
     internal interface IGenerator

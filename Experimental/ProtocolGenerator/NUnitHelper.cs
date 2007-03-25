@@ -2,7 +2,7 @@ using System;
 using System.Reflection;
 using NUnit.Framework;
 
-namespace EventSerializerGenerator
+namespace ProtocolGenerator
 {
     internal static class PrivateAccessor
     {

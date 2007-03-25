@@ -1,6 +1,6 @@
 using CommandLine;
 
-namespace EventSerializerGenerator
+namespace ProtocolGenerator
 {
     internal class AppArguments
     {

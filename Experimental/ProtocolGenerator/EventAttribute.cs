@@ -1,6 +1,6 @@
 using System;
 
-namespace EventSerializerGenerator
+namespace ProtocolGenerator
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public sealed class SiteOfHandlingAttribute : Attribute

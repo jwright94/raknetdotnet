@@ -3,7 +3,7 @@ using System.IO;
 using System.Text;
 using NUnit.Framework;
 
-namespace EventSerializerGenerator
+namespace ProtocolGenerator
 {
     internal sealed class CodeWriter : ICodeWriter
     {

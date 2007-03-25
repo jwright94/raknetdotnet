@@ -1,6 +1,6 @@
 using System;
 
-namespace EventSerializerGenerator
+namespace ProtocolGenerator
 {
     internal class EventInfo
     {

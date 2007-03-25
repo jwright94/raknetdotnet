@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Text;
 using RakNetDotNet;
 
-namespace EventSerializerGenerator
+namespace ProtocolGenerator
 {
     internal sealed class ClassGenerator : IGenerator
     {

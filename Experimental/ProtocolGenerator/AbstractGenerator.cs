@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace EventSerializerGenerator
+namespace ProtocolGenerator
 {
     internal abstract class AbstractGenerator : IGenerator
     {

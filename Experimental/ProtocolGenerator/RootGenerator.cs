@@ -5,7 +5,7 @@ using NUnit.Framework;
 using TestEvents;
 using TestEvents2;
 
-namespace EventSerializerGenerator
+namespace ProtocolGenerator
 {
     internal sealed class RootGenerator : AbstractGenerator
     {

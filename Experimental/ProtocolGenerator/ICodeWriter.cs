@@ -1,4 +1,4 @@
-namespace EventSerializerGenerator
+namespace ProtocolGenerator
 {
     internal interface ICodeWriter
     {
