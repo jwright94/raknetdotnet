@@ -2,7 +2,7 @@ using RakNetDotNet;
 
 namespace EventSystem
 {
-    internal interface IEvent
+    internal interface IComplecatedEvent
     {
         BitStream Stream { get; }
         int Id { get; }
@@ -14,7 +14,7 @@ namespace EventSystem
         bool PerformBeforeConnectOnClient { get; }
     }
 
-    internal interface ISimpleEvent
+    internal interface IEvent
     {
         BitStream Stream { get; }
         int Id { get; }

@@ -65,7 +65,7 @@ namespace EventSystem
             log("Overwrote server IP = {0}", ipString);
         }
 
-        public void ReportEvent(IEvent _event)
+        public void ReportEvent(IComplecatedEvent _event)
         {
             if (isOnline)
             {
@@ -93,7 +93,7 @@ namespace EventSystem
             }
         }
 
-        public void ProcessEvent(IEvent _event)
+        public void ProcessEvent(IComplecatedEvent _event)
         {
             if (isOnline)
             {

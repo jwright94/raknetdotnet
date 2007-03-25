@@ -26,15 +26,15 @@ namespace ProtocolGenerator
             o.WriteLine("[Singleton]");
             o.BeginBlock("sealed class {0} : IEventFactory {{", factoryName);
             WriteRecreateEvent(o);
-            o.WriteLine("public IEvent RecreateEvent(BitStream source) { return null; }");
+            o.WriteLine("public IComplecatedEvent RecreateEvent(BitStream source) { return null; }");
             o.EndBlock("}");
         }
 
         private void WriteRecreateEvent(ICodeWriter o)
         {
-            o.BeginBlock("public ISimpleEvent RecreateSimpleEvent(BitStream source) {");
+            o.BeginBlock("public IEvent RecreateSimpleEvent(BitStream source) {");
             o.WriteLine("Debug.Assert(source != null);");
-            o.WriteLine("ISimpleEvent _event;");
+            o.WriteLine("IEvent _event;");
             o.WriteLine("int id;");
             o.WriteLine("if(!source.Read(out id)) throw new NetworkException(\"Deserialization is failed.\");");
             o.WriteLine("source.ResetReadPointer();");

@@ -60,7 +60,7 @@ namespace EventSystem
             get { return name; }
         }
 
-        public void ProcessEvent(IEvent _event)
+        public void ProcessEvent(IComplecatedEvent _event)
         {
             Debug.Assert(_event != null);
 
@@ -72,7 +72,7 @@ namespace EventSystem
             }
         }
 
-        public void SendEvent(IEvent _event)
+        public void SendEvent(IComplecatedEvent _event)
         {
             PacketPriority priority = PacketPriority.HIGH_PRIORITY;
             PacketReliability reliability = PacketReliability.RELIABLE_ORDERED;

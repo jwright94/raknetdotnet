@@ -2,6 +2,6 @@ namespace EventSystem
 {
     internal interface IEventHandlers
     {
-        void CallHandler(ISimpleEvent e);
+        void CallHandler(IEvent e);
     }
 }

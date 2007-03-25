@@ -16,16 +16,16 @@ namespace EventSystem
             get { return ""; }
         }
 
-        private void ReportEvent(IEvent _event)
+        private void ReportEvent(IComplecatedEvent _event)
         {
         } // unicast to connected server.
-        private void SendEvent(IEvent _event)
+        private void SendEvent(IComplecatedEvent _event)
         {
         } // unicast, broadcast to connected systems.
-        private void ProcessEventOnClientSide(IEvent _event)
+        private void ProcessEventOnClientSide(IComplecatedEvent _event)
         {
         } // only do perform.
-        private void ProcessEventOnServerSide(IEvent _event)
+        private void ProcessEventOnServerSide(IComplecatedEvent _event)
         {
         } // RunOnServer, TwoWay. echo back.
         private void ConnectNameService()
@@ -126,7 +126,7 @@ namespace EventSystem
             get { return name; }
         }
 
-        public void ProcessEvent(IEvent _event)
+        public void ProcessEvent(IComplecatedEvent _event)
         {
             if (isOnline)
             {
@@ -141,7 +141,7 @@ namespace EventSystem
             }
         }
 
-        public void SendEvent(IEvent _event, SystemAddress _player)
+        public void SendEvent(IComplecatedEvent _event, SystemAddress _player)
         {
             if (isOnline)
             {

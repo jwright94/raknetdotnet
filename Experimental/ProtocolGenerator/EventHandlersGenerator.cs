@@ -32,7 +32,7 @@ namespace ProtocolGenerator
 
         private void WriteCallHandler(ICodeWriter o)
         {
-            o.BeginBlock("public void CallHandler(ISimpleEvent e) {");
+            o.BeginBlock("public void CallHandler(IEvent e) {");
             o.BeginBlock("switch (e.Id) {");
             foreach (EventInfo ei in eventInfos)
             {

@@ -36,7 +36,7 @@ namespace EventSystem
         {
             SetTestReplyFromServer(false);
 
-            IEvent _event = new TestConnectionEvent((int) SampleEventFactory.EventTypes.TESTCONNECTION);
+            IComplecatedEvent _event = new TestConnectionEvent((int) SampleEventFactory.EventTypes.TESTCONNECTION);
 
             ServiceConfigurator.Resolve<SampleEventFactory>().StoreExternallyCreatedEvent(_event);
             EventCenterClient.Instance.ReportEvent(_event);

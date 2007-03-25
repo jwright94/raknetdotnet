@@ -5,7 +5,61 @@ using RakNetDotNet;
 
 namespace EventSystem
 {
-    internal delegate void ProcessEventDelegate(IEvent _event);
+    // TODO: Pass more information.
+    interface  IEventExceptionCallbacks
+    {
+        void OnUnregistedEvent(SystemAddress sender);
+        void OnRanOffEndOfBitstream(SystemAddress sender);
+    }
+
+    interface  IProtocolProcessor
+    {
+        void ProcessReceiveParams(RPCParameters _params);
+    }
+
+    sealed class ProtocolProcessor : IProtocolProcessor
+    {
+        private readonly IEventFactory factory;
+        private readonly IEventHandlers handlers;
+        private readonly IEventExceptionCallbacks callbacks;
+        private readonly ILogger logger;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="factory"></param>
+        /// <param name="handlers"></param>
+        /// <param name="callbacks">Accept null.</param>
+        /// <param name="logger"></param>
+        public ProtocolProcessor(IEventFactory factory, IEventHandlers handlers, IEventExceptionCallbacks callbacks, ILogger logger)
+        {
+            this.factory = factory;
+            this.handlers = handlers;
+            this.callbacks = callbacks;
+            this.logger = logger;
+        }
+
+        public void ProcessReceiveParams(RPCParameters _params)
+        {
+            BitStream source = new BitStream(_params, false);
+            try
+            {
+                IEvent e = factory.RecreateSimpleEvent(source);
+                e.Sender = _params.sender;
+                handlers.CallHandler(e);
+            }
+            catch (NetworkException)  // TODO: Add new type of network exception. Call accurate callback.
+            {
+                logger.Warn("Ran off end of packet.");
+                if(callbacks != null)
+                {
+                    callbacks.OnRanOffEndOfBitstream(_params.sender);  // TODO: This is ad-hoc.
+                }
+            }
+        }
+    }
+
+    internal delegate void ProcessEventDelegate(IComplecatedEvent _event);
 
     [Singleton]
     internal sealed class RpcCalls
@@ -20,7 +74,7 @@ namespace EventSystem
         {
             BitStream source = new BitStream(_params, false);
             RpcCalls instance = ServiceConfigurator.Resolve<RpcCalls>();
-            IEvent _event = instance.RecreateEvent(source);
+            IComplecatedEvent _event = instance.RecreateEvent(source);
 
             Debug.Assert(instance.ProcessEventOnClientSide != null);
             instance.ProcessEventOnClientSide(_event);
@@ -35,7 +89,7 @@ namespace EventSystem
             BitStream source = new BitStream(_params, false);
 
             RpcCalls instance = ServiceConfigurator.Resolve<RpcCalls>();
-            IEvent _event = instance.RecreateEvent(source);
+            IComplecatedEvent _event = instance.RecreateEvent(source);
             instance.Logger.Debug("EventCenterServer> {0}", _event.ToString());
             _event.OriginPlayer = sender;
             Debug.Assert(instance.ProcessEventOnServerSide != null);
@@ -48,12 +102,12 @@ namespace EventSystem
             ProcessEventOnServerSide = null;
         }
 
-        public IEvent RecreateEvent(BitStream source)
+        public IComplecatedEvent RecreateEvent(BitStream source)
         {
             return factory.RecreateEvent(source);
         }
 
-        public void WipeEvent(IEvent _event)
+        public void WipeEvent(IComplecatedEvent _event)
         {
             factory.WipeEvent(_event);
         }

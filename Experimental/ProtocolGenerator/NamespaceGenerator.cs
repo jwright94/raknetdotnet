@@ -27,7 +27,7 @@ namespace ProtocolGenerator
 
         private static void WriteEventHandlerDelegate(ICodeWriter o)
         {
-            o.WriteLine("delegate void EventHandler<T>(T t) where T : ISimpleEvent;");
+            o.WriteLine("delegate void EventHandler<T>(T t) where T : IEvent;");
         }
 
         private void AddClassGenerators(IList<EventInfo> eventInfos)

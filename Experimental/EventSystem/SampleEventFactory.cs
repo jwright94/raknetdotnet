@@ -76,9 +76,9 @@ namespace EventSystem
             Register,
         }
 
-        public IEvent CreateEvent(EventTypes eventType, uint objId)
+        public IComplecatedEvent CreateEvent(EventTypes eventType, uint objId)
         {
-            IEvent _event = null;
+            IComplecatedEvent _event = null;
 
             switch (eventType)
             {
@@ -103,16 +103,16 @@ namespace EventSystem
             return _event;
         }
 
-        public void StoreExternallyCreatedEvent(IEvent _event)
+        public void StoreExternallyCreatedEvent(IComplecatedEvent _event)
         {
             StoreEvent(_event);
         }
 
-        public override IEvent RecreateEvent(BitStream source)
+        public override IComplecatedEvent RecreateEvent(BitStream source)
         {
             Debug.Assert(source != null);
 
-            IEvent _event;
+            IComplecatedEvent _event;
 
             int ID;
             source.Read(out ID);

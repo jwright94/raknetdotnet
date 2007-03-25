@@ -2,7 +2,7 @@ using RakNetDotNet;
 
 namespace EventSystem
 {
-    internal abstract class AbstractEvent : IEvent
+    internal abstract class AbstractEvent : IComplecatedEvent
     {
         public abstract BitStream Stream { get; }
         public abstract void Perform();

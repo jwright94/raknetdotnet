@@ -5,12 +5,12 @@ namespace EventSystem
 {
     internal abstract class AbstractEventFactory : IEventFactory
     {
-        public ISimpleEvent RecreateSimpleEvent(BitStream source)
+        public IEvent RecreateSimpleEvent(BitStream source)
         {
             return null;
         }
 
-        public abstract IEvent RecreateEvent(BitStream source);
+        public abstract IComplecatedEvent RecreateEvent(BitStream source);
 
         public void Reset()
         {
@@ -18,7 +18,7 @@ namespace EventSystem
             storage.Clear();
         }
 
-        public void WipeEvent(IEvent _event)
+        public void WipeEvent(IComplecatedEvent _event)
         {
             if (storage.Contains(_event))
             {
@@ -26,7 +26,7 @@ namespace EventSystem
             }
         }
 
-        protected void StoreEvent(IEvent _event)
+        protected void StoreEvent(IComplecatedEvent _event)
         {
             ++counter;
             storage.Add(_event);
@@ -35,7 +35,7 @@ namespace EventSystem
         #region Transient State
 
         private ulong counter = 0;
-        private ICollection<IEvent> storage = new List<IEvent>();
+        private ICollection<IComplecatedEvent> storage = new List<IComplecatedEvent>();
 
         #endregion
     }

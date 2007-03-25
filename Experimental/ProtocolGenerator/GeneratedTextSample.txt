@@ -6,7 +6,7 @@ using Castle.Core;
 using RakNetDotNet;
 using EventSystem;
 namespace TestEvents {
-	public partial class SimpleEvent : ISimpleEvent {
+	public partial class SimpleEvent : IEvent {
 		public SimpleEvent() {
 			id = 0;
 		}
@@ -52,9 +52,9 @@ namespace TestEvents {
 	}
 	[Singleton]
 	sealed class EventFactoryOnServer : IEventFactory {
-		public ISimpleEvent RecreateSimpleEvent(BitStream source) {
+		public IEvent RecreateSimpleEvent(BitStream source) {
 			Debug.Assert(source != null);
-			ISimpleEvent _event;
+			IEvent _event;
 			int id;
 			if(!source.Read(out id)) throw new NetworkException("Deserialization is failed.");
 			source.ResetReadPointer();
@@ -69,11 +69,11 @@ namespace TestEvents {
 			}
 			return _event;
 		}
-		public IEvent RecreateEvent(BitStream source) { return null; }
+		public IComplecatedEvent RecreateEvent(BitStream source) { return null; }
 	}
 	[Singleton]
 	sealed class EventHandlersOnServer : IEventHandlers {
-		public void CallHandler(ISimpleEvent e) {
+		public void CallHandler(IEvent e) {
 			switch (e.Id) {
 				case 0:
 					if (Simple != null)
@@ -87,5 +87,5 @@ namespace TestEvents {
 		}
 		public event EventHandler<SimpleEvent> Simple;
 	}
-	delegate void EventHandler<T>(T t) where T : ISimpleEvent;
+	delegate void EventHandler<T>(T t) where T : IEvent;
 }

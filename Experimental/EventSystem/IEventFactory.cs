@@ -4,7 +4,7 @@ namespace EventSystem
 {
     internal interface IEventFactory
     {
-        ISimpleEvent RecreateSimpleEvent(BitStream source);
-        IEvent RecreateEvent(BitStream source);
+        IEvent RecreateSimpleEvent(BitStream source);
+        IComplecatedEvent RecreateEvent(BitStream source);
     }
 }

@@ -137,7 +137,7 @@ namespace EventSystem
                 }
                 else if (key == 't')
                 {
-                    IEvent _event = new TestConnectionEvent2((int) SampleEventFactory.EventTypes.TESTCONNECTION2);
+                    IComplecatedEvent _event = new TestConnectionEvent2((int) SampleEventFactory.EventTypes.TESTCONNECTION2);
 
                     ServiceConfigurator.Resolve<SampleEventFactory>().StoreExternallyCreatedEvent(_event);
                     UnifiedNetwork.Instance.SendEvent(_event, RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS);
