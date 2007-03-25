@@ -41,6 +41,20 @@ namespace EventSystem
         }
     }
 
+    internal static class SampleEventsRpcCalls
+    {
+        public static void SendToNamingServer(RPCParameters _params)
+        {
+            IProtocolProcessor processor = ServiceConfigurator.Resolve<IProtocolProcessor>("namingserver");
+            processor.ProcessReceiveParams(_params);
+        }
+        public static void SendToNamingClient(RPCParameters _params)
+        {
+            IProtocolProcessor processor = ServiceConfigurator.Resolve<IProtocolProcessor>("namingclient");
+            processor.ProcessReceiveParams(_params);
+        }
+    }
+
     // Based on ECS
     // TODO - Query service port to name service.
     // TODO - Rename 'player' related methods.

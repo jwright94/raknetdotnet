@@ -3,12 +3,17 @@ using RakNetDotNet;
 
 namespace SampleEvents
 {
-    [SiteOfHandling("Server")]
+    [SiteOfHandling("NamingServer")]
     public partial class RegisterEvent
     {
         private string name;
         SystemAddress[] systemAddresses;
         private byte serviceId;
+    }
+    [SiteOfHandling("NamingClient")]
+    public partial class ServiceList
+    {
+        private string name;
     }
 }
 

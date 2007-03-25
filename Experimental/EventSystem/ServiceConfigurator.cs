@@ -32,9 +32,24 @@ namespace EventSystem
             return container.Resolve<ServiceType>();
         }
 
+        public static ServiceType Resolve<ServiceType>(string key)
+        {
+            return container.Resolve<ServiceType>(key);
+        }
+
         public static ServiceType Resolve<ServiceType>(IDictionary arguments)
         {
             return (ServiceType) container.Kernel.Resolve(typeof (ServiceType), arguments);
+        }
+
+        public static ServiceType Resolve<ServiceType>(string key, IDictionary arguments)
+        {
+            return (ServiceType) container.Kernel.Resolve(key, arguments);
+        }
+
+        public static void RegisterCustomDependencies(string key, IDictionary dependencies)
+        {
+            container.Kernel.RegisterCustomDependencies(key, dependencies);
         }
 
         public static void RegisterCustomDependencies<ServiceType>(IDictionary dependencies)
@@ -44,12 +59,22 @@ namespace EventSystem
 
         public static void AddComponent<ClassType>()
         {
-            container.AddComponent(typeof (ClassType).FullName, typeof (ClassType));
+            AddComponent<ClassType>(typeof(ClassType).FullName);
+        }
+
+        public static void AddComponent<ClassType>(string key)
+        {
+            container.AddComponent(key, typeof(ClassType));
         }
 
         public static void AddComponent<ServiceType, ClassType>()
         {
-            container.AddComponent(typeof (ServiceType).FullName, typeof (ServiceType), typeof (ClassType));
+            AddComponent<ServiceType, ClassType>(typeof (ServiceType).FullName);
+        }
+
+        public static void AddComponent<ServiceType, ClassType>(string key)
+        {
+            container.AddComponent(key, typeof(ServiceType), typeof(ClassType));
         }
 
         public static void ReleaseComponent(object instance)
