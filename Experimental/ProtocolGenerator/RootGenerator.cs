@@ -60,9 +60,8 @@ namespace ProtocolGenerator
             List<Type> filtered = new List<Type>();
             foreach (Type t in types)
             {
-                bool isSimpleEvent = (t.GetInterface("ISimpleEvent") != null);
-                bool doesNameEndWithEvent = t.Name.EndsWith("Event");
-                if (t.IsClass && (isSimpleEvent || doesNameEndWithEvent))
+                bool isDefined = Attribute.IsDefined(t, typeof (SiteOfHandlingAttribute));
+                if (t.IsClass && isDefined)
                 {
                     filtered.Add(t);
                 }
