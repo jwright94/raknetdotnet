@@ -86,7 +86,7 @@ namespace EventSystem
         }
 
         private static readonly IWindsorContainer container =
-            new WindsorContainer(new XmlInterpreter("WindsorConfig.xml"));
+            new WindsorContainer(new XmlInterpreter());
     }
 
     #region Unit Tests
