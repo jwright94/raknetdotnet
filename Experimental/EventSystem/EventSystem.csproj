@@ -102,6 +102,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="WindsorConfig.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
@@ -116,8 +117,8 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(TargetPath)" "$(SolutionDir)Bin\$(ConfigurationName)" /D /C /Y
-xcopy "$(ProjectDir)WindsorConfig.xml" "$(SolutionDir)Bin\$(ConfigurationName)" /D /C /Y</PostBuildEvent>
-    <PreBuildEvent>"$(SolutionDir)Bin\$(ConfigurationName)\ProtocolGenerator.exe" "$(ProjectDir)EventTemplates.cs" /refasm:"$(SolutionDir)Bin\$(ConfigurationName)\RakNetDotNet.dll" /refasm:"$(SolutionDir)Bin\$(ConfigurationName)\ProtocolGenerator.exe"</PreBuildEvent>
+    <PostBuildEvent>xcopy "$(SolutionDir)RakNetWrapper\$(ConfigurationName)\RakNetWrapper.dll" "$(OutDir)" /D /C /Y
+xcopy "$(SolutionDir)RakNetWrapper\$(ConfigurationName)\RakNetWrapper.pdb" "$(OutDir)" /D /C /Y</PostBuildEvent>
+    <PreBuildEvent>"$(SolutionDir)Experimental\ProtocolGenerator\bin\$(ConfigurationName)\ProtocolGenerator.exe" "$(ProjectDir)EventTemplates.cs" /refasm:"$(SolutionDir)RakNetDotNet\bin\$(ConfigurationName)\RakNetDotNet.dll" /refasm:"$(SolutionDir)Experimental\ProtocolGenerator\bin\$(ConfigurationName)\ProtocolGenerator.exe"</PreBuildEvent>
   </PropertyGroup>
 </Project>

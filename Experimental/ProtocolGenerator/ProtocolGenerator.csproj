@@ -56,7 +56,9 @@
     <Compile Include="TestEvents.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="GeneratedTextSample.txt" />
+    <Content Include="GeneratedTextSample.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\RakNetDotNet\RakNetDotNet.csproj">
@@ -73,7 +75,9 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(TargetPath)" "$(SolutionDir)Bin\$(ConfigurationName)" /D /C /Y
-xcopy "$(ProjectDir)GeneratedTextSample.txt" "$(SolutionDir)Bin\$(ConfigurationName)" /D /C /Y</PostBuildEvent>
+    <PostBuildEvent>xcopy "$(SolutionDir)RakNetWrapper\$(ConfigurationName)\RakNetWrapper.dll" "$(OutDir)" /D /C /Y
+xcopy "$(SolutionDir)RakNetWrapper\$(ConfigurationName)\RakNetWrapper.pdb" "$(OutDir)" /D /C /Y</PostBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
 </Project>

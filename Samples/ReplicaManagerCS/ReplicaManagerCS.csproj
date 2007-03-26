@@ -53,6 +53,9 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(TargetPath)" "$(SolutionDir)Bin\$(ConfigurationName)" /D /C /Y</PostBuildEvent>
+    <PostBuildEvent>xcopy "$(SolutionDir)RakNetWrapper\$(ConfigurationName)\RakNetWrapper.dll" "$(OutDir)" /D /C /Y
+xcopy "$(SolutionDir)RakNetWrapper\$(ConfigurationName)\RakNetWrapper.pdb" "$(OutDir)" /D /C /Y</PostBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
 </Project>
