@@ -6,6 +6,14 @@
               loggingApi="console" />
   </facilities>
   <components>
+    <component id="rpccalls"
+               type="EventSystem.RpcCalls, EventSystem" />
+    <component id="sampleeventfactory"
+               type="EventSystem.SampleEventFactory, EventSystem" />
+    <component id="abstracteventfactory"
+               sevice="AbstractEventFactory" 
+               type="EventSystem.SampleEventFactory, EventSystem" />
+    
     <component id="namingserver.eventfactory"
                type="SampleEvents.EventFactoryOnNamingServer, EventSystem" />
     <component id="namingserver.eventhandlers"

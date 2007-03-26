@@ -4,23 +4,13 @@ using Castle.Core.Logging;
 using Castle.Windsor;
 using Castle.Windsor.Configuration.Interpreters;
 using NUnit.Framework;
-using SampleEvents;
 
 namespace EventSystem
 {
-
     #region For Castle MicroKernel
 
     internal static class ServiceConfigurator
     {
-        static ServiceConfigurator()
-        {
-            AddComponent<RpcCalls>();
-            AddComponent<SampleEventFactory>();
-            AddComponent<AbstractEventFactory, SampleEventFactory>();
-            // hmm, I don't know best practice for using container yet.
-        }
-
         public static void Dispose()
         {
             container.Dispose();
