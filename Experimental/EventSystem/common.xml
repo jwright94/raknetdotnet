@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <facilities>
+    <facility id="logging"
+              type="Castle.Facilities.Logging.LoggingFacility, Castle.Facilities.Logging"
+              loggingApi="console" />
+  </facilities>
+  <components>
+    <component id="rpccalls"
+               type="EventSystem.RpcCalls, EventSystem" />
+    <component id="sampleeventfactory"
+               type="EventSystem.SampleEventFactory, EventSystem" />
+    <component id="abstracteventfactory"
+               sevice="AbstractEventFactory"
+               type="EventSystem.SampleEventFactory, EventSystem" />
+
+    <component id="namingserver.eventfactory"
+               type="SampleEvents.EventFactoryOnNamingServer, EventSystem" />
+    <component id="namingserver.eventhandlers"
+               type="SampleEvents.EventHandlersOnNamingServer, EventSystem" />
+    <component id="namingserver.processor"
+               service="EventSystem.IProtocolProcessor, EventSystem"
+               type="EventSystem.ProtocolProcessor, EventSystem"
+               >
+      <parameters>
+        <factory>${namingserver.eventfactory}</factory>
+        <handlers>${namingserver.eventhandlers}</handlers>
+      </parameters>
+    </component>
+
+    <component id="namingclient.eventfactory"
+         type="SampleEvents.EventFactoryOnNamingClient, EventSystem" />
+    <component id="namingclient.eventhandlers"
+               type="SampleEvents.EventHandlersOnNamingClient, EventSystem" />
+    <component id="namingclient.processor"
+               service="EventSystem.IProtocolProcessor, EventSystem"
+               type="EventSystem.ProtocolProcessor, EventSystem"
+               >
+      <parameters>
+        <factory>${namingclient.eventfactory}</factory>
+        <handlers>${namingclient.eventhandlers}</handlers>
+      </parameters>
+    </component>
+
+    <component id="sampleeventsrpccalls"
+               service="EventSystem.IRpcCallsRegistrar, EventSystem"
+               type="EventSystem.SampleEventsRpcCalls, EventSystem" />
+
+    <component id="unifiednetwork"
+               type="EventSystem.UnifiedNetwork, EventSystem">
+      <parameters>
+        <props>
+          <dictionary>
+            <entry key="name">Zeus</entry>
+            <entry valueType="System.Boolean, mscorlib" key="isonline">true</entry>
+            <entry valueType="System.Boolean, mscorlib" key="isns">true</entry>
+            <entry valueType="System.UInt16, mscorlib" key="allowedplayers">5</entry>
+            <entry valueType="System.Int32, mscorlib" key="threadsleeptimer">0</entry>
+            <entry valueType="System.UInt16, mscorlib" key="port">6000</entry>
+          </dictionary>
+        </props>
+      </parameters>
+    </component>
+
+  </components>
+</configuration>
