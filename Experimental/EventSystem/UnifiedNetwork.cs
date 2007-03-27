@@ -1,8 +1,5 @@
 using System;
 using System.Collections;
-using System.Diagnostics;
-using System.Threading;
-using Castle.Core;
 using Castle.Core.Logging;
 using RakNetDotNet;
 
@@ -42,7 +39,13 @@ namespace EventSystem
         }
     }
 
-    internal static class SampleEventsRpcCalls
+    interface IRpcCallsRegistrar
+    {
+        void Register(RakPeerInterface rakPeerInterface);
+        void Unregister(RakPeerInterface rakPeerInterface);
+    }
+
+    internal sealed class SampleEventsRpcCalls : IRpcCallsRegistrar
     {
         public static void SendToNamingServer(RPCParameters _params)
         {
@@ -54,6 +57,18 @@ namespace EventSystem
             IProtocolProcessor processor = ServiceConfigurator.Resolve<IProtocolProcessor>("namingclient.processor");
             processor.ProcessReceiveParams(_params);
         }
+
+        public void Register(RakPeerInterface rakPeerInterface)
+        {
+            rakPeerInterface.RegisterAsRemoteProcedureCall("sendtonamingserver",
+                                                 typeof(SampleEventsRpcCalls).GetMethod("SendToNamingServer"));
+            rakPeerInterface.RegisterAsRemoteProcedureCall("sendtonamingclient",
+                                     typeof(SampleEventsRpcCalls).GetMethod("SendToNamingClient"));
+        }
+
+        public void Unregister(RakPeerInterface rakPeerInterface)
+        {
+        }
     }
 
     // Based on ECS
@@ -63,7 +78,7 @@ namespace EventSystem
     {
         private readonly IDictionary props;
 
-        public UnifiedNetwork(IDictionary props, ILogger logger)
+        public UnifiedNetwork(IDictionary props, IRpcCallsRegistrar register, ILogger logger)
         {
             this.props = props;
 
@@ -90,8 +105,7 @@ namespace EventSystem
                                            1);
                 rakServerInterface.SetMaximumIncomingConnections(allowedPlayers);
 
-                rakServerInterface.RegisterAsRemoteProcedureCall("sendeventtoserver",
-                                                                 typeof(RpcCalls).GetMethod("SendEventToServer"));
+                register.Register(rakServerInterface);
             }
         }
 
