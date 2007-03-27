@@ -3,21 +3,37 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading;
 using RakNetDotNet;
+using CommandLine;
 
 namespace EventSystem
 {
+    internal class AppArguments
+    {
+        [DefaultArgumentAttribute(ArgumentType.Required, HelpText = "Configuration xml filename.")]
+        public string ConfigurationFilename;
+    }
+
     internal class Program
     {
         private static void Main(string[] args)
         {
-            Console.WriteLine("(S)erver or (U)nifiedNetwork or (C)lient?");
-            char key = Console.ReadKey(true).KeyChar;
-            if (key == 's' || key == 'S')
-                ServerMain(args);
-            else if (key == 'u' || key == 'U')
-                UnifiedNetworkMain(args);
-            else
-                ClientMain(args);
+            AppArguments parsedArgs = new AppArguments();
+            if(!Parser.ParseArgumentsWithUsage(args, parsedArgs))
+            {
+                return;
+            }
+
+            ServiceConfigurator.Configure(parsedArgs.ConfigurationFilename);
+            UnifiedNetwork network = ServiceConfigurator.Resolve<UnifiedNetwork>();
+            int c = 0;
+            //Console.WriteLine("(S)erver or (U)nifiedNetwork or (C)lient?");
+            //char key = Console.ReadKey(true).KeyChar;
+            //if (key == 's' || key == 'S')
+            //    ServerMain(args);
+            //else if (key == 'u' || key == 'U')
+            //    UnifiedNetworkMain(args);
+            //else
+            //    ClientMain(args);
         }
 
         private static void ClientMain(string[] args)

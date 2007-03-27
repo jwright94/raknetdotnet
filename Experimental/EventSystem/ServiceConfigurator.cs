@@ -10,7 +10,12 @@ namespace EventSystem
     #region For Castle MicroKernel
 
     internal static class ServiceConfigurator
-    {
+    {        
+        public static void Configure(string filename)
+        {
+            container = new WindsorContainer(new XmlInterpreter(filename));
+        }
+
         public static void Dispose()
         {
             container.Dispose();
@@ -85,8 +90,7 @@ namespace EventSystem
             get { return Resolve<ILoggerFactory>(); }
         }
 
-        private static readonly IWindsorContainer container =
-            new WindsorContainer(new XmlInterpreter("namingserver.xml"));
+        private static IWindsorContainer container;
     }
 
     #region Unit Tests
