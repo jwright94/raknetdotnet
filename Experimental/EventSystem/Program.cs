@@ -67,6 +67,9 @@ namespace EventSystem
 
         private static void UnifiedNetworkMain(string[] args)
         {
+            UnifiedNetwork network = ServiceConfigurator.Resolve<UnifiedNetwork>();
+            int c = 0;
+#if false
             const ushort NAME_SERVICE_PORT = 6000;
             bool isNS;
 
@@ -108,10 +111,17 @@ namespace EventSystem
 
             factory.Reset();
             unifiedNetwork.Dispose();
+#endif
+        }
+
+        private static void SimpleNetworkMain(string[] args)
+        {
+            
         }
 
         private static void PrintConnections()
         {
+#if false
             if (_kbhit() != 0)
             {
                 char key = Console.ReadKey(true).KeyChar;
@@ -144,6 +154,7 @@ namespace EventSystem
                 }
                 key = '\0';
             }
+#endif
         }
 
         [DllImport("crtdll.dll")]

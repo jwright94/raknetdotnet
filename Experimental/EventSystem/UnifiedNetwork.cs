@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 using System.Threading;
+using Castle.Core;
 using Castle.Core.Logging;
 using RakNetDotNet;
 
@@ -50,7 +51,7 @@ namespace EventSystem
         }
         public static void SendToNamingClient(RPCParameters _params)
         {
-            IProtocolProcessor processor = ServiceConfigurator.Resolve<IProtocolProcessor>("ProcessorOnNamingClient");
+            IProtocolProcessor processor = ServiceConfigurator.Resolve<IProtocolProcessor>("namingclient.processor");
             processor.ProcessReceiveParams(_params);
         }
     }
@@ -58,31 +59,19 @@ namespace EventSystem
     // Based on ECS
     // TODO - Query service port to name service.
     // TODO - Rename 'player' related methods.
-    internal sealed class UnifiedNetwork : IDisposable
+    internal sealed class UnifiedNetwork
     {
-        #region Ogre-like singleton implementation.
+        private readonly IDictionary props;
 
-        private static UnifiedNetwork instance;
-
-        public UnifiedNetwork(string configFile, IDictionary extendedProperties)
+        public UnifiedNetwork(IDictionary props, ILogger logger)
         {
-            Debug.Assert(instance == null);
-            instance = this;
-            logger = ServiceConfigurator.LogFactory.Create(typeof (UnifiedNetwork));
+            this.props = props;
 
-            // TODO - Use xml reader
-            name = "Zeus";
-            isOnline = true;
-            isConnected = false;
+            name = (string)props["name"];
+            isOnline = (bool)props["isonline"];
 
             if (isOnline)
             {
-                bool isNS = (bool) extendedProperties["isNS"];
-                if (isNS)
-                    namingComponent = new NamingServerComponent(logger.CreateChildLogger("namingserver"));
-                else
-                    namingComponent = new NamingClientComponent(logger.CreateChildLogger("namingclient"));
-
                 rakServerInterface = RakNetworkFactory.GetRakPeerInterface();
                 ConnectionGraph connectionGraphPlugin = RakNetworkFactory.GetConnectionGraph(); // TODO - Do Destroy?
                 FullyConnectedMesh fullyConnectedMeshPlugin = new FullyConnectedMesh(); // TODO - Do Dispose?
@@ -93,27 +82,27 @@ namespace EventSystem
                 rakServerInterface.AttachPlugin(connectionGraphPlugin);
 
                 // Initialize the peers
-                //ushort allowedPlayers = 5;
-                ushort allowedPlayers = (ushort) extendedProperties["allowedPlayers"];
-                int threadSleepTimer = 0;
-                //ushort port = 6000;
-                ushort port = (ushort) extendedProperties["port"];
+                ushort allowedPlayers = (ushort)props["allowedplayers"];
+                int threadSleepTimer = (int)props["threadsleeptimer"];
+                ushort port = (ushort)props["port"];
                 SocketDescriptor socketDescriptor = new SocketDescriptor(port, string.Empty);
-                rakServerInterface.Startup(allowedPlayers, threadSleepTimer, new SocketDescriptor[] {socketDescriptor},
+                rakServerInterface.Startup(allowedPlayers, threadSleepTimer, new SocketDescriptor[] { socketDescriptor },
                                            1);
-                namingComponent.OnStartup(rakServerInterface);
                 rakServerInterface.SetMaximumIncomingConnections(allowedPlayers);
 
                 rakServerInterface.RegisterAsRemoteProcedureCall("sendeventtoserver",
-                                                                 typeof (RpcCalls).GetMethod("SendEventToServer"));
+                                                                 typeof(RpcCalls).GetMethod("SendEventToServer"));
             }
         }
 
+        private string name;
+        private RakPeerInterface rakServerInterface;
+        private bool isOnline;
+
+
+#if false
         public void Dispose()
         {
-            Debug.Assert(instance != null);
-            instance = null;
-
             if (isOnline)
             {
                 logger.Debug("Shutting down server...");
@@ -123,17 +112,6 @@ namespace EventSystem
                 logger.Debug("Completed.");
             }
         }
-
-        public static UnifiedNetwork Instance
-        {
-            get
-            {
-                Debug.Assert(instance != null);
-                return instance;
-            }
-        }
-
-        #endregion
 
         public string Name
         {
@@ -206,13 +184,11 @@ namespace EventSystem
                 if (success)
                 {
                     logger.Debug("connected!");
-                    isConnected = true;
                     return true;
                 }
                 else
                 {
                     isOnline = false;
-                    isConnected = false;
                     throw new NetworkException("Couldn't connect to server!");
                 }
             }
@@ -339,16 +315,12 @@ namespace EventSystem
             }
         }
 
-        private string name;
-        private RakPeerInterface rakServerInterface;
         private INamingComponent namingComponent;
 
         #endregion
 
         #region ECC's Private Member
 
-        private bool isOnline;
-        private bool isConnected;
 
         #endregion
 
@@ -362,5 +334,6 @@ namespace EventSystem
         // Set LWD plugin to RakPeerInterface.
         // Add argument of service name to SendEvent, ReportEvent.
         // ...
+#endif
     }
 }
