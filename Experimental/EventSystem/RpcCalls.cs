@@ -14,11 +14,13 @@ namespace EventSystem
 
     interface  IProtocolProcessor
     {
+        string Name { get; }
         void ProcessReceiveParams(RPCParameters _params);
     }
 
     sealed class ProtocolProcessor : IProtocolProcessor
     {
+        private readonly string name;
         private readonly IEventFactory factory;
         private readonly IEventHandlers handlers;
         private readonly ILogger logger;
@@ -27,11 +29,13 @@ namespace EventSystem
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="name"></param>
         /// <param name="factory"></param>
         /// <param name="handlers"></param>
         /// <param name="logger"></param>
-        public ProtocolProcessor(IEventFactory factory, IEventHandlers handlers, ILogger logger)
+        public ProtocolProcessor(string name, IEventFactory factory, IEventHandlers handlers, ILogger logger)
         {
+            this.name = name;
             this.factory = factory;
             this.handlers = handlers;
             this.logger = logger;
@@ -41,6 +45,11 @@ namespace EventSystem
         {
             get { return callbacks; }
             set { callbacks = value; }
+        }
+
+        public string Name
+        {
+            get { return name; }
         }
 
         public void ProcessReceiveParams(RPCParameters _params)

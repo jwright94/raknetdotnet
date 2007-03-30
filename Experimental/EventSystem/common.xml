@@ -23,6 +23,7 @@
                type="EventSystem.ProtocolProcessor, EventSystem"
                >
       <parameters>
+        <name>ns</name>
         <factory>${namingserver.eventfactory}</factory>
         <handlers>${namingserver.eventhandlers}</handlers>
       </parameters>
@@ -37,6 +38,7 @@
                type="EventSystem.ProtocolProcessor, EventSystem"
                >
       <parameters>
+        <name>nc</name>
         <factory>${namingclient.eventfactory}</factory>
         <handlers>${namingclient.eventhandlers}</handlers>
       </parameters>
