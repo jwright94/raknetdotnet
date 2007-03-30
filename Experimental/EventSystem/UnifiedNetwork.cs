@@ -87,11 +87,22 @@ namespace EventSystem
         private IDictionary<RakPeerInterface, IDictionary<string, IProtocolProcessor>> processorsByRecipient;
     }
 
+    [Transient]
     sealed class RpcBinder : PluginInterface
     {
-        //public void 
+        private IProtocolProcessor[] processors;
+
+        public RpcBinder(IProtocolProcessor[] processors)
+        {
+            this.processors = processors;
+        }
 
         public override void OnAttach(RakPeerInterface peer)
+        {
+            //ServiceConfigurator.Resolve<IProcessorRegistry>().Add(peer, 
+        }
+
+        public override void OnDetach(RakPeerInterface peer)
         {
             
         }
