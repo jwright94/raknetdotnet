@@ -87,24 +87,45 @@ namespace EventSystem
         private IDictionary<RakPeerInterface, IDictionary<string, IProtocolProcessor>> processorsByRecipient;
     }
 
-    [Transient]
-    sealed class RpcBinder : PluginInterface
+    interface IRpcBinder
     {
-        private IProtocolProcessor[] processors;
+        void Bind();
+        void Unbind();
+    }
 
-        public RpcBinder(IProtocolProcessor[] processors)
+    [Transient]
+    sealed class RpcBinder : IRpcBinder
+    {
+        private readonly RakPeerInterface recipient;
+        private readonly IProcessorRegistry registry;
+        private readonly IProtocolProcessor[] processors;
+
+        public RpcBinder(RakPeerInterface recipient, IProcessorRegistry registry, IProtocolProcessor processor)
+            : this(recipient, registry, new IProtocolProcessor[] { processor })
         {
+        }
+
+        public RpcBinder(RakPeerInterface recipient, IProcessorRegistry registry, IProtocolProcessor[] processors)
+        {
+            this.recipient = recipient;
+            this.registry = registry;
             this.processors = processors;
         }
 
-        public override void OnAttach(RakPeerInterface peer)
+        public void Bind()
         {
-            //ServiceConfigurator.Resolve<IProcessorRegistry>().Add(peer, 
+            foreach (IProtocolProcessor processor in processors)
+            {
+                registry.Add(recipient, processor);
+            }
         }
 
-        public override void OnDetach(RakPeerInterface peer)
+        public void Unbind()
         {
-            
+            foreach (IProtocolProcessor processor in processors)
+            {
+                registry.Remove(recipient,processor);
+            }
         }
     }
 

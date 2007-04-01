@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <components>
+    <component id="keya"
+               type="EventSystem.Tests.A, EventSystem" />
+    <component id="keyb"
+               type="EventSystem.Tests.B, EventSystem">
+      <parameters>
+        <a>${keya}</a>
+      </parameters>
+    </component>
+    <component id="keyc"
+               type="EventSystem.Tests.C, EventSystem">
+      <parameters>
+        <b>${keyb}</b>
+        <a>${keya}</a>
+      </parameters>
+    </component>
+  </components>
+</configuration>

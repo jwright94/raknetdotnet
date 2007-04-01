@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using Castle.Core;
 using Castle.Core.Logging;
 using Castle.Windsor;
@@ -10,7 +12,12 @@ namespace EventSystem
     #region For Castle MicroKernel
 
     internal static class ServiceConfigurator
-    {        
+    {
+        public static void Configure()
+        {
+            container = new WindsorContainer();
+        }
+
         public static void Configure(string filename)
         {
             container = new WindsorContainer(new XmlInterpreter(filename));
@@ -140,13 +147,52 @@ namespace EventSystem
             }
         }
 
+        #region reference same transient instance
+
+        //  +-[A]
+        //  |  |
+        // [B] |
+        //  |  |
+        //  +-[C]
+
+        [Transient]
+        internal class A
+        {
+        }
+
+        [Transient]
+        internal class B
+        {
+            public B(A a)
+            {
+                this.a = a;
+            }
+
+            public A a;
+        }
+
+        [Transient]
+        internal class C
+        {
+            public C(B b, A a)
+            {
+                this.b = b;
+                this.a = a;
+            }
+
+            public B b;
+            public A a;
+        }
+
+        #endregion
+
         [TestFixture]
         public sealed class MicroKernelSingletonTestCase
         {
             [SetUp]
             public void SetUp()
             {
-                container = new WindsorContainer(new XmlInterpreter("WindsorConfig.xml"));
+                container = new WindsorContainer("test.xml");
                 container.AddComponent("atanytime", typeof (SingletonUsesAtAnyTime));
                 container.AddComponent("anotherinstance", typeof(SingletonUsesAtAnyTime));
                 container.AddComponent("resettable", typeof (ResettableSingleton));
@@ -160,7 +206,7 @@ namespace EventSystem
             }
 
             [Test]
-            public void SameInstance()
+            public void SameSingleton()
             {
                 SingletonUsesAtAnyTime first = container.Resolve<SingletonUsesAtAnyTime>();
                 SingletonUsesAtAnyTime second = container.Resolve<SingletonUsesAtAnyTime>();
@@ -211,12 +257,25 @@ namespace EventSystem
                 Assert.AreEqual(singleton.Count, 1);
             }
 
+            [Test]
+            public void SameTransient()
+            {
+                C c = container.Resolve<C>();
+                Assert.AreSame(c.b.a, c.a);
+            }
+
             private IWindsorContainer container;
         }
 
         [TestFixture]
         public sealed class ServiceConfiguratorTestCase
         {
+            [SetUp]
+            public void SetUp()
+            {
+                ServiceConfigurator.Configure("common.xml");
+            }
+
             [Test]
             public void ResolveProcessorOnNamingServer()
             {
