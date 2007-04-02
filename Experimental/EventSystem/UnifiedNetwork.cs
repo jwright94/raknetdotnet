@@ -48,7 +48,6 @@ namespace EventSystem
         IProtocolProcessor GetProcessor(RakPeerInterface recipient, string processorName);
     }
 
-    [Singleton]
     internal sealed class ProcessorRegistory : IProcessorRegistry
     {
         public ProcessorRegistory()
@@ -93,7 +92,6 @@ namespace EventSystem
         void Unbind();
     }
 
-    [Transient]
     sealed class RpcBinder : IRpcBinder
     {
         private readonly RakPeerInterface recipient;
@@ -117,6 +115,7 @@ namespace EventSystem
             foreach (IProtocolProcessor processor in processors)
             {
                 registry.Add(recipient, processor);
+                recipient.RegisterAsRemoteProcedureCall(processor.Name, GetType().GetMethod("Route"));
             }
         }
 
@@ -125,40 +124,23 @@ namespace EventSystem
             foreach (IProtocolProcessor processor in processors)
             {
                 registry.Remove(recipient,processor);
+                recipient.UnregisterAsRemoteProcedureCall(processor.Name);
             }
         }
-    }
 
-    interface IRpcCallsRegistrar
-    {
-        void Register(RakPeerInterface rakPeerInterface);
-        void Unregister(RakPeerInterface rakPeerInterface);
-    }
-
-    internal sealed class SampleEventsRpcCalls : IRpcCallsRegistrar
-    {
-        public static void SendToNamingServer(RPCParameters _params)
+        public static void Route(RPCParameters _params)
         {
-            IProtocolProcessor processor = ServiceConfigurator.Resolve<IProtocolProcessor>("namingserver.processor");
+            IProcessorRegistry registry = ServiceConfigurator.Resolve<IProcessorRegistry>();
+            IProtocolProcessor processor = registry.GetProcessor(_params.recipient, _params.functionName);
             processor.ProcessReceiveParams(_params);
         }
-        public static void SendToNamingClient(RPCParameters _params)
-        {
-            IProtocolProcessor processor = ServiceConfigurator.Resolve<IProtocolProcessor>("namingclient.processor");
-            processor.ProcessReceiveParams(_params);
-        }
+    }
 
-        public void Register(RakPeerInterface rakPeerInterface)
-        {
-            rakPeerInterface.RegisterAsRemoteProcedureCall("sendtonamingserver",
-                                                 typeof(SampleEventsRpcCalls).GetMethod("SendToNamingServer"));
-            rakPeerInterface.RegisterAsRemoteProcedureCall("sendtonamingclient",
-                                     typeof(SampleEventsRpcCalls).GetMethod("SendToNamingClient"));
-        }
-
-        public void Unregister(RakPeerInterface rakPeerInterface)
-        {
-        }
+    interface IConnection
+    {
+        void Startup();
+        void Update();
+        void Shutdown();
     }
 
     // Based on ECS
@@ -167,41 +149,33 @@ namespace EventSystem
     internal sealed class UnifiedNetwork
     {
         private readonly IDictionary props;
+        private readonly ILogger logger;
 
-        public UnifiedNetwork(IDictionary props, IRpcCallsRegistrar register, ILogger logger)
+        public UnifiedNetwork(IDictionary props, ILogger logger)
         {
             this.props = props;
+            this.logger = logger;
 
-            name = (string)props["name"];
-            isOnline = (bool)props["isonline"];
+            rakServerInterface = RakNetworkFactory.GetRakPeerInterface();
+            ConnectionGraph connectionGraphPlugin = RakNetworkFactory.GetConnectionGraph(); // TODO - Do Destroy?
+            FullyConnectedMesh fullyConnectedMeshPlugin = new FullyConnectedMesh(); // TODO - Do Dispose?
 
-            if (isOnline)
-            {
-                rakServerInterface = RakNetworkFactory.GetRakPeerInterface();
-                ConnectionGraph connectionGraphPlugin = RakNetworkFactory.GetConnectionGraph(); // TODO - Do Destroy?
-                FullyConnectedMesh fullyConnectedMeshPlugin = new FullyConnectedMesh(); // TODO - Do Dispose?
+            // Initialize the message handlers
+            fullyConnectedMeshPlugin.Startup(string.Empty);
+            rakServerInterface.AttachPlugin(fullyConnectedMeshPlugin);
+            rakServerInterface.AttachPlugin(connectionGraphPlugin);
 
-                // Initialize the message handlers
-                fullyConnectedMeshPlugin.Startup(string.Empty);
-                rakServerInterface.AttachPlugin(fullyConnectedMeshPlugin);
-                rakServerInterface.AttachPlugin(connectionGraphPlugin);
-
-                // Initialize the peers
-                ushort allowedPlayers = (ushort)props["allowedplayers"];
-                int threadSleepTimer = (int)props["threadsleeptimer"];
-                ushort port = (ushort)props["port"];
-                SocketDescriptor socketDescriptor = new SocketDescriptor(port, string.Empty);
-                rakServerInterface.Startup(allowedPlayers, threadSleepTimer, new SocketDescriptor[] { socketDescriptor },
-                                           1);
-                rakServerInterface.SetMaximumIncomingConnections(allowedPlayers);
-
-                register.Register(rakServerInterface);
-            }
+            // Initialize the peers
+            ushort allowedPlayers = (ushort)props["allowedplayers"];
+            int threadSleepTimer = (int)props["threadsleeptimer"];
+            ushort port = (ushort)props["port"];
+            SocketDescriptor socketDescriptor = new SocketDescriptor(port, string.Empty);
+            rakServerInterface.Startup(allowedPlayers, threadSleepTimer, new SocketDescriptor[] { socketDescriptor },
+                                       1);
+            rakServerInterface.SetMaximumIncomingConnections(allowedPlayers);
         }
 
-        private string name;
         private RakPeerInterface rakServerInterface;
-        private bool isOnline;
 
 
 #if false
