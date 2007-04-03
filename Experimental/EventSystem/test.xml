@@ -1,20 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <configuration>
   <components>
-    <component id="keya"
-               type="EventSystem.Tests.A, EventSystem" />
-    <component id="keyb"
-               type="EventSystem.Tests.B, EventSystem">
+    <component id="statefula"
+               type="EventSystem.Tests.Stateful, EventSystem">
       <parameters>
-        <a>${keya}</a>
+        <message>foo</message>
       </parameters>
     </component>
-    <component id="keyc"
-               type="EventSystem.Tests.C, EventSystem">
+    <component id="statefulb"
+               type="EventSystem.Tests.Stateful, EventSystem">
       <parameters>
-        <b>${keyb}</b>
-        <a>${keya}</a>
-      </parameters>
+        <message>bar</message>
+        </parameters>
     </component>
   </components>
 </configuration>

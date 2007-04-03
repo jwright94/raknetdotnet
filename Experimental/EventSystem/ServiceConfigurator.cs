@@ -147,44 +147,21 @@ namespace EventSystem
             }
         }
 
-        #region reference same transient instance
-
-        //  +-[A]
-        //  |  |
-        // [B] |
-        //  |  |
-        //  +-[C]
-
         [Transient]
-        internal class A
+        sealed class Stateful
         {
-        }
-
-        [Transient]
-        internal class B
-        {
-            public B(A a)
+            public string Message
             {
-                this.a = a;
+                get { return message; }
             }
 
-            public A a;
-        }
+            private readonly string message;
 
-        [Transient]
-        internal class C
-        {
-            public C(B b, A a)
+            public Stateful(string message)
             {
-                this.b = b;
-                this.a = a;
+                this.message = message;
             }
-
-            public B b;
-            public A a;
         }
-
-        #endregion
 
         [TestFixture]
         public sealed class MicroKernelSingletonTestCase
@@ -258,10 +235,11 @@ namespace EventSystem
             }
 
             [Test]
-            public void SameTransient()
+            public void Stateful()
             {
-                C c = container.Resolve<C>();
-                Assert.AreSame(c.b.a, c.a);
+                Stateful a = container.Resolve<Stateful>("statefula");
+                Stateful b = container.Resolve<Stateful>("statefulb");
+                Assert.AreNotEqual(a.Message, b.Message);
             }
 
             private IWindsorContainer container;
