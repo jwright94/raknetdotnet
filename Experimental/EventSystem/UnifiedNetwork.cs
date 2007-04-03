@@ -48,9 +48,10 @@ namespace EventSystem
         IProtocolProcessor GetProcessor(RakPeerInterface recipient, string processorName);
     }
 
-    internal sealed class ProcessorRegistory : IProcessorRegistry
+    [Singleton]
+    internal sealed class ProcessorRegistry : IProcessorRegistry
     {
-        public ProcessorRegistory()
+        public ProcessorRegistry()
         {
             processorsByRecipient = new Dictionary<RakPeerInterface, IDictionary<string, IProtocolProcessor>>();
         }
@@ -141,6 +142,31 @@ namespace EventSystem
         void Startup();
         void Update();
         void Shutdown();
+    }
+
+    sealed class Connection : IConnection
+    {
+        private readonly ILogger logger;
+
+        public Connection(ILogger logger)
+        {
+            this.logger = logger;
+        }
+
+        public void Startup()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Update()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Shutdown()
+        {
+            throw new NotImplementedException();
+        }
     }
 
     // Based on ECS
