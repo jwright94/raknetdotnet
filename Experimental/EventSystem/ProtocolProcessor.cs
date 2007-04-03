@@ -4,7 +4,7 @@ using RakNetDotNet;
 
 namespace EventSystem
 {
-    [Singleton]
+    [Transient]
     sealed class ProtocolProcessor : IProtocolProcessor
     {
         private readonly string name;

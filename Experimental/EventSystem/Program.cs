@@ -25,7 +25,14 @@ namespace EventSystem
 
             ServiceConfigurator.Configure(parsedArgs.ConfigurationFilename);
             ICommunicator comm = ServiceConfigurator.Resolve<ICommunicator>("communicator");
-            int c = 0;
+            comm.Startup();
+            while(true)
+            {
+                if(_kbhit() != 0) {
+                    break;
+                }
+                comm.Update();
+            }
             //Console.WriteLine("(S)erver or (U)nifiedNetwork or (C)lient?");
             //char key = Console.ReadKey(true).KeyChar;
             //if (key == 's' || key == 'S')

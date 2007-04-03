@@ -23,7 +23,7 @@ namespace ProtocolGenerator
 
         public void Write(ICodeWriter o)
         {
-            o.WriteLine("[Singleton]");
+            o.WriteLine("[Transient]");
             o.BeginBlock("sealed class {0} : IEventHandlers {{", handlersName);
             WriteCallHandler(o);
             WriteEvents(o);

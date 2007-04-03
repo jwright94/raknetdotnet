@@ -50,7 +50,7 @@ namespace TestEvents {
 		}
 		SystemAddress sender = RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS;
 	}
-	[Singleton]
+	[Transient]
 	sealed class EventFactoryOnServer : IEventFactory {
 		public IEvent RecreateSimpleEvent(BitStream source) {
 			Debug.Assert(source != null);
@@ -71,7 +71,7 @@ namespace TestEvents {
 		}
 		public IComplecatedEvent RecreateEvent(BitStream source) { return null; }
 	}
-	[Singleton]
+	[Transient]
 	sealed class EventHandlersOnServer : IEventHandlers {
 		public void CallHandler(IEvent e) {
 			switch (e.Id) {

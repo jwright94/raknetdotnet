@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Castle.Core;
 using Castle.Core.Logging;
@@ -108,6 +109,11 @@ namespace EventSystem
                 logger.Debug("could not send data to the server!");
             else
                 logger.Debug("send data to the server...");
+        }
+
+        public EventHandlersType GetEventHandlers<EventHandlersType>(string processorName)
+        {
+            throw new NotImplementedException();
         }
 
         private void HandlePacket(Packet packet)
