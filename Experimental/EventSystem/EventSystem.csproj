@@ -80,6 +80,7 @@
     <Compile Include="IProcessorRegistry.cs" />
     <Compile Include="IProtocolProcessor.cs" />
     <Compile Include="IRpcBinder.cs" />
+    <Compile Include="LightweightContainer.cs" />
     <Compile Include="NetworkException.cs" />
     <Compile Include="PlayState.cs" />
     <Compile Include="ProcessorRegistry.cs" />
@@ -91,7 +92,6 @@
     <Compile Include="RpcCalls.cs" />
     <Compile Include="SampleEventFactory.cs" />
     <Compile Include="ServerToClientEvent.cs" />
-    <Compile Include="ServiceConfigurator.cs" />
     <Compile Include="TestConnectionEvent.cs" />
     <Compile Include="UnifiedNetwork.cs" />
   </ItemGroup>
