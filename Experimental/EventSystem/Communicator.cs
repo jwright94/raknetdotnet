@@ -3,35 +3,48 @@ using System.Collections;
 using Castle.Core;
 using Castle.Core.Logging;
 using RakNetDotNet;
+using SampleEvents;
 
 namespace EventSystem
 {
     interface IProtocolProcessorsLocator
     {
+        IProtocolProcessor[] Processors { get; }
+    }
 
+    sealed class CommunicatorUserClass : IProtocolProcessorsLocator
+    {
+        public CommunicatorUserClass()
+        {
+            EventFactoryOnNamingServer factory = new EventFactoryOnNamingServer();
+            EventHandlersOnNamingServer handlers = new EventHandlersOnNamingServer();
+            ProtocolProcessor processor = new ProtocolProcessor("ns", factory, handlers, LightweightContainer.LogFactory.Create(typeof (ProtocolProcessor)));
+            processors = new IProtocolProcessor[] { processor };
+        }
+
+        private readonly IProtocolProcessor[] processors;
+
+        public IProtocolProcessor[] Processors
+        {
+            get { return processors; }
+        }
     }
 
     [Transient]
     internal sealed class Communicator : ICommunicator
     {
+        private readonly IProtocolProcessorsLocator processorsLocator;
         private readonly IDictionary props;
         private readonly IProcessorRegistry registry;
-        private readonly IProtocolProcessor[] processors;
         private readonly ILogger logger;
         private readonly RakPeerInterface rakPeerInterface;
         private IRpcBinder binder;
 
-        public Communicator(IDictionary props, IProcessorRegistry registry, IProtocolProcessor processor, ILogger logger)
-            : this(props, registry, new IProtocolProcessor[] {processor}, logger)
-        {
-        }
-
-        public Communicator(IDictionary props, IProcessorRegistry registry, IProtocolProcessor[] processors,
-                            ILogger logger)
+        public Communicator(IDictionary props, IProcessorRegistry registry, IProtocolProcessorsLocator processorsLocator, ILogger logger)
         {
             this.props = props;
             this.registry = registry;
-            this.processors = processors;
+            this.processorsLocator = processorsLocator;
             this.logger = logger;
             rakPeerInterface = RakNetworkFactory.GetRakPeerInterface();
         }
@@ -54,7 +67,7 @@ namespace EventSystem
             rakPeerInterface.Startup(allowedPlayers, threadSleepTimer, new SocketDescriptor[] {socketDescriptor}, 1);
             rakPeerInterface.SetMaximumIncomingConnections(allowedPlayers);
 
-            binder = new RpcBinder(rakPeerInterface, registry, processors);
+            binder = new RpcBinder(rakPeerInterface, registry, processorsLocator.Processors);
             binder.Bind();
         }
 

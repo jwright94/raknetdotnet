@@ -6,36 +6,6 @@
               loggingApi="console" />
   </facilities>
   <components>   
-    <component id="namingserver.eventfactory"
-               type="SampleEvents.EventFactoryOnNamingServer, EventSystem" />
-    <component id="namingserver.eventhandlers"
-               type="SampleEvents.EventHandlersOnNamingServer, EventSystem" />
-    <component id="namingserver.processor"
-               service="EventSystem.IProtocolProcessor, EventSystem"
-               type="EventSystem.ProtocolProcessor, EventSystem"
-               >
-      <parameters>
-        <name>ns</name>
-        <factory>${namingserver.eventfactory}</factory>
-        <handlers>${namingserver.eventhandlers}</handlers>
-      </parameters>
-    </component>
-
-    <component id="namingclient.eventfactory"
-         type="SampleEvents.EventFactoryOnNamingClient, EventSystem" />
-    <component id="namingclient.eventhandlers"
-               type="SampleEvents.EventHandlersOnNamingClient, EventSystem" />
-    <component id="namingclient.processor"
-               service="EventSystem.IProtocolProcessor, EventSystem"
-               type="EventSystem.ProtocolProcessor, EventSystem"
-               >
-      <parameters>
-        <name>nc</name>
-        <factory>${namingclient.eventfactory}</factory>
-        <handlers>${namingclient.eventhandlers}</handlers>
-      </parameters>
-    </component>
-
     <component id="processorregistry"
                service="EventSystem.IProcessorRegistry, EventSystem"
                type="EventSystem.ProcessorRegistry, EventSystem" />      
@@ -55,6 +25,5 @@
         <processor>${namingserver.processor}</processor>
       </parameters>
     </component>
-
   </components>
 </configuration>
