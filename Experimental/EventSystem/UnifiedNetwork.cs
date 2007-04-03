@@ -1,7 +1,4 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using Castle.Core;
 using Castle.Core.Logging;
 using RakNetDotNet;
 
@@ -64,11 +61,11 @@ namespace EventSystem
             rakServerInterface.AttachPlugin(connectionGraphPlugin);
 
             // Initialize the peers
-            ushort allowedPlayers = (ushort)props["allowedplayers"];
-            int threadSleepTimer = (int)props["threadsleeptimer"];
-            ushort port = (ushort)props["port"];
+            ushort allowedPlayers = (ushort) props["allowedplayers"];
+            int threadSleepTimer = (int) props["threadsleeptimer"];
+            ushort port = (ushort) props["port"];
             SocketDescriptor socketDescriptor = new SocketDescriptor(port, string.Empty);
-            rakServerInterface.Startup(allowedPlayers, threadSleepTimer, new SocketDescriptor[] { socketDescriptor },
+            rakServerInterface.Startup(allowedPlayers, threadSleepTimer, new SocketDescriptor[] {socketDescriptor},
                                        1);
             rakServerInterface.SetMaximumIncomingConnections(allowedPlayers);
         }

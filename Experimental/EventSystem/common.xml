@@ -5,15 +5,7 @@
               type="Castle.Facilities.Logging.LoggingFacility, Castle.Facilities.Logging"
               loggingApi="console" />
   </facilities>
-  <components>
-    <component id="rpccalls"
-               type="EventSystem.RpcCalls, EventSystem" />
-    <component id="sampleeventfactory"
-               type="EventSystem.SampleEventFactory, EventSystem" />
-    <component id="abstracteventfactory"
-               sevice="AbstractEventFactory"
-               type="EventSystem.SampleEventFactory, EventSystem" />
-
+  <components>   
     <component id="namingserver.eventfactory"
                type="SampleEvents.EventFactoryOnNamingServer, EventSystem" />
     <component id="namingserver.eventhandlers"
@@ -44,17 +36,23 @@
       </parameters>
     </component>
 
-    <component id="unifiednetwork"
-               type="EventSystem.UnifiedNetwork, EventSystem">
+    <component id="processorregistry"
+               service="EventSystem.IProcessorRegistry, EventSystem"
+               type="EventSystem.ProcessorRegistry, EventSystem" />      
+    
+    <component id="communicator"
+               service="EventSystem.ICommunicator" 
+               type="EventSystem.Communicator, EventSystem">
       <parameters>
         <props>
           <dictionary>
-            <entry valueType="System.Boolean, mscorlib" key="isns">true</entry>
+            <!--<entry valueType="System.Boolean, mscorlib" key="isns">true</entry>-->
             <entry valueType="System.UInt16, mscorlib" key="allowedplayers">5</entry>
             <entry valueType="System.Int32, mscorlib" key="threadsleeptimer">0</entry>
             <entry valueType="System.UInt16, mscorlib" key="port">6000</entry>
           </dictionary>
         </props>
+        <processor>${namingserver.processor}</processor>
       </parameters>
     </component>
 

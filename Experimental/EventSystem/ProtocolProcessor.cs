@@ -1,8 +1,10 @@
+using Castle.Core;
 using Castle.Core.Logging;
 using RakNetDotNet;
 
 namespace EventSystem
 {
+    [Singleton]
     sealed class ProtocolProcessor : IProtocolProcessor
     {
         private readonly string name;

@@ -24,7 +24,7 @@ namespace EventSystem
             }
 
             ServiceConfigurator.Configure(parsedArgs.ConfigurationFilename);
-            UnifiedNetwork network = ServiceConfigurator.Resolve<UnifiedNetwork>();
+            ICommunicator comm = ServiceConfigurator.Resolve<ICommunicator>("communicator");
             int c = 0;
             //Console.WriteLine("(S)erver or (U)nifiedNetwork or (C)lient?");
             //char key = Console.ReadKey(true).KeyChar;

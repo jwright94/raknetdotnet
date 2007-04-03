@@ -2,14 +2,14 @@ using RakNetDotNet;
 
 namespace EventSystem
 {
-    sealed class RpcBinder : IRpcBinder
+    internal sealed class RpcBinder : IRpcBinder
     {
         private readonly RakPeerInterface recipient;
         private readonly IProcessorRegistry registry;
         private readonly IProtocolProcessor[] processors;
 
         public RpcBinder(RakPeerInterface recipient, IProcessorRegistry registry, IProtocolProcessor processor)
-            : this(recipient, registry, new IProtocolProcessor[] { processor })
+            : this(recipient, registry, new IProtocolProcessor[] {processor})
         {
         }
 
@@ -33,7 +33,7 @@ namespace EventSystem
         {
             foreach (IProtocolProcessor processor in processors)
             {
-                registry.Remove(recipient,processor);
+                registry.Remove(recipient, processor);
                 recipient.UnregisterAsRemoteProcedureCall(processor.Name);
             }
         }
