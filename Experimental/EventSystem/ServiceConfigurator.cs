@@ -11,53 +11,53 @@ namespace EventSystem
 {
     #region For Castle MicroKernel
 
-    internal static class ServiceConfigurator
+    internal static class LightweightContainer
     {
         public static void Configure()
         {
-            container = new WindsorContainer();
+            windsorContainer = new WindsorContainer();
         }
 
         public static void Configure(string filename)
         {
-            container = new WindsorContainer(new XmlInterpreter(filename));
+            windsorContainer = new WindsorContainer(new XmlInterpreter(filename));
         }
 
         public static void Dispose()
         {
-            container.Dispose();
+            windsorContainer.Dispose();
         }
 
         #region Generics API.
 
         public static ServiceType Resolve<ServiceType>()
         {
-            return container.Resolve<ServiceType>();
+            return windsorContainer.Resolve<ServiceType>();
         }
 
         public static ServiceType Resolve<ServiceType>(string key)
         {
-            return container.Resolve<ServiceType>(key);
+            return windsorContainer.Resolve<ServiceType>(key);
         }
 
         public static ServiceType Resolve<ServiceType>(IDictionary arguments)
         {
-            return (ServiceType) container.Kernel.Resolve(typeof (ServiceType), arguments);
+            return (ServiceType) windsorContainer.Kernel.Resolve(typeof (ServiceType), arguments);
         }
 
         public static ServiceType Resolve<ServiceType>(string key, IDictionary arguments)
         {
-            return (ServiceType) container.Kernel.Resolve(key, arguments);
+            return (ServiceType) windsorContainer.Kernel.Resolve(key, arguments);
         }
 
         public static void RegisterCustomDependencies(string key, IDictionary dependencies)
         {
-            container.Kernel.RegisterCustomDependencies(key, dependencies);
+            windsorContainer.Kernel.RegisterCustomDependencies(key, dependencies);
         }
 
         public static void RegisterCustomDependencies<ServiceType>(IDictionary dependencies)
         {
-            container.Kernel.RegisterCustomDependencies(typeof (ServiceType), dependencies);
+            windsorContainer.Kernel.RegisterCustomDependencies(typeof (ServiceType), dependencies);
         }
 
         public static void AddComponent<ClassType>()
@@ -67,7 +67,7 @@ namespace EventSystem
 
         public static void AddComponent<ClassType>(string key)
         {
-            container.AddComponent(key, typeof(ClassType));
+            windsorContainer.AddComponent(key, typeof(ClassType));
         }
 
         public static void AddComponent<ServiceType, ClassType>()
@@ -77,19 +77,19 @@ namespace EventSystem
 
         public static void AddComponent<ServiceType, ClassType>(string key)
         {
-            container.AddComponent(key, typeof(ServiceType), typeof(ClassType));
+            windsorContainer.AddComponent(key, typeof(ServiceType), typeof(ClassType));
         }
 
         public static void ReleaseComponent(object instance)
         {
-            container.Release(instance);
+            windsorContainer.Release(instance);
         }
 
         #endregion
 
-        public static IWindsorContainer Container
+        public static IWindsorContainer WindsorContainer
         {
-            get { return container; }
+            get { return windsorContainer; }
         }
 
         public static ILoggerFactory LogFactory
@@ -97,7 +97,7 @@ namespace EventSystem
             get { return Resolve<ILoggerFactory>(); }
         }
 
-        private static IWindsorContainer container;
+        private static IWindsorContainer windsorContainer;
     }
 
     #region Unit Tests
@@ -251,13 +251,13 @@ namespace EventSystem
             [SetUp]
             public void SetUp()
             {
-                ServiceConfigurator.Configure("common.xml");
+                LightweightContainer.Configure("common.xml");
             }
 
             [Test]
             public void ResolveProcessorOnNamingServer()
             {
-                IProtocolProcessor processor = ServiceConfigurator.Resolve<IProtocolProcessor>("namingserver.processor");
+                IProtocolProcessor processor = LightweightContainer.Resolve<IProtocolProcessor>("namingserver.processor");
                 Assert.IsNotNull(processor);
             }
         }

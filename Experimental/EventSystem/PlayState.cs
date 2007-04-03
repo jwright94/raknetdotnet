@@ -58,7 +58,7 @@ namespace EventSystem
 
         public override void Exit()
         {
-            ServiceConfigurator.Resolve<SampleEventFactory>().Reset();
+            LightweightContainer.Resolve<SampleEventFactory>().Reset();
             rpcCalls.Reset();
             ClientWorld.Instance.Dispose();
 
@@ -113,9 +113,9 @@ namespace EventSystem
 
             new ClientWorld();
 
-            SampleEventFactory factory = ServiceConfigurator.Resolve<SampleEventFactory>();
+            SampleEventFactory factory = LightweightContainer.Resolve<SampleEventFactory>();
             factory.Reset();
-            rpcCalls = ServiceConfigurator.Resolve<RpcCalls>();
+            rpcCalls = LightweightContainer.Resolve<RpcCalls>();
             rpcCalls.Reset();
 
             eventCenterClient = new EventCenterClient("client.xml");

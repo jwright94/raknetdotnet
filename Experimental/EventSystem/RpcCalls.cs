@@ -19,7 +19,7 @@ namespace EventSystem
         public static void SendEventToClient(RPCParameters _params)
         {
             BitStream source = new BitStream(_params, false);
-            RpcCalls instance = ServiceConfigurator.Resolve<RpcCalls>();
+            RpcCalls instance = LightweightContainer.Resolve<RpcCalls>();
             IComplecatedEvent _event = instance.RecreateEvent(source);
 
             Debug.Assert(instance.ProcessEventOnClientSide != null);
@@ -34,7 +34,7 @@ namespace EventSystem
 
             BitStream source = new BitStream(_params, false);
 
-            RpcCalls instance = ServiceConfigurator.Resolve<RpcCalls>();
+            RpcCalls instance = LightweightContainer.Resolve<RpcCalls>();
             IComplecatedEvent _event = instance.RecreateEvent(source);
             instance.Logger.Debug("EventCenterServer> {0}", _event.ToString());
             _event.OriginPlayer = sender;

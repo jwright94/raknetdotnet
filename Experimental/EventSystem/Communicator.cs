@@ -6,6 +6,11 @@ using RakNetDotNet;
 
 namespace EventSystem
 {
+    interface IProtocolProcessorsLocator
+    {
+
+    }
+
     [Transient]
     internal sealed class Communicator : ICommunicator
     {

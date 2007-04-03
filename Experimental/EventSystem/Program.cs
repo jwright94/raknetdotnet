@@ -23,8 +23,8 @@ namespace EventSystem
                 return;
             }
 
-            ServiceConfigurator.Configure(parsedArgs.ConfigurationFilename);
-            ICommunicator comm = ServiceConfigurator.Resolve<ICommunicator>("communicator");
+            LightweightContainer.Configure(parsedArgs.ConfigurationFilename);
+            ICommunicator comm = LightweightContainer.Resolve<ICommunicator>("communicator");
             comm.Startup();
             while(true)
             {
@@ -74,9 +74,9 @@ namespace EventSystem
         private static void ServerMain(string[] args)
         {
             EventCenterServer server = new EventCenterServer("server.xml");
-            SampleEventFactory factory = ServiceConfigurator.Resolve<SampleEventFactory>();
+            SampleEventFactory factory = LightweightContainer.Resolve<SampleEventFactory>();
             factory.Reset();
-            RpcCalls rpcCalls = ServiceConfigurator.Resolve<RpcCalls>();
+            RpcCalls rpcCalls = LightweightContainer.Resolve<RpcCalls>();
             rpcCalls.Reset();
             rpcCalls.ProcessEventOnServerSide += server.ProcessEvent;
 
@@ -90,7 +90,7 @@ namespace EventSystem
 
         private static void UnifiedNetworkMain(string[] args)
         {
-            UnifiedNetwork network = ServiceConfigurator.Resolve<UnifiedNetwork>();
+            UnifiedNetwork network = LightweightContainer.Resolve<UnifiedNetwork>();
             int c = 0;
 #if false
             const ushort NAME_SERVICE_PORT = 6000;

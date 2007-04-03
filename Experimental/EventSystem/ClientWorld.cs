@@ -38,7 +38,7 @@ namespace EventSystem
 
             IComplecatedEvent _event = new TestConnectionEvent((int) SampleEventFactory.EventTypes.TESTCONNECTION);
 
-            ServiceConfigurator.Resolve<SampleEventFactory>().StoreExternallyCreatedEvent(_event);
+            LightweightContainer.Resolve<SampleEventFactory>().StoreExternallyCreatedEvent(_event);
             EventCenterClient.Instance.ReportEvent(_event);
         }
 
