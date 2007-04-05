@@ -12,9 +12,9 @@ namespace EventSystem
         IProtocolProcessor[] Processors { get; }
     }
 
-    sealed class CommunicatorUserClass : IProtocolProcessorsLocator
+    sealed class NamingServerPPLocator : IProtocolProcessorsLocator
     {
-        public CommunicatorUserClass()
+        public NamingServerPPLocator()
         {
             EventFactoryOnNamingServer factory = new EventFactoryOnNamingServer();
             EventHandlersOnNamingServer handlers = new EventHandlersOnNamingServer();
@@ -33,20 +33,25 @@ namespace EventSystem
     [Transient]
     internal sealed class Communicator : ICommunicator
     {
-        private readonly IProtocolProcessorsLocator processorsLocator;
         private readonly IDictionary props;
         private readonly IProcessorRegistry registry;
         private readonly ILogger logger;
         private readonly RakPeerInterface rakPeerInterface;
+        private IProtocolProcessorsLocator processorsLocator;
         private IRpcBinder binder;
 
-        public Communicator(IDictionary props, IProcessorRegistry registry, IProtocolProcessorsLocator processorsLocator, ILogger logger)
+        public Communicator(IDictionary props, IProcessorRegistry registry, ILogger logger)
         {
             this.props = props;
             this.registry = registry;
-            this.processorsLocator = processorsLocator;
             this.logger = logger;
             rakPeerInterface = RakNetworkFactory.GetRakPeerInterface();
+        }
+
+        public IProtocolProcessorsLocator ProcessorsLocator
+        {
+            get { return processorsLocator; }
+            set { processorsLocator = value; }
         }
 
         public void Startup()
@@ -67,7 +72,7 @@ namespace EventSystem
             rakPeerInterface.Startup(allowedPlayers, threadSleepTimer, new SocketDescriptor[] {socketDescriptor}, 1);
             rakPeerInterface.SetMaximumIncomingConnections(allowedPlayers);
 
-            binder = new RpcBinder(rakPeerInterface, registry, processorsLocator.Processors);
+            binder = new RpcBinder(rakPeerInterface, registry, ProcessorsLocator.Processors);
             binder.Bind();
         }
 
@@ -127,11 +132,6 @@ namespace EventSystem
                 logger.Debug("could not send data to the server!");
             else
                 logger.Debug("send data to the server...");
-        }
-
-        public EventHandlersType GetEventHandlers<EventHandlersType>(string processorName)
-        {
-            throw new NotImplementedException();
         }
 
         private void HandlePacket(Packet packet)
