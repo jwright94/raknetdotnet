@@ -1,0 +1,9 @@
+﻿<NUnitProject>
+  <Settings activeconfig="Debug" />
+  <Config name="Debug" binpathtype="Auto">
+    <assembly path="bin\Debug\EventSystem.exe" />
+    <assembly path="bin\Debug\ProtocolGenerator.exe" />
+    <assembly path="bin\Debug\RakNetDotNet.dll" />
+  </Config>
+  <Config name="Release" binpathtype="Auto" />
+</NUnitProject>

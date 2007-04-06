@@ -34,6 +34,7 @@ namespace EventSystem
                 }
                 comm.Update();
             }
+            LightweightContainer.ReleaseComponent(comm);
             //Console.WriteLine("(S)erver or (U)nifiedNetwork or (C)lient?");
             //char key = Console.ReadKey(true).KeyChar;
             //if (key == 's' || key == 'S')

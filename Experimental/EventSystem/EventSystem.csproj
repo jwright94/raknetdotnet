@@ -79,8 +79,10 @@
     <Compile Include="IntroState.cs" />
     <Compile Include="IProcessorRegistry.cs" />
     <Compile Include="IProtocolProcessor.cs" />
+    <Compile Include="IProtocolProcessorsLocator.cs" />
     <Compile Include="IRpcBinder.cs" />
     <Compile Include="LightweightContainer.cs" />
+    <Compile Include="NamingServerPPLocator.cs" />
     <Compile Include="NetworkException.cs" />
     <Compile Include="PlayState.cs" />
     <Compile Include="ProcessorRegistry.cs" />
