@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Castle.Core;
+using Castle.Core.Logging;
 using RakNetDotNet;
 using CommandLine;
+using SampleEvents;
 
 namespace EventSystem
 {
@@ -23,12 +25,25 @@ namespace EventSystem
     [Transient]
     internal sealed class NamingServer : IServer
     {
+        private readonly ILogger logger;
         private ICommunicator communicator;
+
+        public NamingServer(ILogger logger)
+        {
+            this.logger = logger;
+        }
         public void Startup()
         {
             communicator = LightweightContainer.Resolve<ICommunicator>();
-            communicator.ProcessorsLocator = new NamingServerPPLocator();   // inject manually
+            EventHandlersOnNamingServer handlers = new EventHandlersOnNamingServer();
+            handlers.Register += Handlers_OnRegister;
+            communicator.ProcessorsLocator = new NamingServerPPLocator(handlers);   // inject manually
             communicator.Startup();
+        }
+
+        private void Handlers_OnRegister(SampleEvents.RegisterEvent t)
+        {
+            logger.Debug("Handlers_OnRegister");
         }
 
         public void Update()
@@ -53,8 +68,10 @@ namespace EventSystem
             }
 
             LightweightContainer.Configure(parsedArgs.ConfigurationFilename);
+            ILogger logger = LightweightContainer.LogFactory.Create("Global");
             IServer server = LightweightContainer.Resolve<IServer>();
             server.Startup();
+            logger.Info("Server is started.");
             while(true)
             {
                 if(_kbhit() != 0) {
@@ -63,6 +80,7 @@ namespace EventSystem
                 server.Update();
             }
             LightweightContainer.ReleaseComponent(server);
+            logger.Info("Server is shutdowned.");
         }
 
         [Obsolete]

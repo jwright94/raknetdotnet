@@ -4,10 +4,9 @@ namespace EventSystem
 {
     sealed class NamingServerPPLocator : IProtocolProcessorsLocator
     {
-        public NamingServerPPLocator()
+        public NamingServerPPLocator(EventHandlersOnNamingServer handlers)
         {
             EventFactoryOnNamingServer factory = new EventFactoryOnNamingServer();
-            EventHandlersOnNamingServer handlers = new EventHandlersOnNamingServer();
             ProtocolProcessor processor = new ProtocolProcessor("ns", factory, handlers, LightweightContainer.LogFactory.Create(typeof (ProtocolProcessor)));
             processors = new IProtocolProcessor[] { processor };
         }
