@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading;
+using Castle.Core;
 using RakNetDotNet;
 using CommandLine;
 
@@ -11,6 +12,34 @@ namespace EventSystem
     {
         [DefaultArgumentAttribute(ArgumentType.Required, HelpText = "Configuration xml filename.")]
         public string ConfigurationFilename;
+    }
+
+    interface IServer : IDisposable
+    {
+        void Startup();
+        void Update();
+    }
+
+    [Transient]
+    internal sealed class NamingServer : IServer
+    {
+        private ICommunicator communicator;
+        public void Startup()
+        {
+            communicator = LightweightContainer.Resolve<ICommunicator>();
+            communicator.ProcessorsLocator = new NamingServerPPLocator();   // inject manually
+            communicator.Startup();
+        }
+
+        public void Update()
+        {
+            communicator.Update();
+        }
+
+        public void Dispose()
+        {
+            LightweightContainer.ReleaseComponent(communicator);
+        }
     }
 
     internal class Program
@@ -24,25 +53,16 @@ namespace EventSystem
             }
 
             LightweightContainer.Configure(parsedArgs.ConfigurationFilename);
-            ICommunicator comm = LightweightContainer.Resolve<ICommunicator>("communicator");
-            comm.ProcessorsLocator = new NamingServerPPLocator();
-            comm.Startup();
+            IServer server = LightweightContainer.Resolve<IServer>();
+            server.Startup();
             while(true)
             {
                 if(_kbhit() != 0) {
                     break;
                 }
-                comm.Update();
+                server.Update();
             }
-            LightweightContainer.ReleaseComponent(comm);
-            //Console.WriteLine("(S)erver or (U)nifiedNetwork or (C)lient?");
-            //char key = Console.ReadKey(true).KeyChar;
-            //if (key == 's' || key == 'S')
-            //    ServerMain(args);
-            //else if (key == 'u' || key == 'U')
-            //    UnifiedNetworkMain(args);
-            //else
-            //    ClientMain(args);
+            LightweightContainer.ReleaseComponent(server);
         }
 
         [Obsolete]

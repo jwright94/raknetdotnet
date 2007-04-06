@@ -9,19 +9,5 @@
     <component id="processorregistry"
                service="EventSystem.IProcessorRegistry, EventSystem"
                type="EventSystem.ProcessorRegistry, EventSystem" />      
-    
-    <component id="communicator"
-               service="EventSystem.ICommunicator, EventSystem" 
-               type="EventSystem.Communicator, EventSystem">
-      <parameters>
-        <props>
-          <dictionary>
-            <entry valueType="System.UInt16, mscorlib" key="allowedplayers">5</entry>
-            <entry valueType="System.Int32, mscorlib" key="threadsleeptimer">0</entry>
-            <entry valueType="System.UInt16, mscorlib" key="port">6000</entry>
-          </dictionary>
-        </props>
-      </parameters>
-    </component>
   </components>
 </configuration>

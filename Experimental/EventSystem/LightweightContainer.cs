@@ -252,12 +252,11 @@ namespace EventSystem
                 LightweightContainer.Configure("common.xml");
             }
 
-            // TODO - fix this.
             [Test]
-            public void ResolveCommunicator()
+            public void ResolveProcessorRegistry()
             {
-                ICommunicator communicator = LightweightContainer.Resolve<ICommunicator>();
-                Assert.IsNotNull(communicator);
+                IProcessorRegistry registry = LightweightContainer.Resolve<IProcessorRegistry>();
+                Assert.IsNotNull(registry);
             }
         }
     }
