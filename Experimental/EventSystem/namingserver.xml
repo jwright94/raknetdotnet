@@ -2,10 +2,10 @@
 <configuration>
   <include uri="common.xml" />
   <components>
-    <component id="fs"
+    <component id="ns"
                service="EventSystem.IServer, EventSystem"
-               type="EventSystem.FrontEndServer, EventSystem" />
-    <component id="fs.communicator"
+               type="EventSystem.NamingServer, EventSystem" />
+    <component id="ns.communicator"
                service="EventSystem.ICommunicator, EventSystem"
                type="EventSystem.Communicator, EventSystem">
       <parameters>

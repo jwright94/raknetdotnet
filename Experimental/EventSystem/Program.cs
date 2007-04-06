@@ -55,7 +55,7 @@ namespace EventSystem
         {
             EventHandlersOnNamingServer handlers = new EventHandlersOnNamingServer();
             handlers.Register += Handlers_OnRegister;
-            communicator.ProcessorsLocator = new FrontEndServerPPLocator(handlers);   // inject manually
+            communicator.ProcessorsLocator = new NamingServerPPLocator(handlers);   // inject manually
             communicator.Startup();
         }
 

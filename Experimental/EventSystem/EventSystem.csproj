@@ -82,7 +82,7 @@
     <Compile Include="IProtocolProcessorsLocator.cs" />
     <Compile Include="IRpcBinder.cs" />
     <Compile Include="LightweightContainer.cs" />
-    <Compile Include="FrontEndServerPPLocator.cs" />
+    <Compile Include="NamingServerPPLocator.cs" />
     <Compile Include="NetworkException.cs" />
     <Compile Include="PlayState.cs" />
     <Compile Include="ProcessorRegistry.cs" />
@@ -114,7 +114,7 @@
     <Content Include="common.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="frontendserver.xml">
+    <Content Include="namingserver.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="test.xml">
