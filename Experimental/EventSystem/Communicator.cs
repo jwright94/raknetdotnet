@@ -8,7 +8,7 @@ using SampleEvents;
 namespace EventSystem
 {
     [Transient]
-    internal sealed class Communicator : ICommunicator
+    internal sealed class Communicator : IServerCommunicator
     {
         private readonly IDictionary props;
         private readonly IProcessorRegistry registry;
@@ -84,7 +84,7 @@ namespace EventSystem
             RakNetworkFactory.DestroyRakPeerInterface(rakPeerInterface);
         }
 
-        public void SendEvent(string processorName, IEvent e, SystemAddress address)
+        public void Broadcast(string processorName, IEvent e)
         {
             PacketPriority priority = PacketPriority.HIGH_PRIORITY;
             PacketReliability reliability = PacketReliability.RELIABLE_ORDERED;
@@ -92,13 +92,6 @@ namespace EventSystem
             uint shiftTimestamp = 0;
 
             logger.Debug("sending an event: [{0}]", e.ToString());
-
-            // TODO: support unicast
-            //bool result = rakPeerInterface.RPC(
-            //    processorName,
-            //    e.Stream, priority, reliability, orderingChannel,
-            //    address, false, shiftTimestamp,
-            //    RakNetBindings.UNASSIGNED_NETWORK_ID, null);
 
             bool result = rakPeerInterface.RPC(
                 processorName,
@@ -110,6 +103,11 @@ namespace EventSystem
                 logger.Debug("could not send data to the server!");
             else
                 logger.Debug("send data to the server...");
+        }
+
+        public void SendEvent(string processorName, IEvent e)
+        {
+            throw new NotImplementedException();
         }
 
         private void HandlePacket(Packet packet)

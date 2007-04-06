@@ -82,10 +82,10 @@ namespace EventSystem
     internal sealed class NamingClient : IServer
     {
         private readonly ILogger logger;
-        private readonly ICommunicator communicator;
+        private readonly IClientCommunicator communicator;
         private uint lastSent;
 
-        public NamingClient(ICommunicator communicator, ILogger logger)
+        public NamingClient(IClientCommunicator communicator, ILogger logger)
         {
             this.communicator = communicator;
             this.logger = logger;
@@ -111,7 +111,7 @@ namespace EventSystem
             {
                 SampleEvents.RegisterEvent e = new SampleEvents.RegisterEvent();
                 e.SetData("not empty", new SystemAddress[] {}, 0); // TODO: ProtocolGenerator can't handle null reference.
-                communicator.SendEvent("ns", e, null);
+                communicator.SendEvent(e);
                 lastSent = RakNetBindings.GetTime();
                 logger.Debug("Sent RegisterEvent.");
             }
@@ -150,7 +150,6 @@ namespace EventSystem
                 server.Update();
             }
             server.Shutdown();
-            LightweightContainer.ReleaseComponent(server);
             logger.Info("Server is shutdowned.");
         }
 

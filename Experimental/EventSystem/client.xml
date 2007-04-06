@@ -6,8 +6,8 @@
                service="EventSystem.IServer, EventSystem"
                type="EventSystem.NamingClient, EventSystem" />
     <component id="nc.communicator"
-               service="EventSystem.ICommunicator, EventSystem"
-               type="EventSystem.Communicator, EventSystem">
+               service="EventSystem.IClientCommunicator, EventSystem"
+               type="EventSystem.ClientCommunicator, EventSystem">
       <parameters>
         <props>
           <dictionary>
