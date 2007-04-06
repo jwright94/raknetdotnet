@@ -16,6 +16,22 @@ namespace EventSystem
         public string ConfigurationFilename;
     }
 
+    sealed class NamingClientPPLocator : IProtocolProcessorsLocator
+    {
+        public NamingClientPPLocator(EventHandlersOnNamingClient handlers)
+        {
+            EventFactoryOnNamingClient factory = new EventFactoryOnNamingClient();
+            ProtocolProcessor processor = new ProtocolProcessor("nc", factory, handlers, LightweightContainer.LogFactory.Create(typeof(ProtocolProcessor)));
+            processors = new IProtocolProcessor[] {processor};
+        }
+        private IProtocolProcessor[] processors;
+
+        public IProtocolProcessor[] Processors
+        {
+            get { return processors; }
+        }
+    }
+
     interface IServer : IDisposable
     {
         void Startup();
@@ -57,6 +73,50 @@ namespace EventSystem
         }
     }
 
+    internal sealed class NamingClient : IServer
+    {
+        private readonly ILogger logger;
+        private ICommunicator communicator;
+        private uint lastSent;
+
+        public NamingClient(ILogger logger)
+        {
+            this.logger = logger;
+        }
+
+        public void Startup()
+        {
+            communicator = LightweightContainer.Resolve<ICommunicator>();
+            EventHandlersOnNamingClient handlers = new EventHandlersOnNamingClient();
+            handlers.ServiceList += Handlers_OnServiceList;
+            communicator.ProcessorsLocator = new NamingClientPPLocator(handlers);   // inject manually
+            communicator.Startup();
+        }
+
+        private void Handlers_OnServiceList(ServiceList t)
+        {
+            logger.Debug("Handlers_OnServiceList");
+        }
+
+        public void Update()
+        {
+            communicator.Update();
+            if(4000 < RakNetBindings.GetTime() - lastSent)
+            {
+                SampleEvents.RegisterEvent e = new SampleEvents.RegisterEvent();
+                e.SetData("not empty", new SystemAddress[] {}, 0); // TODO: ProtocolGenerator can't handle null reference.
+                communicator.SendEvent("ns", e, null);
+                lastSent = RakNetBindings.GetTime();
+                logger.Debug("Sent RegisterEvent.");
+            }
+        }
+
+        public void Dispose()
+        {
+            LightweightContainer.ReleaseComponent(communicator);
+        }
+    }
+
     internal class Program
     {
         private static void Main(string[] args)
@@ -75,7 +135,11 @@ namespace EventSystem
             while(true)
             {
                 if(_kbhit() != 0) {
-                    break;
+                    char ch = Console.ReadKey(true).KeyChar;
+                    if (ch == 'q' || ch == 'Q')
+                    {
+                        break;
+                    }
                 }
                 server.Update();
             }

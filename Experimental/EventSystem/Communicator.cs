@@ -92,7 +92,7 @@ namespace EventSystem
 
             logger.Debug("sending an event: [{0}]", e.ToString());
 
-            // TODO: only broadcast
+            // TODO: support unicast
             //bool result = rakPeerInterface.RPC(
             //    processorName,
             //    e.Stream, priority, reliability, orderingChannel,

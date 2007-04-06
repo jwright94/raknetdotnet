@@ -1,4 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <configuration>
   <include uri="common.xml" />
+  <components>
+    <component id="nc"
+               service="EventSystem.IServer, EventSystem"
+               type="EventSystem.NamingClient, EventSystem" />
+    <component id="nc.communicator"
+               service="EventSystem.ICommunicator, EventSystem"
+               type="EventSystem.Communicator, EventSystem">
+      <parameters>
+        <props>
+          <dictionary>
+            <entry valueType="System.UInt16, mscorlib" key="allowedplayers">1</entry>
+            <entry valueType="System.Int32, mscorlib" key="threadsleeptimer">0</entry>
+            <entry valueType="System.UInt16, mscorlib" key="port">0</entry>
+          </dictionary>
+        </props>
+      </parameters>
+    </component>
+  </components>
 </configuration>
