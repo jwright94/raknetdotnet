@@ -25,6 +25,7 @@ namespace EventSystem
 
             LightweightContainer.Configure(parsedArgs.ConfigurationFilename);
             ICommunicator comm = LightweightContainer.Resolve<ICommunicator>("communicator");
+            comm.ProcessorsLocator = new NamingServerPPLocator();
             comm.Startup();
             while(true)
             {

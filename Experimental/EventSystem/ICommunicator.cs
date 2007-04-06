@@ -9,5 +9,11 @@ namespace EventSystem
         void Update();
         void Shutdown();
         void SendEvent(string processorName, IEvent e, SystemAddress address);
+
+        IProtocolProcessorsLocator ProcessorsLocator
+        {
+            get;
+            set;
+        }
     }
 }

@@ -21,7 +21,6 @@
             <entry valueType="System.UInt16, mscorlib" key="port">6000</entry>
           </dictionary>
         </props>
-        <processor>${namingserver.processor}</processor>
       </parameters>
     </component>
   </components>
