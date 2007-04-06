@@ -3,7 +3,7 @@ using RakNetDotNet;
 
 namespace EventSystem
 {
-    interface ICommunicator : IDisposable
+    interface ICommunicator
     {
         void Startup();
         void Update();

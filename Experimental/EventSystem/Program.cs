@@ -78,6 +78,7 @@ namespace EventSystem
     /// <summary>
     /// test client
     /// </summary>
+    [Transient]
     internal sealed class NamingClient : IServer
     {
         private readonly ILogger logger;

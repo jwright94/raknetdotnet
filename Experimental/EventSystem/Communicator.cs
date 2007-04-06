@@ -13,7 +13,7 @@ namespace EventSystem
         private readonly IDictionary props;
         private readonly IProcessorRegistry registry;
         private readonly ILogger logger;
-        private readonly RakPeerInterface rakPeerInterface;
+        private RakPeerInterface rakPeerInterface;
         private IProtocolProcessorsLocator processorsLocator;
         private IRpcBinder binder;
 
@@ -22,7 +22,6 @@ namespace EventSystem
             this.props = props;
             this.registry = registry;
             this.logger = logger;
-            rakPeerInterface = RakNetworkFactory.GetRakPeerInterface();
         }
 
         public IProtocolProcessorsLocator ProcessorsLocator
@@ -33,6 +32,7 @@ namespace EventSystem
 
         public void Startup()
         {
+            rakPeerInterface = RakNetworkFactory.GetRakPeerInterface();
             ConnectionGraph connectionGraphPlugin = RakNetworkFactory.GetConnectionGraph(); // TODO - Do Destroy?
             FullyConnectedMesh fullyConnectedMeshPlugin = new FullyConnectedMesh(); // TODO - Do Dispose?
 
@@ -81,6 +81,7 @@ namespace EventSystem
         {
             rakPeerInterface.Shutdown(0);
             binder.Unbind();
+            RakNetworkFactory.DestroyRakPeerInterface(rakPeerInterface);
         }
 
         public void SendEvent(string processorName, IEvent e, SystemAddress address)
@@ -159,11 +160,6 @@ namespace EventSystem
                     logger.Debug("Message with identifier {0} has arrived.", packetIdentifier);
                     break;
             }
-        }
-
-        public void Dispose()
-        {
-            RakNetworkFactory.DestroyRakPeerInterface(rakPeerInterface);
         }
     }
 }
