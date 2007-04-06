@@ -79,8 +79,8 @@ namespace EventSystem
 
         public void Shutdown()
         {
-            binder.Unbind();
             rakPeerInterface.Shutdown(0);
+            binder.Unbind();
         }
 
         public void SendEvent(string processorName, IEvent e, SystemAddress address)

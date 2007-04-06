@@ -32,25 +32,27 @@ namespace EventSystem
         }
     }
 
-    interface IServer : IDisposable
+    interface IServer
     {
         void Startup();
         void Update();
+        void Shutdown();
     }
 
     [Transient]
     internal sealed class NamingServer : IServer
     {
         private readonly ILogger logger;
-        private ICommunicator communicator;
+        private readonly ICommunicator communicator;
 
-        public NamingServer(ILogger logger)
+        public NamingServer(ICommunicator communicator, ILogger logger)
         {
+            this.communicator = communicator;
             this.logger = logger;
         }
+
         public void Startup()
         {
-            communicator = LightweightContainer.Resolve<ICommunicator>();
             EventHandlersOnNamingServer handlers = new EventHandlersOnNamingServer();
             handlers.Register += Handlers_OnRegister;
             communicator.ProcessorsLocator = new NamingServerPPLocator(handlers);   // inject manually
@@ -67,26 +69,29 @@ namespace EventSystem
             communicator.Update();
         }
 
-        public void Dispose()
+        public void Shutdown()
         {
-            LightweightContainer.ReleaseComponent(communicator);
+            communicator.Shutdown();
         }
     }
 
+    /// <summary>
+    /// test client
+    /// </summary>
     internal sealed class NamingClient : IServer
     {
         private readonly ILogger logger;
-        private ICommunicator communicator;
+        private readonly ICommunicator communicator;
         private uint lastSent;
 
-        public NamingClient(ILogger logger)
+        public NamingClient(ICommunicator communicator, ILogger logger)
         {
+            this.communicator = communicator;
             this.logger = logger;
         }
 
         public void Startup()
         {
-            communicator = LightweightContainer.Resolve<ICommunicator>();
             EventHandlersOnNamingClient handlers = new EventHandlersOnNamingClient();
             handlers.ServiceList += Handlers_OnServiceList;
             communicator.ProcessorsLocator = new NamingClientPPLocator(handlers);   // inject manually
@@ -111,9 +116,9 @@ namespace EventSystem
             }
         }
 
-        public void Dispose()
+        public void Shutdown()
         {
-            LightweightContainer.ReleaseComponent(communicator);
+            communicator.Shutdown();
         }
     }
 
@@ -143,6 +148,7 @@ namespace EventSystem
                 }
                 server.Update();
             }
+            server.Shutdown();
             LightweightContainer.ReleaseComponent(server);
             logger.Info("Server is shutdowned.");
         }
