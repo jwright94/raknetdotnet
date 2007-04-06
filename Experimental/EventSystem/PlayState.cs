@@ -4,6 +4,7 @@ using System.Threading;
 
 namespace EventSystem
 {
+    [Obsolete]
     internal class PlayState : AbstractGameState, IDisposable
     {
         #region Ogre-like singleton implementation.

@@ -1,7 +1,9 @@
+using System;
 using RakNetDotNet;
 
 namespace EventSystem
 {
+    [Obsolete]
     internal interface IComplecatedEvent
     {
         BitStream Stream { get; }

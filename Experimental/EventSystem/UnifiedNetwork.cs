@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Castle.Core.Logging;
 using RakNetDotNet;
@@ -6,6 +7,7 @@ namespace EventSystem
 {
     // NS(UN) - GS(UN) - FS(UN, ECS)
     // ReportEvent -> ProcessEventOnServerSide -> SendEvent -> ProcessEventOnClientSide
+    [Obsolete]
     internal sealed class UN
     {
         public string Name
@@ -41,6 +43,7 @@ namespace EventSystem
     // Based on ECS
     // TODO - Query service port to name service.
     // TODO - Rename 'player' related methods.
+    [Obsolete]
     internal sealed class UnifiedNetwork
     {
         private readonly IDictionary props;

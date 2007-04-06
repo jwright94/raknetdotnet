@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using Castle.Core;
 using Castle.Core.Logging;
@@ -5,9 +6,11 @@ using RakNetDotNet;
 
 namespace EventSystem
 {
+    [Obsolete]
     internal delegate void ProcessEventDelegate(IComplecatedEvent _event);
 
     [Singleton]
+    [Obsolete]
     internal sealed class RpcCalls
     {
         public RpcCalls(AbstractEventFactory factory, ILogger logger)

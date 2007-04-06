@@ -1,6 +1,4 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using Castle.Core;
 using Castle.Core.Logging;
 using Castle.Windsor;
@@ -254,11 +252,12 @@ namespace EventSystem
                 LightweightContainer.Configure("common.xml");
             }
 
+            // TODO - fix this.
             [Test]
-            public void ResolveProcessorOnNamingServer()
+            public void ResolveCommunicator()
             {
-                IProtocolProcessor processor = LightweightContainer.Resolve<IProtocolProcessor>("namingserver.processor");
-                Assert.IsNotNull(processor);
+                ICommunicator communicator = LightweightContainer.Resolve<ICommunicator>();
+                Assert.IsNotNull(communicator);
             }
         }
     }

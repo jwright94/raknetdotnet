@@ -1,7 +1,9 @@
+using System;
 using RakNetDotNet;
 
 namespace EventSystem
 {
+    [Obsolete]
     internal abstract class AbstractEvent : IComplecatedEvent
     {
         public abstract BitStream Stream { get; }

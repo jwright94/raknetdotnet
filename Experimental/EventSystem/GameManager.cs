@@ -4,6 +4,7 @@ using System.Diagnostics;
 
 namespace EventSystem
 {
+    [Obsolete]
     internal sealed class GameManager : IDisposable, IKeyListener, IFrameListener
     {
         #region Ogre-like singleton implementation.

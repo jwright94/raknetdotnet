@@ -5,6 +5,7 @@ using RakNetDotNet;
 
 namespace EventSystem
 {
+    [Obsolete]
     internal sealed class EventCenterServer : IDisposable
     {
         #region Ogre-like singleton implementation.

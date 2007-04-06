@@ -1,5 +1,8 @@
+using System;
+
 namespace EventSystem
 {
+    [Obsolete]
     internal interface IGameState
     {
         string Name { get; }

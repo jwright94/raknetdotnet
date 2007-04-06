@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using RakNetDotNet;
 
 namespace EventSystem
 {
+    [Obsolete]
     internal abstract class AbstractEventFactory : IEventFactory
     {
         public IEvent RecreateSimpleEvent(BitStream source)

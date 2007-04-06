@@ -3,6 +3,7 @@ using RakNetDotNet;
 
 namespace EventSystem
 {
+    [Obsolete]
     internal sealed class ServerToClientEvent : AbstractEvent
     {
         public ServerToClientEvent(int eventId, uint _objId)

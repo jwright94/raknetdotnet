@@ -43,6 +43,7 @@ namespace EventSystem
             //    ClientMain(args);
         }
 
+        [Obsolete]
         private static void ClientMain(string[] args)
         {
             // TODO - parse options
@@ -71,6 +72,7 @@ namespace EventSystem
             Console.WriteLine("Quiting...");
         }
 
+        [Obsolete]
         private static void ServerMain(string[] args)
         {
             EventCenterServer server = new EventCenterServer("server.xml");
@@ -88,6 +90,7 @@ namespace EventSystem
 
         #region Unified Network
 
+        [Obsolete]
         private static void UnifiedNetworkMain(string[] args)
         {
             UnifiedNetwork network = LightweightContainer.Resolve<UnifiedNetwork>();
@@ -137,11 +140,13 @@ namespace EventSystem
 #endif
         }
 
+        [Obsolete]
         private static void SimpleNetworkMain(string[] args)
         {
             
         }
 
+        [Obsolete]
         private static void PrintConnections()
         {
 #if false

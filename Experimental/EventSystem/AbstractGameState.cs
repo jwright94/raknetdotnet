@@ -1,5 +1,8 @@
+using System;
+
 namespace EventSystem
 {
+    [Obsolete]
     internal abstract class AbstractGameState : IGameState
     {
         public AbstractGameState(string _name)

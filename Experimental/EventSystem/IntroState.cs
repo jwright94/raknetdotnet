@@ -3,6 +3,7 @@ using System.Diagnostics;
 
 namespace EventSystem
 {
+    [Obsolete]
     internal sealed class IntroState : AbstractGameState, IDisposable
     {
         #region Ogre-like singleton implementation.

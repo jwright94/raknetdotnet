@@ -5,6 +5,7 @@ using System.Threading;
 
 namespace EventSystem
 {
+    [Obsolete]
     internal sealed class Root
     {
         #region Implementing popular pattern of singleton

@@ -5,6 +5,7 @@ using RakNetDotNet;
 
 namespace EventSystem
 {
+    [Obsolete]
     internal sealed class RegisterEvent : AbstractEvent
     {
         public RegisterEvent(int eventId)
@@ -67,6 +68,7 @@ namespace EventSystem
     [Singleton]
     internal sealed class SampleEventFactory : AbstractEventFactory
     {
+        [Obsolete]
         public enum EventTypes
         {
             SERVERTOCLIENT,

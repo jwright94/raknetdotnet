@@ -3,6 +3,7 @@ using RakNetDotNet;
 
 namespace EventSystem
 {
+    [Obsolete]
     internal sealed class TestConnectionEvent : AbstractEvent
     {
         public TestConnectionEvent(int uniqueId)
@@ -82,6 +83,7 @@ namespace EventSystem
         #endregion
     }
 
+    [Obsolete]
     internal sealed class TestConnectionEvent2 : AbstractEvent
     {
         public TestConnectionEvent2(int uniqueId)
