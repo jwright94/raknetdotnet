@@ -6,7 +6,7 @@ using Castle.Core;
 using Castle.Core.Logging;
 using RakNetDotNet;
 using CommandLine;
-using SampleEvents;
+using Events;
 
 namespace EventSystem
 {
@@ -16,12 +16,12 @@ namespace EventSystem
         public string ConfigurationFilename;
     }
 
-    sealed class NamingClientPPLocator : IProtocolProcessorsLocator
+    sealed class ClientPPLocator : IProtocolProcessorsLocator
     {
-        public NamingClientPPLocator(EventHandlersOnNamingClient handlers)
+        public ClientPPLocator(EventHandlersOnClient handlers)
         {
-            EventFactoryOnNamingClient factory = new EventFactoryOnNamingClient();
-            ProtocolProcessor processor = new ProtocolProcessor("nc", factory, handlers, LightweightContainer.LogFactory.Create(typeof(ProtocolProcessor)));
+            EventFactoryOnClient factory = new EventFactoryOnClient();
+            ProtocolProcessor processor = new ProtocolProcessor("c", factory, handlers, LightweightContainer.LogFactory.Create(typeof(ProtocolProcessor)));
             processors = new IProtocolProcessor[] {processor};
         }
         private IProtocolProcessor[] processors;
@@ -40,12 +40,12 @@ namespace EventSystem
     }
 
     [Transient]
-    internal sealed class NamingServer : IServer
+    internal sealed class FrontEndServer : IServer
     {
         private readonly ILogger logger;
         private readonly ICommunicator communicator;
 
-        public NamingServer(ICommunicator communicator, ILogger logger)
+        public FrontEndServer(ICommunicator communicator, ILogger logger)
         {
             this.communicator = communicator;
             this.logger = logger;
@@ -53,15 +53,15 @@ namespace EventSystem
 
         public void Startup()
         {
-            EventHandlersOnNamingServer handlers = new EventHandlersOnNamingServer();
-            handlers.Register += Handlers_OnRegister;
-            communicator.ProcessorsLocator = new NamingServerPPLocator(handlers);   // inject manually
+            EventHandlersOnFrontEndServer handlers = new EventHandlersOnFrontEndServer();
+            handlers.ConnectionTest += Handlers_OnConnectionTest;
+            communicator.ProcessorsLocator = new FrontEndServerPPLocator(handlers);   // inject manually
             communicator.Startup();
         }
 
-        private void Handlers_OnRegister(SampleEvents.RegisterEvent t)
+        private void Handlers_OnConnectionTest(ConnectionTest t)
         {
-            logger.Debug("Handlers_OnRegister");
+            logger.Debug("Handlers_OnConnectionTest");
         }
 
         public void Update()
@@ -79,13 +79,13 @@ namespace EventSystem
     /// test client
     /// </summary>
     [Transient]
-    internal sealed class NamingClient : IServer
+    internal sealed class Client : IServer
     {
         private readonly ILogger logger;
         private readonly IClientCommunicator communicator;
         private uint lastSent;
 
-        public NamingClient(IClientCommunicator communicator, ILogger logger)
+        public Client(IClientCommunicator communicator, ILogger logger)
         {
             this.communicator = communicator;
             this.logger = logger;
@@ -93,15 +93,15 @@ namespace EventSystem
 
         public void Startup()
         {
-            EventHandlersOnNamingClient handlers = new EventHandlersOnNamingClient();
-            handlers.ServiceList += Handlers_OnServiceList;
-            communicator.ProcessorsLocator = new NamingClientPPLocator(handlers);   // inject manually
+            EventHandlersOnClient handlers = new EventHandlersOnClient();
+            handlers.ConnectionTest += Handlers_OnConnectionTest;
+            communicator.ProcessorsLocator = new ClientPPLocator(handlers);   // inject manually
             communicator.Startup();
         }
 
-        private void Handlers_OnServiceList(ServiceList t)
+        private void Handlers_OnConnectionTest(ConnectionTest t)
         {
-            logger.Debug("Handlers_OnServiceList");
+            logger.Debug("Handlers_OnConnectionTest");
         }
 
         public void Update()
@@ -109,11 +109,10 @@ namespace EventSystem
             communicator.Update();
             if(4000 < RakNetBindings.GetTime() - lastSent)
             {
-                SampleEvents.RegisterEvent e = new SampleEvents.RegisterEvent();
-                e.SetData("not empty", new SystemAddress[] {}, 0); // TODO: ProtocolGenerator can't handle null reference.
+                ConnectionTest e = new ConnectionTest();
                 communicator.SendEvent(e);
                 lastSent = RakNetBindings.GetTime();
-                logger.Debug("Sent RegisterEvent.");
+                logger.Debug("Sent ConnectionTest.");
             }
         }
 

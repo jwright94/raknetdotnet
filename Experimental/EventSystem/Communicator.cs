@@ -3,7 +3,7 @@ using System.Collections;
 using Castle.Core;
 using Castle.Core.Logging;
 using RakNetDotNet;
-using SampleEvents;
+using Events;
 
 namespace EventSystem
 {

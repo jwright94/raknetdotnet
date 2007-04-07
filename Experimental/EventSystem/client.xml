@@ -2,10 +2,10 @@
 <configuration>
   <include uri="common.xml" />
   <components>
-    <component id="nc"
+    <component id="c"
                service="EventSystem.IServer, EventSystem"
-               type="EventSystem.NamingClient, EventSystem" />
-    <component id="nc.communicator"
+               type="EventSystem.Client, EventSystem" />
+    <component id="c.communicator"
                service="EventSystem.IClientCommunicator, EventSystem"
                type="EventSystem.ClientCommunicator, EventSystem">
       <parameters>

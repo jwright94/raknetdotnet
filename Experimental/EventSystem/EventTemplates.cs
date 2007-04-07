@@ -1,27 +1,26 @@
 using ProtocolGenerator;
-using RakNetDotNet;
 
-namespace SampleEvents
+namespace Events
 {
-    [SiteOfHandling("NamingServer")]
-    public partial class RegisterEvent
+    [SiteOfHandling("FrontEndServer")]
+    [SiteOfHandling("Client")]
+    public partial class ConnectionTest
     {
-        private string name;
-        SystemAddress[] systemAddresses;
-        private byte serviceId;
-    }
-    [SiteOfHandling("NamingClient")]
-    public partial class ServiceList
-    {
-        private string name;
     }
 }
 
-namespace AnotherSampleEvents
+namespace AnotherEvents
 {
     [SiteOfHandling("Server")]
+    public partial class SampleEvent
+    {
+        // TODO: ProtocolGenerator can't handle null reference.
+        private string name;
+    }
+
     [SiteOfHandling("Client")]
     public partial class OtherEvent
     {
+        private int[] intArray;
     }
 }
