@@ -22,6 +22,9 @@ namespace EventSystem
         void SendEvent(string processorName, IEvent e);
     }
 
+    /// <summary>
+    /// Communication interface between client and frontend server.
+    /// </summary>
     interface IClientCommunicator : ICommunicator
     {
         void Connect();

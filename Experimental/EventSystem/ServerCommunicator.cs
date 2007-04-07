@@ -35,12 +35,14 @@ namespace EventSystem
 
         private static PluginInterface[] GetPlugins()
         {
-            ConnectionGraph connectionGraphPlugin = RakNetworkFactory.GetConnectionGraph(); // TODO - Do Destroy?
-            FullyConnectedMesh fullyConnectedMeshPlugin = new FullyConnectedMesh(); // TODO - Do Dispose?
+            // TODO - I don't implement a feature of distributed server now.
+            //ConnectionGraph connectionGraphPlugin = RakNetworkFactory.GetConnectionGraph(); // TODO - Do Destroy?
+            //FullyConnectedMesh fullyConnectedMeshPlugin = new FullyConnectedMesh(); // TODO - Do Dispose?
 
-            fullyConnectedMeshPlugin.Startup(string.Empty);
+            //fullyConnectedMeshPlugin.Startup(string.Empty);
 
-            return new PluginInterface[] {connectionGraphPlugin, fullyConnectedMeshPlugin};
+            //return new PluginInterface[] {connectionGraphPlugin, fullyConnectedMeshPlugin};
+            return new PluginInterface[]{};
         }
 
         public void Update()

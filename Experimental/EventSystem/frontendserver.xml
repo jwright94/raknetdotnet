@@ -2,11 +2,11 @@
 <configuration>
   <include uri="common.xml" />
   <components>
-    <component id="fs"
+    <component id="frontendserver"
                service="EventSystem.IServer, EventSystem"
                type="EventSystem.FrontEndServer, EventSystem" />
-    <component id="fs.communicator"
-               service="EventSystem.ICommunicator, EventSystem"
+    <component id="frontendserver.communicator"
+               service="EventSystem.IServerCommunicator, EventSystem"
                type="EventSystem.ServerCommunicator, EventSystem">
       <parameters>
         <props>

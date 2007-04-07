@@ -2,17 +2,17 @@
 <configuration>
   <include uri="common.xml" />
   <components>
-    <component id="c"
+    <component id="client"
                service="EventSystem.IServer, EventSystem"
                type="EventSystem.Client, EventSystem" />
-    <component id="c.communicator"
+    <component id="client.communicator"
                service="EventSystem.IClientCommunicator, EventSystem"
                type="EventSystem.ClientCommunicator, EventSystem">
       <parameters>
         <props>
           <dictionary>
-            <entry key="serveraddr">127.0.0.1</entry>
-            <entry valueType="System.UInt16, mscorlib" key="serverport">6000</entry>
+            <entry key="fsaddr">127.0.0.1</entry>
+            <entry valueType="System.UInt16, mscorlib" key="fsport">6000</entry>
             <entry valueType="System.Int32, mscorlib" key="threadsleeptimer">0</entry>
           </dictionary>
         </props>

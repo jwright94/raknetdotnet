@@ -21,7 +21,7 @@ namespace EventSystem
         public ClientPPLocator(EventHandlersOnClient handlers)
         {
             EventFactoryOnClient factory = new EventFactoryOnClient();
-            ProtocolProcessor processor = new ProtocolProcessor("c", factory, handlers, LightweightContainer.LogFactory.Create(typeof(ProtocolProcessor)));
+            ProtocolProcessor processor = new ProtocolProcessor("client", factory, handlers, LightweightContainer.LogFactory.Create(typeof(ProtocolProcessor)));
             processors = new IProtocolProcessor[] {processor};
         }
         private IProtocolProcessor[] processors;
@@ -43,9 +43,9 @@ namespace EventSystem
     internal sealed class FrontEndServer : IServer
     {
         private readonly ILogger logger;
-        private readonly ICommunicator communicator;
+        private readonly IServerCommunicator communicator;
 
-        public FrontEndServer(ICommunicator communicator, ILogger logger)
+        public FrontEndServer(IServerCommunicator communicator, ILogger logger)
         {
             this.communicator = communicator;
             this.logger = logger;
@@ -61,7 +61,8 @@ namespace EventSystem
 
         private void Handlers_OnConnectionTest(ConnectionTest t)
         {
-            logger.Debug("Handlers_OnConnectionTest");
+            logger.Debug("Handlers_OnConnectionTest was called on FrontEndServer.");
+            communicator.Broadcast("client", t);  // echo back.
         }
 
         public void Update()
@@ -102,7 +103,7 @@ namespace EventSystem
 
         private void Handlers_OnConnectionTest(ConnectionTest t)
         {
-            logger.Debug("Handlers_OnConnectionTest");
+            logger.Debug("Handlers_OnConnectionTest was called on Client.");
         }
 
         public void Update()

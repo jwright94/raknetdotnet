@@ -22,8 +22,8 @@ namespace EventSystem
 
         public void Connect()
         {
-            string serverAddr = (string)props["serveraddr"];
-            ushort serverPort = (ushort)props["serverport"];
+            string serverAddr = (string)props["fsaddr"];
+            ushort serverPort = (ushort)props["fsport"];
             module.RakPeerInterface.Connect(serverAddr, serverPort, string.Empty, 0);
         }
 
@@ -38,7 +38,7 @@ namespace EventSystem
             logger.Debug("sending an event: [{0}]", e.ToString());
 
             bool result = module.RakPeerInterface.RPC(
-                "fs",
+                "frontendserver",
                 e.Stream, priority, reliability, orderingChannel,
                 RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS, true, shiftTimestamp,
                 RakNetBindings.UNASSIGNED_NETWORK_ID, null);
