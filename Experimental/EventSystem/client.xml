@@ -11,9 +11,9 @@
       <parameters>
         <props>
           <dictionary>
-            <entry valueType="System.UInt16, mscorlib" key="allowedplayers">1</entry>
+            <entry key="serveraddr">127.0.0.1</entry>
+            <entry valueType="System.UInt16, mscorlib" key="serverport">6000</entry>
             <entry valueType="System.Int32, mscorlib" key="threadsleeptimer">0</entry>
-            <entry valueType="System.UInt16, mscorlib" key="port">0</entry>
           </dictionary>
         </props>
       </parameters>

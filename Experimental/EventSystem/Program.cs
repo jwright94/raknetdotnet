@@ -97,6 +97,7 @@ namespace EventSystem
             handlers.ConnectionTest += Handlers_OnConnectionTest;
             communicator.ProcessorsLocator = new ClientPPLocator(handlers);   // inject manually
             communicator.Startup();
+            communicator.Connect();
         }
 
         private void Handlers_OnConnectionTest(ConnectionTest t)

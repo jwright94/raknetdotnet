@@ -1,25 +1,21 @@
-using System;
-using System.Collections;
-using Castle.Core;
 using Castle.Core.Logging;
 using RakNetDotNet;
-using Events;
 
 namespace EventSystem
 {
-    [Transient]
-    internal sealed class Communicator : IServerCommunicator
+    /// <summary>
+    /// for implementation
+    /// </summary>
+    internal sealed class CommunicatorModule
     {
-        private readonly IDictionary props;
         private readonly IProcessorRegistry registry;
         private readonly ILogger logger;
         private RakPeerInterface rakPeerInterface;
         private IProtocolProcessorsLocator processorsLocator;
         private IRpcBinder binder;
 
-        public Communicator(IDictionary props, IProcessorRegistry registry, ILogger logger)
+        public CommunicatorModule(IProcessorRegistry registry, ILogger logger)
         {
-            this.props = props;
             this.registry = registry;
             this.logger = logger;
         }
@@ -30,84 +26,50 @@ namespace EventSystem
             set { processorsLocator = value; }
         }
 
-        public void Startup()
+        public RakPeerInterface RakPeerInterface
+        {
+            get { return rakPeerInterface; }
+        }
+
+        public void Startup(ushort maxConnections, int threadSleepTimer, ushort port)
+        {
+            Startup(maxConnections, threadSleepTimer, port, new PluginInterface[]{});
+        }
+
+        public void Startup(ushort maxConnections, int threadSleepTimer, ushort port, PluginInterface[] plugins)
         {
             rakPeerInterface = RakNetworkFactory.GetRakPeerInterface();
-            ConnectionGraph connectionGraphPlugin = RakNetworkFactory.GetConnectionGraph(); // TODO - Do Destroy?
-            FullyConnectedMesh fullyConnectedMeshPlugin = new FullyConnectedMesh(); // TODO - Do Dispose?
 
-            // Initialize the message handlers
-            fullyConnectedMeshPlugin.Startup(string.Empty);
-            rakPeerInterface.AttachPlugin(fullyConnectedMeshPlugin);
-            rakPeerInterface.AttachPlugin(connectionGraphPlugin);
+            foreach (PluginInterface plugin in plugins)
+            {
+                RakPeerInterface.AttachPlugin(plugin);
+            }
 
-            // Initialize the peers
-            ushort allowedPlayers = (ushort) props["allowedplayers"];
-            int threadSleepTimer = (int) props["threadsleeptimer"];
-            ushort port = (ushort) props["port"];
+            // Initialize the peer
             SocketDescriptor socketDescriptor = new SocketDescriptor(port, string.Empty);
-            rakPeerInterface.Startup(allowedPlayers, threadSleepTimer, new SocketDescriptor[] {socketDescriptor}, 1);
-            rakPeerInterface.SetMaximumIncomingConnections(allowedPlayers);
+            RakPeerInterface.Startup(maxConnections, threadSleepTimer, new SocketDescriptor[] {socketDescriptor}, 1);
+            RakPeerInterface.SetMaximumIncomingConnections(maxConnections);
 
-            binder = new RpcBinder(rakPeerInterface, registry, ProcessorsLocator.Processors);
+            binder = new RpcBinder(RakPeerInterface, registry, ProcessorsLocator.Processors);
             binder.Bind();
         }
 
         public void Update()
         {
-            Packet packet = rakPeerInterface.Receive();
+            Packet packet = RakPeerInterface.Receive();
             while (packet != null) // Process all incoming packets. Do we need to switch other thread ?
             {
-                //StringBuilder message = new StringBuilder("recieved Message from player ");
-                //message.Append(packet.systemAddress.ToString());
-                //message.AppendFormat(" from ip {0}", packet.systemAddress.binaryAddress);
-                //message.AppendFormat(" from port {0}", packet.systemAddress.port);
-
-                //BitStream stream = new BitStream(packet, false);
-                //byte packetIdentifier;
-                //stream.Read(out packetIdentifier);
-                //message.AppendFormat(", stream = [{0}]", packetIdentifier);
-
-                //if (true) logger.Debug(message.ToString());
-
                 HandlePacket(packet);
-
-                rakPeerInterface.DeallocatePacket(packet);
-                packet = rakPeerInterface.Receive();
+                RakPeerInterface.DeallocatePacket(packet);
+                packet = RakPeerInterface.Receive();
             }
         }
 
         public void Shutdown()
         {
-            rakPeerInterface.Shutdown(0);
+            RakPeerInterface.Shutdown(0);
             binder.Unbind();
-            RakNetworkFactory.DestroyRakPeerInterface(rakPeerInterface);
-        }
-
-        public void Broadcast(string processorName, IEvent e)
-        {
-            PacketPriority priority = PacketPriority.HIGH_PRIORITY;
-            PacketReliability reliability = PacketReliability.RELIABLE_ORDERED;
-            byte orderingChannel = 0;
-            uint shiftTimestamp = 0;
-
-            logger.Debug("sending an event: [{0}]", e.ToString());
-
-            bool result = rakPeerInterface.RPC(
-                processorName,
-                e.Stream, priority, reliability, orderingChannel,
-                RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS, true, shiftTimestamp,
-                RakNetBindings.UNASSIGNED_NETWORK_ID, null);
-
-            if (!result)
-                logger.Debug("could not send data to the server!");
-            else
-                logger.Debug("send data to the server...");
-        }
-
-        public void SendEvent(string processorName, IEvent e)
-        {
-            throw new NotImplementedException();
+            RakNetworkFactory.DestroyRakPeerInterface(RakPeerInterface);
         }
 
         private void HandlePacket(Packet packet)
@@ -142,9 +104,6 @@ namespace EventSystem
                 case RakNetBindings.ID_CONNECTION_LOST:
                     logger.Debug("A client lost the connection.\n");
                     break;
-                    //case RakNetBindings.ID_RECEIVED_STATIC_DATA:
-                    //    logger.Debug("Got static data.\n");
-                    //    break;
                 case RakNetBindings.ID_DATABASE_UNKNOWN_TABLE:
                     logger.Debug("ID_DATABASE_UNKNOWN_TABLE\n");
                     break;

@@ -60,9 +60,11 @@
     <Compile Include="AbstractEvent.cs" />
     <Compile Include="AbstractEventFactory.cs" />
     <Compile Include="AbstractGameState.cs" />
+    <Compile Include="ClientCommunicator.cs" />
     <Compile Include="ClientToServerEvent.cs" />
     <Compile Include="ClientWorld.cs" />
-    <Compile Include="Communicator.cs" />
+    <Compile Include="CommunicatorModule.cs" />
+    <Compile Include="ServerCommunicator.cs" />
     <Compile Include="EventCenterClient.cs" />
     <Compile Include="EventCenterServer.cs" />
     <Compile Include="EventTemplates.cs" />
