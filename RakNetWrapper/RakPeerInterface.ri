@@ -7,6 +7,16 @@
 <%= @type_mapper.typemap_input_blittable('SocketDescriptor *', 'INPUT_BLITTABLE_ARRAY', 'SocketDescriptor[]') %>
 <%= @type_mapper.apply_same_ctype('SocketDescriptor *', 'INPUT_BLITTABLE_ARRAY', 'socketDescriptors') %>  // Startup
 
+%typemap(csimports) RakPeerInterface "
+using System;
+using System.Runtime.InteropServices;
+
+/// <summary>
+/// This class has extra managed variables. Be careful when you use Equals, RegisterAsRemoteProcedureCall, etc.
+/// SWIG returns a different instance everytime.
+/// </summary>";
+%typemap(csinterfaces) RakPeerInterface "IEquatable<RakPeerInterface>";
+
 %ignore RakPeerInterface::RegisterAsRemoteProcedureCall;
 %ignore RakPeerInterface::RegisterClassMemberRPC;
 
@@ -89,8 +99,23 @@ SWIGEXPORT void SWIGSTDCALL CSharp_RakPeerInterface_RegisterClassMemberRPC(void 
 
   private System.Collections.IDictionary rpcFunctions = new System.Collections.Specialized.HybridDictionary();  // avoid GC.
 
-  private string ClassMemberId(System.Reflection.MemberInfo mi) {
+  private static string ClassMemberId(System.Reflection.MemberInfo mi) {
     return string.Format("{0}.{1}", mi.DeclaringType, mi.Name);
+  }
+
+  public bool Equals(RakPeerInterface other) {
+    return swigCPtr.Handle.Equals(other.swigCPtr.Handle);
+  }
+
+  public override bool Equals(object obj) {
+    if(!(obj is RakPeerInterface))
+      return false;
+    
+    return Equals((RakPeerInterface) obj);
+  }
+  
+  public override int GetHashCode() {
+    return swigCPtr.Handle.GetHashCode();
   }
 
   public virtual void RegisterAsRemoteProcedureCall(System.Reflection.MethodInfo mi) {

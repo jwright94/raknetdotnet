@@ -15,15 +15,15 @@
 %copyctor SystemAddress;
 %rename(Equals) SystemAddress::operator==;
 %typemap(cscode) SystemAddress %{
-  public override int GetHashCode () {
-    return binaryAddress.GetHashCode() ^ port.GetHashCode();
-  }
-  
   public override bool Equals(object obj) {
     if(!(obj is SystemAddress))
       return false;
 
-    return this.Equals((SystemAddress) obj);
+    return Equals((SystemAddress) obj);
+  }
+
+  public override int GetHashCode () {
+    return binaryAddress.GetHashCode() ^ port.GetHashCode();
   }
 %}
 

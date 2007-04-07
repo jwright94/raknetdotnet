@@ -22,6 +22,7 @@ namespace EventSystem
             else
             {
                 processors = new Dictionary<string, IProtocolProcessor>();
+                processors.Add(processor.Name, processor);
                 processorsByRecipient.Add(recipient, processors);
             }
         }

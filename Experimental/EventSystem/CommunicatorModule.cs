@@ -1,3 +1,6 @@
+using System;
+using System.Diagnostics;
+using System.Reflection;
 using Castle.Core.Logging;
 using RakNetDotNet;
 
@@ -56,12 +59,20 @@ namespace EventSystem
 
         public void Update()
         {
-            Packet packet = RakPeerInterface.Receive();
-            while (packet != null) // Process all incoming packets. Do we need to switch other thread ?
+            try
             {
-                HandlePacket(packet);
-                RakPeerInterface.DeallocatePacket(packet);
-                packet = RakPeerInterface.Receive();
+                Packet packet = RakPeerInterface.Receive();
+                while (packet != null) // Process all incoming packets. Do we need to switch other thread ?
+                {
+                    HandlePacket(packet);
+                    RakPeerInterface.DeallocatePacket(packet);
+                    packet = RakPeerInterface.Receive();
+                }
+            }
+            catch (TargetInvocationException e)
+            {
+                Debugger.Break();
+                throw e.InnerException;
             }
         }
 
