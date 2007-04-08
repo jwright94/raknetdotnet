@@ -6,6 +6,6 @@ namespace EventSystem
     {
         void Add(RakPeerInterface recipient, IProtocolProcessor processor);
         void Remove(RakPeerInterface recipient, IProtocolProcessor processor);
-        IProtocolProcessor GetProcessor(RakPeerInterface recipient, string processorName);
+        IProtocolProcessor GetProcessor(RakPeerInterface recipient, string protocolName);
     }
 }

@@ -17,12 +17,12 @@ namespace EventSystem
             IDictionary<string, IProtocolProcessor> processors;
             if(processorsByRecipient.TryGetValue(recipient, out processors))
             {
-                processors.Add(processor.Name, processor);
+                processors.Add(processor.ProtocolName, processor);
             }
             else
             {
                 processors = new Dictionary<string, IProtocolProcessor>();
-                processors.Add(processor.Name, processor);
+                processors.Add(processor.ProtocolName, processor);
                 processorsByRecipient.Add(recipient, processors);
             }
         }
@@ -32,13 +32,13 @@ namespace EventSystem
             IDictionary<string, IProtocolProcessor> processors;
             if(processorsByRecipient.TryGetValue(recipient, out processors))
             {
-                processors.Remove(processor.Name);
+                processors.Remove(processor.ProtocolName);
             }
         }
 
-        public IProtocolProcessor GetProcessor(RakPeerInterface recipient, string processorName)
+        public IProtocolProcessor GetProcessor(RakPeerInterface recipient, string protocolName)
         {
-            return processorsByRecipient[recipient][processorName];
+            return processorsByRecipient[recipient][protocolName];
         }
 
         private IDictionary<RakPeerInterface, IDictionary<string, IProtocolProcessor>> processorsByRecipient;

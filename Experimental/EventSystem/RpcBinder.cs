@@ -25,7 +25,7 @@ namespace EventSystem
             foreach (IProtocolProcessor processor in processors)
             {
                 registry.Add(recipient, processor);
-                recipient.RegisterAsRemoteProcedureCall(processor.Name, GetType().GetMethod("Route"));
+                recipient.RegisterAsRemoteProcedureCall(processor.ProtocolName, GetType().GetMethod("Route"));
             }
         }
 
@@ -34,7 +34,7 @@ namespace EventSystem
             foreach (IProtocolProcessor processor in processors)
             {
                 registry.Remove(recipient, processor);
-                recipient.UnregisterAsRemoteProcedureCall(processor.Name);
+                recipient.UnregisterAsRemoteProcedureCall(processor.ProtocolName);
             }
         }
 

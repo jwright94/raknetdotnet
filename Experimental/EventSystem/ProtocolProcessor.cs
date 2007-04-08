@@ -7,7 +7,7 @@ namespace EventSystem
     [Transient]
     sealed class ProtocolProcessor : IProtocolProcessor
     {
-        private readonly string name;
+        private readonly string protocolName;
         private readonly IEventFactory factory;
         private readonly IEventHandlers handlers;
         private readonly ILogger logger;
@@ -16,13 +16,13 @@ namespace EventSystem
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="protocolName"></param>
         /// <param name="factory"></param>
         /// <param name="handlers"></param>
         /// <param name="logger"></param>
-        public ProtocolProcessor(string name, IEventFactory factory, IEventHandlers handlers, ILogger logger)
+        public ProtocolProcessor(string protocolName, IEventFactory factory, IEventHandlers handlers, ILogger logger)
         {
-            this.name = name;
+            this.protocolName = protocolName;
             this.factory = factory;
             this.handlers = handlers;
             this.logger = logger;
@@ -34,9 +34,9 @@ namespace EventSystem
             set { callbacks = value; }
         }
 
-        public string Name
+        public string ProtocolName
         {
-            get { return name; }
+            get { return protocolName; }
         }
 
         public void ProcessReceiveParams(RPCParameters _params)

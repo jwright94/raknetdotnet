@@ -4,7 +4,7 @@ namespace EventSystem
 {
     interface  IProtocolProcessor
     {
-        string Name { get; }
+        string ProtocolName { get; }
         void ProcessReceiveParams(RPCParameters _params);
     }
 }
