@@ -38,7 +38,7 @@ namespace EventSystem
             logger.Debug("sending an event: [{0}]", e.ToString());
 
             bool result = module.RakPeerInterface.RPC(
-                "frontendserver",
+                "samename",
                 e.Stream, priority, reliability, orderingChannel,
                 RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS, true, shiftTimestamp,
                 RakNetBindings.UNASSIGNED_NETWORK_ID, null);

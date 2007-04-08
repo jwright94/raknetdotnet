@@ -7,7 +7,7 @@ namespace EventSystem
         public FrontEndServerPPLocator(EventHandlersOnFrontEndServer handlers)
         {
             EventFactoryOnFrontEndServer factory = new EventFactoryOnFrontEndServer();
-            ProtocolProcessor processor = new ProtocolProcessor("frontendserver", factory, handlers, LightweightContainer.LogFactory.Create(typeof (ProtocolProcessor)));
+            ProtocolProcessor processor = new ProtocolProcessor("samename", factory, handlers, LightweightContainer.LogFactory.Create(typeof (ProtocolProcessor)));
             processors = new IProtocolProcessor[] { processor };
         }
 

@@ -41,6 +41,7 @@ namespace EventSystem
         public static void Route(RPCParameters _params)
         {
             IProcessorRegistry registry = LightweightContainer.Resolve<IProcessorRegistry>();
+            // TODO - If client send illegal protocol name then server crushed.
             IProtocolProcessor processor = registry.GetProcessor(_params.recipient, _params.functionName);
             processor.ProcessReceiveParams(_params);
         }

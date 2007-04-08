@@ -21,7 +21,7 @@ namespace EventSystem
         public ClientPPLocator(EventHandlersOnClient handlers)
         {
             EventFactoryOnClient factory = new EventFactoryOnClient();
-            ProtocolProcessor processor = new ProtocolProcessor("client", factory, handlers, LightweightContainer.LogFactory.Create(typeof(ProtocolProcessor)));
+            ProtocolProcessor processor = new ProtocolProcessor("samename", factory, handlers, LightweightContainer.LogFactory.Create(typeof(ProtocolProcessor)));
             processors = new IProtocolProcessor[] {processor};
         }
         private IProtocolProcessor[] processors;
@@ -62,7 +62,7 @@ namespace EventSystem
         private void Handlers_OnConnectionTest(ConnectionTest t)
         {
             logger.Debug("Handlers_OnConnectionTest was called on FrontEndServer.");
-            communicator.Broadcast("client", t);  // echo back.
+            communicator.Broadcast("samename", t);  // echo back.
         }
 
         public void Update()
