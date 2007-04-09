@@ -4,7 +4,11 @@
   <components>
     <component id="frontendserver"
                service="EventSystem.IServer, EventSystem"
-               type="EventSystem.FrontEndServer, EventSystem" />
+               type="EventSystem.FrontEndServer, EventSystem">
+      <parameters>
+        <sleepTimer>30</sleepTimer>
+      </parameters>
+    </component>      
     <component id="frontendserver.communicator"
                service="EventSystem.IServerCommunicator, EventSystem"
                type="EventSystem.ServerCommunicator, EventSystem">

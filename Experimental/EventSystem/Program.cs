@@ -37,6 +37,7 @@ namespace EventSystem
         void Startup();
         void Update();
         void Shutdown();
+        int SleepTimer { get; }
     }
 
     [Transient]
@@ -44,11 +45,17 @@ namespace EventSystem
     {
         private readonly ILogger logger;
         private readonly IServerCommunicator communicator;
+        private readonly int sleepTimer;
+        public int SleepTimer
+        {
+            get { return sleepTimer; }
+        }
 
-        public FrontEndServer(IServerCommunicator communicator, ILogger logger)
+        public FrontEndServer(IServerCommunicator communicator, ILogger logger, int sleepTimer)
         {
             this.communicator = communicator;
             this.logger = logger;
+            this.sleepTimer = sleepTimer;
         }
 
         public void Startup()
@@ -85,11 +92,17 @@ namespace EventSystem
         private readonly ILogger logger;
         private readonly IClientCommunicator communicator;
         private uint lastSent;
+        private readonly int sleepTimer;
+        public int SleepTimer
+        {
+            get { return sleepTimer; }
+        }
 
-        public Client(IClientCommunicator communicator, ILogger logger)
+        public Client(IClientCommunicator communicator, ILogger logger, int sleepTimer)
         {
             this.communicator = communicator;
             this.logger = logger;
+            this.sleepTimer = sleepTimer;
         }
 
         public void Startup()
@@ -149,6 +162,7 @@ namespace EventSystem
                     }
                 }
                 server.Update();
+                System.Threading.Thread.Sleep(server.SleepTimer);
             }
             server.Shutdown();
             logger.Info("Server is shutdowned.");
