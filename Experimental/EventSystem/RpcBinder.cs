@@ -6,36 +6,25 @@ namespace EventSystem
     {
         private readonly RakPeerInterface recipient;
         private readonly IProcessorRegistry registry;
-        private readonly IProtocolProcessor[] processors;
+        private readonly IProtocolProcessor processor;
 
         public RpcBinder(RakPeerInterface recipient, IProcessorRegistry registry, IProtocolProcessor processor)
-            : this(recipient, registry, new IProtocolProcessor[] {processor})
-        {
-        }
-
-        public RpcBinder(RakPeerInterface recipient, IProcessorRegistry registry, IProtocolProcessor[] processors)
         {
             this.recipient = recipient;
             this.registry = registry;
-            this.processors = processors;
+            this.processor = processor;
         }
 
         public void Bind()
         {
-            foreach (IProtocolProcessor processor in processors)
-            {
-                registry.Add(recipient, processor);
-                recipient.RegisterAsRemoteProcedureCall(processor.ProtocolName, GetType().GetMethod("Route"));
-            }
+            registry.Add(recipient, processor);
+            recipient.RegisterAsRemoteProcedureCall(processor.ProtocolName, GetType().GetMethod("Route"));
         }
 
         public void Unbind()
         {
-            foreach (IProtocolProcessor processor in processors)
-            {
-                registry.Remove(recipient, processor);
-                recipient.UnregisterAsRemoteProcedureCall(processor.ProtocolName);
-            }
+            registry.Remove(recipient, processor);
+            recipient.UnregisterAsRemoteProcedureCall(processor.ProtocolName);
         }
 
         public static void Route(RPCParameters _params)

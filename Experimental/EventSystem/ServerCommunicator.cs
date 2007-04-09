@@ -19,10 +19,10 @@ namespace EventSystem
             module = new CommunicatorModule(registry, logger);
         }
 
-        public IProtocolProcessorsLocator ProcessorsLocator
+        public IProtocolProcessorLocator ProcessorLocator
         {
-            get { return module.ProcessorsLocator; }
-            set { module.ProcessorsLocator = value; }
+            get { return module.ProcessorLocator; }
+            set { module.ProcessorLocator = value; }
         }
 
         public void Startup()

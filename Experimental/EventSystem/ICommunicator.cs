@@ -9,7 +9,7 @@ namespace EventSystem
         void Update();
         void Shutdown();
 
-        IProtocolProcessorsLocator ProcessorsLocator
+        IProtocolProcessorLocator ProcessorLocator
         {
             get;
             set;

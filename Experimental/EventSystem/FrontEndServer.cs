@@ -26,7 +26,7 @@ namespace EventSystem
         {
             EventHandlersOnFrontEndServer handlers = new EventHandlersOnFrontEndServer();
             handlers.ConnectionTest += Handlers_OnConnectionTest;
-            communicator.ProcessorsLocator = new FrontEndServerPPLocator(handlers);   // inject manually
+            communicator.ProcessorLocator = new FrontEndServerPPLocator(handlers);   // inject manually
             communicator.Startup();
         }
 

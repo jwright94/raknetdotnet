@@ -31,7 +31,7 @@ namespace EventSystem
         {
             EventHandlersOnClient handlers = new EventHandlersOnClient();
             handlers.ConnectionTest += Handlers_OnConnectionTest;
-            communicator.ProcessorsLocator = new ClientPPLocator(handlers);   // inject manually
+            communicator.ProcessorLocator = new ClientPPLocator(handlers);   // inject manually
             communicator.Startup();
             communicator.Connect();
         }

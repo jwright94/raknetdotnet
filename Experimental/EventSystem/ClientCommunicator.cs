@@ -65,10 +65,10 @@ namespace EventSystem
             module.Shutdown();
         }
 
-        public IProtocolProcessorsLocator ProcessorsLocator
+        public IProtocolProcessorLocator ProcessorLocator
         {
-            get { return module.ProcessorsLocator; }
-            set { module.ProcessorsLocator = value; }
+            get { return module.ProcessorLocator; }
+            set { module.ProcessorLocator = value; }
         }
     }
 }

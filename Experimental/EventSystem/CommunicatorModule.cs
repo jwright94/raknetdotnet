@@ -14,7 +14,7 @@ namespace EventSystem
         private readonly IProcessorRegistry registry;
         private readonly ILogger logger;
         private RakPeerInterface rakPeerInterface;
-        private IProtocolProcessorsLocator processorsLocator;
+        private IProtocolProcessorLocator processorLocator;
         private IRpcBinder binder;
 
         public CommunicatorModule(IProcessorRegistry registry, ILogger logger)
@@ -23,10 +23,10 @@ namespace EventSystem
             this.logger = logger;
         }
 
-        public IProtocolProcessorsLocator ProcessorsLocator
+        public IProtocolProcessorLocator ProcessorLocator
         {
-            get { return processorsLocator; }
-            set { processorsLocator = value; }
+            get { return processorLocator; }
+            set { processorLocator = value; }
         }
 
         public RakPeerInterface RakPeerInterface
@@ -53,7 +53,7 @@ namespace EventSystem
             RakPeerInterface.Startup(maxConnections, threadSleepTimer, new SocketDescriptor[] {socketDescriptor}, 1);
             RakPeerInterface.SetMaximumIncomingConnections(maxConnections);
 
-            binder = new RpcBinder(RakPeerInterface, registry, ProcessorsLocator.Processors);
+            binder = new RpcBinder(RakPeerInterface, registry, ProcessorLocator.Processor);
             binder.Bind();
         }
 

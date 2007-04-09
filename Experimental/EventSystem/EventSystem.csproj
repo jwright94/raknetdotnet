@@ -62,6 +62,7 @@
     <Compile Include="ClientPPLocator.cs" />
     <Compile Include="CommunicatorModule.cs" />
     <Compile Include="FrontEndServer.cs" />
+    <Compile Include="IProtocolProcessorLocator.cs" />
     <Compile Include="IServer.cs" />
     <Compile Include="ServerCommunicator.cs" />
     <Compile Include="EventTemplates.cs" />
@@ -73,7 +74,6 @@
     <Compile Include="IEventHandlers.cs" />
     <Compile Include="IProcessorRegistry.cs" />
     <Compile Include="IProtocolProcessor.cs" />
-    <Compile Include="IProtocolProcessorsLocator.cs" />
     <Compile Include="IRpcBinder.cs" />
     <Compile Include="LightweightContainer.cs" />
     <Compile Include="FrontEndServerPPLocator.cs" />

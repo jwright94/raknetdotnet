@@ -2,20 +2,19 @@ using Events;
 
 namespace EventSystem
 {
-    sealed class FrontEndServerPPLocator : IProtocolProcessorsLocator
+    sealed class FrontEndServerPPLocator : IProtocolProcessorLocator
     {
         public FrontEndServerPPLocator(EventHandlersOnFrontEndServer handlers)
         {
             EventFactoryOnFrontEndServer factory = new EventFactoryOnFrontEndServer();
-            ProtocolProcessor processor = new ProtocolProcessor("samename", factory, handlers, LightweightContainer.LogFactory.Create(typeof (ProtocolProcessor)));
-            processors = new IProtocolProcessor[] { processor };
+            processor = new ProtocolProcessor("samename", factory, handlers, LightweightContainer.LogFactory.Create(typeof(ProtocolProcessor)));
         }
 
-        private readonly IProtocolProcessor[] processors;
+        private readonly IProtocolProcessor processor;
 
-        public IProtocolProcessor[] Processors
+        public IProtocolProcessor Processor
         {
-            get { return processors; }
+            get { return processor; }
         }
     }
 }
