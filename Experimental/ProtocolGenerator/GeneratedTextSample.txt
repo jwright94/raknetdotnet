@@ -69,7 +69,6 @@ namespace TestEvents {
 			}
 			return _event;
 		}
-		public IComplecatedEvent RecreateEvent(BitStream source) { return null; }
 	}
 	[Transient]
 	sealed class EventHandlersOnServer : IEventHandlers {

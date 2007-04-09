@@ -57,28 +57,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AbstractEvent.cs" />
-    <Compile Include="AbstractEventFactory.cs" />
-    <Compile Include="AbstractGameState.cs" />
+    <Compile Include="Client.cs" />
     <Compile Include="ClientCommunicator.cs" />
-    <Compile Include="ClientToServerEvent.cs" />
-    <Compile Include="ClientWorld.cs" />
+    <Compile Include="ClientPPLocator.cs" />
     <Compile Include="CommunicatorModule.cs" />
+    <Compile Include="FrontEndServer.cs" />
+    <Compile Include="IServer.cs" />
     <Compile Include="ServerCommunicator.cs" />
-    <Compile Include="EventCenterClient.cs" />
-    <Compile Include="EventCenterServer.cs" />
     <Compile Include="EventTemplates.cs" />
     <Compile Include="EventTemplates.generated.cs" />
-    <Compile Include="GameManager.cs" />
     <Compile Include="ICommunicator.cs" />
     <Compile Include="IEvent.cs" />
     <Compile Include="IEventExceptionCallbacks.cs" />
     <Compile Include="IEventFactory.cs" />
     <Compile Include="IEventHandlers.cs" />
-    <Compile Include="IFrameListener.cs" />
-    <Compile Include="IGameState.cs" />
-    <Compile Include="IKeyListener.cs" />
-    <Compile Include="IntroState.cs" />
     <Compile Include="IProcessorRegistry.cs" />
     <Compile Include="IProtocolProcessor.cs" />
     <Compile Include="IProtocolProcessorsLocator.cs" />
@@ -86,18 +78,11 @@
     <Compile Include="LightweightContainer.cs" />
     <Compile Include="FrontEndServerPPLocator.cs" />
     <Compile Include="NetworkException.cs" />
-    <Compile Include="PlayState.cs" />
     <Compile Include="ProcessorRegistry.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProtocolProcessor.cs" />
-    <Compile Include="Root.cs" />
     <Compile Include="RpcBinder.cs" />
-    <Compile Include="RpcCalls.cs" />
-    <Compile Include="SampleEventFactory.cs" />
-    <Compile Include="ServerToClientEvent.cs" />
-    <Compile Include="TestConnectionEvent.cs" />
-    <Compile Include="UnifiedNetwork.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\RakNetDotNet\RakNetDotNet.csproj">

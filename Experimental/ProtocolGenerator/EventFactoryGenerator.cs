@@ -26,7 +26,6 @@ namespace ProtocolGenerator
             o.WriteLine("[Transient]");
             o.BeginBlock("sealed class {0} : IEventFactory {{", factoryName);
             WriteRecreateEvent(o);
-            o.WriteLine("public IComplecatedEvent RecreateEvent(BitStream source) { return null; }");
             o.EndBlock("}");
         }
 
