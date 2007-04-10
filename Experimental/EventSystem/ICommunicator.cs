@@ -19,7 +19,7 @@ namespace EventSystem
     interface IServerCommunicator : ICommunicator
     {
         void Broadcast(IEvent e);
-        void SendEvent(IEvent e);
+        void SendEvent(IEvent e, SystemAddress targetAddress);
     }
 
     /// <summary>

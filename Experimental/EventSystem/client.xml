@@ -2,6 +2,10 @@
 <configuration>
   <include uri="common.xml" />
   <components>
+    <component id="clientdomanager"
+             service="EventSystem.IClientDOManager, EventSystem"
+             type="EventSystem.ClientDOManager, EventSystem">
+    </component>
     <component id="client"
                service="EventSystem.IServer, EventSystem"
                type="EventSystem.Client, EventSystem">

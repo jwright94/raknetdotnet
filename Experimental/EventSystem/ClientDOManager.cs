@@ -1,10 +1,12 @@
 using System;
 using RakNetDotNet;
 using Castle.Core.Logging;
+using Castle.Core;
 
 namespace EventSystem
 {
-    public class ClientDOManager : DOManager, IClientDoManager
+    [Transient]
+    public class ClientDOManager : DOManager, IClientDOManager
     {
         public ClientDOManager(ILogger logger)
             : base(logger)

@@ -12,6 +12,7 @@ namespace EventSystem
         private readonly IDictionary props;
         private readonly ILogger logger;
         private readonly CommunicatorModule module;
+
         public ServerCommunicator(IDictionary props, IProcessorRegistry registry, ILogger logger)
         {
             this.props = props;
@@ -76,9 +77,25 @@ namespace EventSystem
                 logger.Debug("send data to clients...");
         }
 
-        public void SendEvent(IEvent e)
+        public void SendEvent(IEvent e, SystemAddress targetAddress)
         {
-            throw new NotImplementedException();
+            PacketPriority priority = PacketPriority.HIGH_PRIORITY;
+            PacketReliability reliability = PacketReliability.RELIABLE_ORDERED;
+            byte orderingChannel = 0;
+            uint shiftTimestamp = 0;
+
+            logger.Debug("sending an event: [{0}]", e.ToString());
+
+            bool result = module.RakPeerInterface.RPC(
+                e.ProtocolInfo.Name,
+                e.Stream, priority, reliability, orderingChannel,
+                targetAddress, false, shiftTimestamp,
+                RakNetBindings.UNASSIGNED_NETWORK_ID, null);
+
+            if (!result)
+                logger.Debug("could not send data to clients!");
+            else
+                logger.Debug("send data to clients...");
         }
     }
 }

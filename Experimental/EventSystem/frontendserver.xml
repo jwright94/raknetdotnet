@@ -2,6 +2,10 @@
 <configuration>
   <include uri="common.xml" />
   <components>
+    <component id="serverdomanager"
+             service="EventSystem.IServerDOManager, EventSystem"
+             type="EventSystem.ServerDOManager, EventSystem">
+    </component>    
     <component id="frontendserver"
                service="EventSystem.IServer, EventSystem"
                type="EventSystem.FrontEndServer, EventSystem">

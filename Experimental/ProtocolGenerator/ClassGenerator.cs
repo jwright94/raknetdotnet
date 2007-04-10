@@ -50,6 +50,9 @@ namespace ProtocolGenerator
         {
             o.BeginBlock("public {0}(BitStream source) {{", type.Name);
             WriteStreamReadStatement(o, "out", "id");
+            WriteStreamReadStatement(o, "out", "sourceOid");
+            WriteStreamReadStatement(o, "out", "targetOid");
+
             foreach (FieldInfo field in GetFields())
             {
                 WriteSerializeFieldStatementRecursive(o, false, field.FieldType, field.Name);
@@ -88,6 +91,9 @@ namespace ProtocolGenerator
             o.BeginBlock("get {");
             o.WriteLine("BitStream eventStream = new BitStream();");
             WriteStreamWriteStatement(o, "id");
+            WriteStreamWriteStatement(o, "sourceOid");
+            WriteStreamWriteStatement(o, "targetOid");
+
             foreach (FieldInfo field in GetFields())
             {
                 WriteSerializeFieldStatementRecursive(o, true, field.FieldType, field.Name);
@@ -108,7 +114,7 @@ namespace ProtocolGenerator
             {
                 WriteStreamWriteOrReadStatement(o, writeToBitstream, "out", variableName);
             }
-            else if (variableType.Equals(typeof (NetworkID)) || variableType.Equals(typeof (SystemAddress)))
+            else if (variableType.Equals(typeof(NetworkID)) || variableType.Equals(typeof(SystemAddress)))
             {
                 WriteStreamWriteOrReadStatement(o, writeToBitstream, "", variableName);
             }
@@ -172,7 +178,8 @@ namespace ProtocolGenerator
         private static void WriteSourceOid(ICodeWriter o)
         {
             o.BeginBlock("public int SourceOid {");
-            o.WriteLine("get { return sourceOid; }");         
+            o.WriteLine("set { sourceOid = value; }");
+            o.WriteLine("get { return sourceOid; }");
             o.EndBlock("}");
             o.WriteLine("int sourceOid;");
         }
@@ -180,6 +187,7 @@ namespace ProtocolGenerator
         private static void WriteTargetOid(ICodeWriter o)
         {
             o.BeginBlock("public int TargetOid {");
+            o.WriteLine("set { targetOid = value; }");
             o.WriteLine("get { return targetOid; }");
             o.EndBlock("}");
             o.WriteLine("int targetOid;");
@@ -215,16 +223,16 @@ namespace ProtocolGenerator
         static BitstreamSerializationHelper()
         {
             supportingPrimitives = new List<Type>();
-            supportingPrimitives.Add(typeof (bool));
-            supportingPrimitives.Add(typeof (byte));
-            supportingPrimitives.Add(typeof (double));
-            supportingPrimitives.Add(typeof (float));
-            supportingPrimitives.Add(typeof (int));
-            supportingPrimitives.Add(typeof (sbyte));
-            supportingPrimitives.Add(typeof (short));
-            supportingPrimitives.Add(typeof (string));
-            supportingPrimitives.Add(typeof (uint));
-            supportingPrimitives.Add(typeof (ushort));
+            supportingPrimitives.Add(typeof(bool));
+            supportingPrimitives.Add(typeof(byte));
+            supportingPrimitives.Add(typeof(double));
+            supportingPrimitives.Add(typeof(float));
+            supportingPrimitives.Add(typeof(int));
+            supportingPrimitives.Add(typeof(sbyte));
+            supportingPrimitives.Add(typeof(short));
+            supportingPrimitives.Add(typeof(string));
+            supportingPrimitives.Add(typeof(uint));
+            supportingPrimitives.Add(typeof(ushort));
         }
 
         public static bool DoesSupportPrimitiveType(Type t)

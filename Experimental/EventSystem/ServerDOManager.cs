@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using RakNetDotNet;
 using Castle.Core.Logging;
+using Castle.Core;
 
 
 namespace EventSystem
 {
-    public class ServerDOManager : DOManager, IServerDoManager
+    [Transient]
+    public class ServerDOManager : DOManager, IServerDOManager
     {
         private int nextId = 0;
 
@@ -17,15 +19,16 @@ namespace EventSystem
 
         #region IServerDoManager Members
 
-        public void RegisterObject(IDObject dObject)
+        public int RegisterObject(IDObject dObject)
         {
             if (!dObjects.ContainsValue(dObject))
             {
                 dObject.OId = nextId;
                 dObjects.Add(nextId++, dObject);
-                return;
+                return dObject.OId;
             }
             logger.Error("Duplicate DObject found.", dObject.OId);
+            return -1;
         }
 
         public override void PostEvent(IEvent e)

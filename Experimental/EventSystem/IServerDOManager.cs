@@ -3,8 +3,8 @@ using RakNetDotNet;
 
 namespace EventSystem
 {
-    public interface IServerDoManager
+    public interface IServerDOManager : IDOManager
     {
-        void RegisterObject(IDObject dObject);
+        int RegisterObject(IDObject dObject);
     }
 }

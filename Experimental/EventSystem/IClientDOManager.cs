@@ -3,7 +3,7 @@ using RakNetDotNet;
 
 namespace EventSystem
 {
-    public interface IClientDoManager
+    public interface IClientDOManager: IDOManager
     {
         void StoreObject(IDObject dObject);
     }

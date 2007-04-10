@@ -12,6 +12,7 @@ namespace EventSystem
         private readonly IEventHandlers handlers;
         private readonly ILogger logger;
         private IEventExceptionCallbacks callbacks;
+        private IDOManager dOManager;
 
         /// <summary>
         /// 
@@ -20,12 +21,13 @@ namespace EventSystem
         /// <param name="factory"></param>
         /// <param name="handlers"></param>
         /// <param name="logger"></param>
-        public ProtocolProcessor(string protocolName, IEventFactory factory, IEventHandlers handlers, ILogger logger)
+        public ProtocolProcessor(string protocolName, IEventFactory factory, IEventHandlers handlers, IDOManager dOManager, ILogger logger)
         {
             this.protocolName = protocolName;
             this.factory = factory;
             this.handlers = handlers;
             this.logger = logger;
+            this.dOManager = dOManager;
         }
 
         public IEventExceptionCallbacks Callbacks
@@ -45,7 +47,7 @@ namespace EventSystem
             try
             {
                 IEvent e = factory.RecreateSimpleEvent(source);
-                e.Sender = _params.sender;
+                e.Sender = _params.sender;                
                 handlers.CallHandler(e);
             }
             catch (NetworkException)  // TODO: Add new type of network exception. Call accurate callback.
