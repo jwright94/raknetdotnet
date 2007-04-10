@@ -61,10 +61,13 @@
     <Compile Include="ClientCommunicator.cs" />
     <Compile Include="ClientPPLocator.cs" />
     <Compile Include="CommunicatorModule.cs" />
+    <Compile Include="DObject.cs" />
     <Compile Include="FrontEndServer.cs" />
+    <Compile Include="IDObject.cs" />
     <Compile Include="IProtocolInfo.cs" />
     <Compile Include="IProtocolProcessorLocator.cs" />
     <Compile Include="IServer.cs" />
+    <Compile Include="IServerDOManager.cs" />
     <Compile Include="ServerCommunicator.cs" />
     <Compile Include="EventTemplates.cs" />
     <Compile Include="EventTemplates.generated.cs" />
@@ -84,6 +87,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProtocolProcessor.cs" />
     <Compile Include="RpcBinder.cs" />
+    <Compile Include="ServerDOManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\RakNetDotNet\RakNetDotNet.csproj">

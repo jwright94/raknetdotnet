@@ -3,7 +3,7 @@ using RakNetDotNet;
 
 namespace EventSystem
 {
-    internal interface IEvent
+    public interface IEvent
     {
         BitStream Stream { get; }
         int Id { get; }
