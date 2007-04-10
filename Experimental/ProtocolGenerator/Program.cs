@@ -142,6 +142,7 @@ namespace ProtocolGenerator
         #endregion
 
         #region Private Utility Functions
+
         private static string GetGeneratedFilePath(string eventTemplatePath)
         {
             string dir = Path.GetDirectoryName(eventTemplatePath);
@@ -179,7 +180,7 @@ namespace ProtocolGenerator
         {
             string eventTemplatePath = @"c:\home\white space\sampleevents.cs";
             string generatedFilePath =
-                (string)PrivateAccessor.ExecuteStaticMethod(typeof(Program), "GetGeneratedFilePath", new object[] { eventTemplatePath });
+                (string)PrivateAccessor.ExecuteStaticMethod(typeof (Program), "GetGeneratedFilePath", new object[] {eventTemplatePath});
             Assert.AreEqual(@"c:\home\white space\sampleevents.generated.cs", generatedFilePath);
         }
     }

@@ -1,7 +1,5 @@
-using System;
-using RakNetDotNet;
-using Castle.Core.Logging;
 using System.Collections.Generic;
+using Castle.Core.Logging;
 
 namespace EventSystem
 {
@@ -30,10 +28,10 @@ namespace EventSystem
         }
 
         public virtual void PostEvent(IEvent e)
-        {           
+        {
             GetObject(e.TargetOid).PostEvent(e);
         }
-  
+
         #endregion
     }
 }

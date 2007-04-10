@@ -1,9 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
-using NUnit.Framework;
-using TestEvents;
-using TestEvents2;
 
 namespace ProtocolGenerator
 {

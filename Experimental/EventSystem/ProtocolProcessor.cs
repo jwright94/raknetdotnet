@@ -5,7 +5,7 @@ using RakNetDotNet;
 namespace EventSystem
 {
     [Transient]
-    sealed class ProtocolProcessor : IProtocolProcessor
+    internal sealed class ProtocolProcessor : IProtocolProcessor
     {
         private readonly string protocolName;
         private readonly IEventFactory factory;
@@ -50,12 +50,12 @@ namespace EventSystem
                 e.Sender = _params.sender;
                 dOManager.PostEvent(e);
             }
-            catch (NetworkException)  // TODO: Add new type of network exception. Call accurate callback.
+            catch (NetworkException) // TODO: Add new type of network exception. Call accurate callback.
             {
                 logger.Warn("Ran off end of packet.");
                 if (Callbacks != null)
                 {
-                    Callbacks.OnRanOffEndOfBitstream(_params.sender);  // TODO: This is ad-hoc.
+                    Callbacks.OnRanOffEndOfBitstream(_params.sender); // TODO: This is ad-hoc.
                 }
             }
         }

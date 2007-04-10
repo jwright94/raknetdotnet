@@ -1,6 +1,6 @@
 namespace EventSystem
 {
-    interface IServer
+    internal interface IServer
     {
         void Startup();
         void Update();

@@ -7,6 +7,7 @@ using NUnit.Framework;
 
 namespace EventSystem
 {
+
     #region For Castle MicroKernel
 
     internal static class LightweightContainer
@@ -40,12 +41,12 @@ namespace EventSystem
 
         public static ServiceType Resolve<ServiceType>(IDictionary arguments)
         {
-            return (ServiceType) windsorContainer.Kernel.Resolve(typeof (ServiceType), arguments);
+            return (ServiceType)windsorContainer.Kernel.Resolve(typeof (ServiceType), arguments);
         }
 
         public static ServiceType Resolve<ServiceType>(string key, IDictionary arguments)
         {
-            return (ServiceType) windsorContainer.Kernel.Resolve(key, arguments);
+            return (ServiceType)windsorContainer.Kernel.Resolve(key, arguments);
         }
 
         public static void RegisterCustomDependencies(string key, IDictionary dependencies)
@@ -60,12 +61,12 @@ namespace EventSystem
 
         public static void AddComponent<ClassType>()
         {
-            AddComponent<ClassType>(typeof(ClassType).FullName);
+            AddComponent<ClassType>(typeof (ClassType).FullName);
         }
 
         public static void AddComponent<ClassType>(string key)
         {
-            windsorContainer.AddComponent(key, typeof(ClassType));
+            windsorContainer.AddComponent(key, typeof (ClassType));
         }
 
         public static void AddComponent<ServiceType, ClassType>()
@@ -75,7 +76,7 @@ namespace EventSystem
 
         public static void AddComponent<ServiceType, ClassType>(string key)
         {
-            windsorContainer.AddComponent(key, typeof(ServiceType), typeof(ClassType));
+            windsorContainer.AddComponent(key, typeof (ServiceType), typeof (ClassType));
         }
 
         public static void ReleaseComponent(object instance)
@@ -146,7 +147,7 @@ namespace EventSystem
         }
 
         [Transient]
-        sealed class Stateful
+        internal sealed class Stateful
         {
             public string Message
             {
@@ -169,7 +170,7 @@ namespace EventSystem
             {
                 container = new WindsorContainer("test.xml");
                 container.AddComponent("atanytime", typeof (SingletonUsesAtAnyTime));
-                container.AddComponent("anotherinstance", typeof(SingletonUsesAtAnyTime));
+                container.AddComponent("anotherinstance", typeof (SingletonUsesAtAnyTime));
                 container.AddComponent("resettable", typeof (ResettableSingleton));
                 container.AddComponent("incrementor", typeof (CountIncrementor));
             }

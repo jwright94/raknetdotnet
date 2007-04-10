@@ -1,7 +1,5 @@
-using System;
-using RakNetDotNet;
-using Castle.Core.Logging;
 using Castle.Core;
+using Castle.Core.Logging;
 
 namespace EventSystem
 {

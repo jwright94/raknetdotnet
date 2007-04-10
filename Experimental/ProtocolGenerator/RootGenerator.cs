@@ -4,6 +4,7 @@ using System.IO;
 using NUnit.Framework;
 using TestEvents;
 using TestEvents2;
+using ProtocolInfo=TestEvents.ProtocolInfo;
 
 namespace ProtocolGenerator
 {
@@ -74,15 +75,15 @@ namespace ProtocolGenerator
             List<Type> filtered = new List<Type>();
             foreach (Type t in types)
             {
-                bool isDefined = Attribute.IsDefined(t, typeof(SiteOfHandlingAttribute)) ||
-                    Attribute.IsDefined(t, typeof(ProtocolInfoAttribute));
+                bool isDefined = Attribute.IsDefined(t, typeof (SiteOfHandlingAttribute)) ||
+                                 Attribute.IsDefined(t, typeof (ProtocolInfoAttribute));
                 if (t.IsClass && isDefined)
                 {
                     filtered.Add(t);
                 }
             }
             return filtered.ToArray();
-        }       
+        }
     }
 
     [TestFixture]
@@ -94,7 +95,7 @@ namespace ProtocolGenerator
             Type[] types = new Type[] {typeof (SimpleEvent), typeof (SimpleEvent2)};
             IDictionary<string, ICollection<Type>> namespaceTypesHash =
                 (IDictionary<string, ICollection<Type>>)
-                PrivateAccessor.ExecuteStaticMethod(typeof(RootGenerator), "GetNamespaceTypesHash", new object[] { types });
+                PrivateAccessor.ExecuteStaticMethod(typeof (RootGenerator), "GetNamespaceTypesHash", new object[] {types});
             Assert.IsTrue(namespaceTypesHash.ContainsKey("TestEvents"));
             Assert.IsTrue(namespaceTypesHash.ContainsKey("TestEvents2"));
             Assert.IsTrue(namespaceTypesHash["TestEvents"].Contains(typeof (SimpleEvent)));
@@ -104,7 +105,7 @@ namespace ProtocolGenerator
         [Test]
         public void FinalOutput()
         {
-            Type[] types = new Type[] {typeof (SimpleEvent), typeof(TestEvents.ProtocolInfo) };
+            Type[] types = new Type[] {typeof (SimpleEvent), typeof (ProtocolInfo)};
             IGenerator rootGenerator = new RootGenerator(types);
             TextWriter textWriter = new StringWriter();
             rootGenerator.Write(new CodeWriter(textWriter));

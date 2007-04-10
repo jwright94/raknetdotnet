@@ -2,7 +2,7 @@ using RakNetDotNet;
 
 namespace EventSystem
 {
-    interface IProcessorRegistry
+    internal interface IProcessorRegistry
     {
         void Add(RakPeerInterface recipient, IProtocolProcessor processor);
         void Remove(RakPeerInterface recipient, IProtocolProcessor processor);

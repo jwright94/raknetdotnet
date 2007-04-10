@@ -1,4 +1,3 @@
-using System;
 using System.Diagnostics;
 using System.Reflection;
 using Castle.Core.Logging;
@@ -36,7 +35,7 @@ namespace EventSystem
 
         public void Startup(ushort maxConnections, int threadSleepTimer, ushort port)
         {
-            Startup(maxConnections, threadSleepTimer, port, new PluginInterface[]{});
+            Startup(maxConnections, threadSleepTimer, port, new PluginInterface[] {});
         }
 
         public void Startup(ushort maxConnections, int threadSleepTimer, ushort port, PluginInterface[] plugins)

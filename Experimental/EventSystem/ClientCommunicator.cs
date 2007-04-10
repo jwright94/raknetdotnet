@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using Castle.Core;
 using Castle.Core.Logging;

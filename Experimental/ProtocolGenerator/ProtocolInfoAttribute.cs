@@ -16,6 +16,5 @@ namespace ProtocolGenerator
         {
             get { return protocolName; }
         }
-     
     }
 }

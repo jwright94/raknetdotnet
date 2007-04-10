@@ -1,6 +1,6 @@
 namespace EventSystem
 {
-    interface IRpcBinder
+    internal interface IRpcBinder
     {
         void Bind();
         void Unbind();

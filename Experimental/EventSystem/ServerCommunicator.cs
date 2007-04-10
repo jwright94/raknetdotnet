@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using Castle.Core;
 using Castle.Core.Logging;
@@ -43,7 +42,7 @@ namespace EventSystem
             //fullyConnectedMeshPlugin.Startup(string.Empty);
 
             //return new PluginInterface[] {connectionGraphPlugin, fullyConnectedMeshPlugin};
-            return new PluginInterface[]{};
+            return new PluginInterface[] {};
         }
 
         public void Update()

@@ -15,7 +15,7 @@ namespace EventSystem
         public void Add(RakPeerInterface recipient, IProtocolProcessor processor)
         {
             IDictionary<string, IProtocolProcessor> processors;
-            if(processorsByRecipient.TryGetValue(recipient, out processors))
+            if (processorsByRecipient.TryGetValue(recipient, out processors))
             {
                 processors.Add(processor.ProtocolName, processor);
             }
@@ -30,7 +30,7 @@ namespace EventSystem
         public void Remove(RakPeerInterface recipient, IProtocolProcessor processor)
         {
             IDictionary<string, IProtocolProcessor> processors;
-            if(processorsByRecipient.TryGetValue(recipient, out processors))
+            if (processorsByRecipient.TryGetValue(recipient, out processors))
             {
                 processors.Remove(processor.ProtocolName);
             }

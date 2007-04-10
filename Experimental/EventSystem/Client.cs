@@ -18,6 +18,7 @@ namespace EventSystem
         private EventHandlersOnClient handlers;
         private readonly int sleepTimer;
         private IDObject rootDObject;
+
         public int SleepTimer
         {
             get { return sleepTimer; }
@@ -29,10 +30,10 @@ namespace EventSystem
             this.logger = logger;
             this.sleepTimer = sleepTimer;
             this.dOManager = dOManager;
-            DObject obj = new DObject();   
+            DObject obj = new DObject();
             obj.OnGetEvent += RootDObjectHandler;
             rootDObject = obj;
-            dOManager.StoreObject(rootDObject);    
+            dOManager.StoreObject(rootDObject);
         }
 
         public void Startup()
@@ -40,7 +41,7 @@ namespace EventSystem
             handlers = new EventHandlersOnClient();
             handlers.ConnectionTest += Handlers_OnConnectionTest;
             handlers.LogOnACK += Handlers_OnGetLogOnACK;
-            communicator.ProcessorLocator = new ClientPPLocator(handlers, dOManager);   // inject manually
+            communicator.ProcessorLocator = new ClientPPLocator(handlers, dOManager); // inject manually
             communicator.Startup();
             communicator.Connect();
             communicator.SendEvent(new LogOnEvent());

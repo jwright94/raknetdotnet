@@ -11,7 +11,7 @@ namespace ProtocolGenerator
             this._namespace = _namespace;
             Attribute protocolAttribte;
             Type t = FindTypeWithProtocolAttribute(typesInNamespace, out protocolAttribte);
-            
+
 
             IList<Type> eventTypes = new List<Type>(typesInNamespace);
             eventTypes.Remove(t);
@@ -62,7 +62,7 @@ namespace ProtocolGenerator
             List<Type> typeList = new List<Type>();
             foreach (Type type in typesInNamespace)
             {
-                Attribute attribute = Attribute.GetCustomAttribute(type, typeof(ProtocolInfoAttribute));
+                Attribute attribute = Attribute.GetCustomAttribute(type, typeof (ProtocolInfoAttribute));
                 if (attribute != null)
                 {
                     typeList.Add(type);

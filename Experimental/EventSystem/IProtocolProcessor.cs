@@ -2,7 +2,7 @@ using RakNetDotNet;
 
 namespace EventSystem
 {
-    interface  IProtocolProcessor
+    internal interface IProtocolProcessor
     {
         string ProtocolName { get; }
         void ProcessReceiveParams(RPCParameters _params);

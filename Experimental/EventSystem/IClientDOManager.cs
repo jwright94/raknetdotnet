@@ -1,9 +1,6 @@
-using System;
-using RakNetDotNet;
-
 namespace EventSystem
 {
-    public interface IClientDOManager: IDOManager
+    public interface IClientDOManager : IDOManager
     {
         void StoreObject(IDObject dObject);
     }

@@ -114,7 +114,7 @@ namespace ProtocolGenerator
             {
                 WriteStreamWriteOrReadStatement(o, writeToBitstream, "out", variableName);
             }
-            else if (variableType.Equals(typeof(NetworkID)) || variableType.Equals(typeof(SystemAddress)))
+            else if (variableType.Equals(typeof (NetworkID)) || variableType.Equals(typeof (SystemAddress)))
             {
                 WriteStreamWriteOrReadStatement(o, writeToBitstream, "", variableName);
             }
@@ -158,7 +158,7 @@ namespace ProtocolGenerator
         }
 
         private static void WriteStreamWriteOrReadStatement(ICodeWriter o, bool writeToBitstream, string modifier,
-                                                     string variableName)
+                                                            string variableName)
         {
             if (writeToBitstream)
                 WriteStreamWriteStatement(o, variableName);
@@ -223,16 +223,16 @@ namespace ProtocolGenerator
         static BitstreamSerializationHelper()
         {
             supportingPrimitives = new List<Type>();
-            supportingPrimitives.Add(typeof(bool));
-            supportingPrimitives.Add(typeof(byte));
-            supportingPrimitives.Add(typeof(double));
-            supportingPrimitives.Add(typeof(float));
-            supportingPrimitives.Add(typeof(int));
-            supportingPrimitives.Add(typeof(sbyte));
-            supportingPrimitives.Add(typeof(short));
-            supportingPrimitives.Add(typeof(string));
-            supportingPrimitives.Add(typeof(uint));
-            supportingPrimitives.Add(typeof(ushort));
+            supportingPrimitives.Add(typeof (bool));
+            supportingPrimitives.Add(typeof (byte));
+            supportingPrimitives.Add(typeof (double));
+            supportingPrimitives.Add(typeof (float));
+            supportingPrimitives.Add(typeof (int));
+            supportingPrimitives.Add(typeof (sbyte));
+            supportingPrimitives.Add(typeof (short));
+            supportingPrimitives.Add(typeof (string));
+            supportingPrimitives.Add(typeof (uint));
+            supportingPrimitives.Add(typeof (ushort));
         }
 
         public static bool DoesSupportPrimitiveType(Type t)

@@ -22,6 +22,7 @@ namespace Events
     public partial class LogOnACK
     {
         private int newOid;
+
         public int NewOid
         {
             get { return newOid; }

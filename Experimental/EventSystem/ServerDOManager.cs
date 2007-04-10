@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
-using RakNetDotNet;
-using Castle.Core.Logging;
 using Castle.Core;
-
+using Castle.Core.Logging;
 
 namespace EventSystem
 {
@@ -30,6 +26,7 @@ namespace EventSystem
             logger.Error("Duplicate DObject found.", dObject.OId);
             return -1;
         }
+
         #endregion
     }
 }

@@ -1,6 +1,7 @@
 using Castle.Core;
 using Castle.Core.Logging;
 using Events;
+using RakNetDotNet;
 
 namespace EventSystem
 {
@@ -13,7 +14,7 @@ namespace EventSystem
         private readonly IServerDOManager dOManager;
         private IDObject rootDObject;
         private EventHandlersOnFrontEndServer handlers;
-        private RakNetDotNet.SystemAddress targetAddress;
+        private SystemAddress targetAddress;
 
         public int SleepTimer
         {
@@ -26,10 +27,10 @@ namespace EventSystem
             this.logger = logger;
             this.sleepTimer = sleepTimer;
             this.dOManager = dOManager;
-            DObject obj = new DObject();            
+            DObject obj = new DObject();
             obj.OnGetEvent += RootDObjectHandler;
             rootDObject = obj;
-            dOManager.RegisterObject(rootDObject);            
+            dOManager.RegisterObject(rootDObject);
         }
 
         public void Startup()
@@ -37,7 +38,7 @@ namespace EventSystem
             handlers = new EventHandlersOnFrontEndServer();
             handlers.ConnectionTest += Handlers_OnConnectionTest;
             handlers.LogOn += Handlers_OnLogOnRequest;
-            communicator.ProcessorLocator = new FrontEndServerPPLocator(handlers, dOManager);   // inject manually
+            communicator.ProcessorLocator = new FrontEndServerPPLocator(handlers, dOManager); // inject manually
             communicator.Startup();
         }
 
@@ -50,7 +51,7 @@ namespace EventSystem
         {
             logger.Debug("Handlers_OnConnectionTest was called on FrontEndServer.");
             ConnectionTest response = new ConnectionTest();
-            communicator.Broadcast(t);  // echo back.
+            communicator.Broadcast(t); // echo back.
         }
 
         private void Handlers_OnLogOnRequest(LogOnEvent e)
@@ -68,7 +69,7 @@ namespace EventSystem
 
         public void Update()
         {
-            communicator.Update();            
+            communicator.Update();
         }
 
         public void Shutdown()

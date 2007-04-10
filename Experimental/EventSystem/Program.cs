@@ -8,8 +8,7 @@ namespace EventSystem
 {
     internal class AppArguments
     {
-        [DefaultArgument(ArgumentType.Required, HelpText = "Configuration xml filename.")]
-        public string ConfigurationFilename;
+        [DefaultArgument(ArgumentType.Required, HelpText = "Configuration xml filename.")] public string ConfigurationFilename;
     }
 
     internal class Program
@@ -17,7 +16,7 @@ namespace EventSystem
         private static void Main(string[] args)
         {
             AppArguments parsedArgs = new AppArguments();
-            if(!Parser.ParseArgumentsWithUsage(args, parsedArgs))
+            if (!Parser.ParseArgumentsWithUsage(args, parsedArgs))
             {
                 return;
             }
@@ -27,9 +26,10 @@ namespace EventSystem
             IServer server = LightweightContainer.Resolve<IServer>();
             server.Startup();
             logger.Info("Server is started.");
-            while(true)
+            while (true)
             {
-                if(_kbhit() != 0) {
+                if (_kbhit() != 0)
+                {
                     char ch = Console.ReadKey(true).KeyChar;
                     if (ch == 'q' || ch == 'Q')
                     {

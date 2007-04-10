@@ -1,12 +1,10 @@
-using System;
-using RakNetDotNet;
-
 namespace EventSystem
 {
-    public class DObject: IDObject
+    public class DObject : IDObject
     {
         private int oId;
         public HandleEventDelegate OnGetEvent;
+
         public delegate void HandleEventDelegate(IEvent e);
 
 

@@ -1,6 +1,6 @@
 namespace EventSystem
 {
-    interface IProtocolProcessorLocator
+    internal interface IProtocolProcessorLocator
     {
         IProtocolProcessor Processor { get; }
     }

@@ -89,7 +89,7 @@ namespace ProtocolGenerator
             privateValue = value;
         }
 
-        static private void StaticSetValue(Type[] types)
+        private static void StaticSetValue(Type[] types)
         {
             staticPrivateValue = -1;
         }
@@ -108,7 +108,7 @@ namespace ProtocolGenerator
         [Test]
         public void GetField()
         {
-            int privateValue = (int) PrivateAccessor.GetField(nonPublic, "privateValue");
+            int privateValue = (int)PrivateAccessor.GetField(nonPublic, "privateValue");
             Assert.AreEqual(0, privateValue);
         }
 
@@ -132,7 +132,7 @@ namespace ProtocolGenerator
         public void StaticMethod()
         {
             Assert.AreEqual(0, NonPublic.StaticPrivateValue);
-            PrivateAccessor.ExecuteStaticMethod(typeof(NonPublic), "StaticSetValue", new object[] { new Type[] { } });
+            PrivateAccessor.ExecuteStaticMethod(typeof (NonPublic), "StaticSetValue", new object[] {new Type[] {}});
             Assert.AreEqual(-1, NonPublic.StaticPrivateValue);
         }
 
