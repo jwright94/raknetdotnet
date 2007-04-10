@@ -11,7 +11,7 @@ namespace ProtocolGenerator
     {
         public RootGenerator(Type[] allTypes)
         {
-            Type[] allEventClasses = GetEventClasses(allTypes);
+            Type[] allEventClasses = GetEventAndProtocolClasses(allTypes);
             IDictionary<string, ICollection<Type>> namespaceTypesHash = GetNamespaceTypesHash(allEventClasses);
             foreach (KeyValuePair<string, ICollection<Type>> namespaceTypes in namespaceTypesHash)
             {
@@ -55,19 +55,34 @@ namespace ProtocolGenerator
             return namespaceTypesHash;
         }
 
-        private static Type[] GetEventClasses(Type[] types)
+        //private static Type[] GetEventClasses(Type[] types)
+        //{
+        //    List<Type> filtered = new List<Type>();
+        //    foreach (Type t in types)
+        //    {
+        //        bool isDefined = Attribute.IsDefined(t, typeof (SiteOfHandlingAttribute));
+        //        if (t.IsClass && isDefined)
+        //        {
+        //            filtered.Add(t);
+        //        }
+        //    }
+        //    return filtered.ToArray();
+        //}
+
+        private static Type[] GetEventAndProtocolClasses(Type[] types)
         {
             List<Type> filtered = new List<Type>();
             foreach (Type t in types)
             {
-                bool isDefined = Attribute.IsDefined(t, typeof (SiteOfHandlingAttribute));
+                bool isDefined = Attribute.IsDefined(t, typeof(SiteOfHandlingAttribute)) ||
+                    Attribute.IsDefined(t, typeof(ProtocolInfoAttribute));
                 if (t.IsClass && isDefined)
                 {
                     filtered.Add(t);
                 }
             }
             return filtered.ToArray();
-        }
+        }       
     }
 
     [TestFixture]

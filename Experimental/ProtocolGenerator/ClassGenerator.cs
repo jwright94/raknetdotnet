@@ -33,6 +33,7 @@ namespace ProtocolGenerator
             WriteGetStream(o);
             WriteId(o);
             WriteOriginPlayer(o);
+            WriteProtocolInfo(o);
             o.EndBlock("}");
         }
 
@@ -173,6 +174,13 @@ namespace ProtocolGenerator
             o.WriteLine("set { sender = value; }");
             o.EndBlock("}");
             o.WriteLine("SystemAddress sender = RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS;");
+        }
+
+        private void WriteProtocolInfo(ICodeWriter o)
+        {
+            o.BeginBlock("public IProtocolInfo ProtocolInfo {");
+            o.WriteLine("get {{ return {0}.ProtocolInfo.Instance; }}", type.Namespace);
+            o.EndBlock("}");
         }
 
         private FieldInfo[] GetFields()

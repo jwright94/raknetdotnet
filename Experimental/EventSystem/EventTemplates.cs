@@ -7,6 +7,11 @@ namespace Events
     public partial class ConnectionTest
     {
     }
+
+    [ProtocolInfoAttribute("SampleProtocol")]
+    public partial class ProtocolInfo
+    {
+    }
 }
 
 namespace AnotherEvents
@@ -22,5 +27,10 @@ namespace AnotherEvents
     public partial class OtherEvent
     {
         private int[] intArray;
+    }
+
+    [ProtocolInfoAttribute("SampleProtocol2")]
+    public partial class ProtocolInfo
+    {
     }
 }

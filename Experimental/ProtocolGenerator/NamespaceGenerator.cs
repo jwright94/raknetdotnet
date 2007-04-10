@@ -9,7 +9,15 @@ namespace ProtocolGenerator
             // TODO: I forgot how to use simbol.
         {
             this._namespace = _namespace;
-            IList<EventInfo> eventInfos = GetEventInfos(typesInNamespace);
+            Attribute protocolAttribte;
+            Type t = FindTypeWithProtocolAttribute(typesInNamespace, out protocolAttribte);
+            
+
+            IList<Type> eventTypes = new List<Type>(typesInNamespace);
+            eventTypes.Remove(t);
+
+            AddChildGenerator(new ProtocolInfoGenerator(t, protocolAttribte));
+            IList<EventInfo> eventInfos = GetEventInfos(eventTypes);
             AddClassGenerators(eventInfos);
             AddHandlersGenerators(ClassifyBySite(eventInfos));
         }
@@ -46,6 +54,27 @@ namespace ProtocolGenerator
                 AddChildGenerator(new EventFactoryGenerator(BasicFactoryName + OnSomewhere, site.Value));
                 AddChildGenerator(new EventHandlersGenerator(BasicHandlersName + OnSomewhere, site.Value));
             }
+        }
+
+        private static Type FindTypeWithProtocolAttribute(IEnumerable<Type> typesInNamespace, out Attribute attributeOut)
+        {
+            attributeOut = null;
+            List<Type> typeList = new List<Type>();
+            foreach (Type type in typesInNamespace)
+            {
+                Attribute attribute = Attribute.GetCustomAttribute(type, typeof(ProtocolInfoAttribute));
+                if (attribute != null)
+                {
+                    typeList.Add(type);
+                    attributeOut = attribute;
+                }
+            }
+
+            if (typeList.Count != 1)
+            {
+                throw new ApplicationException();
+            }
+            return typeList[0];
         }
 
         private static IList<EventInfo> GetEventInfos(IEnumerable<Type> typesInNamespace)

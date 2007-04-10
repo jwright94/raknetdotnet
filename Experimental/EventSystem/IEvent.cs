@@ -8,5 +8,6 @@ namespace EventSystem
         BitStream Stream { get; }
         int Id { get; }
         SystemAddress Sender { get; set; }
+        IProtocolInfo ProtocolInfo { get; }
     }
 }

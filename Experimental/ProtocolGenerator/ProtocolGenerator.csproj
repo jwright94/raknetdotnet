@@ -52,6 +52,8 @@
     <Compile Include="NUnitHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ProtocolInfoAttribute.cs" />
+    <Compile Include="ProtocolInfoGenerator.cs" />
     <Compile Include="RootGenerator.cs" />
     <Compile Include="TestEvents.cs" />
   </ItemGroup>

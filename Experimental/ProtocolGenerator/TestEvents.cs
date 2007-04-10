@@ -10,6 +10,11 @@ namespace TestEvents
         private int age;
         private SystemAddress[] systemAddresses;
     }
+
+    [ProtocolInfoAttribute("SampleProtocol")]
+    public partial class ProtocolInfo
+    {
+    }
 }
 
 namespace TestEvents2
@@ -18,5 +23,10 @@ namespace TestEvents2
     public partial class SimpleEvent2
     {
         private string name;
+    }
+
+    [ProtocolInfoAttribute("SampleProtocol")]
+    public partial class ProtocolInfo
+    {
     }
 }
