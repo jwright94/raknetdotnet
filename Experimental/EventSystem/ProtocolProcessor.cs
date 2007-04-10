@@ -47,13 +47,13 @@ namespace EventSystem
             try
             {
                 IEvent e = factory.RecreateSimpleEvent(source);
-                e.Sender = _params.sender;                
-                handlers.CallHandler(e);
+                e.Sender = _params.sender;
+                dOManager.PostEvent(e);
             }
             catch (NetworkException)  // TODO: Add new type of network exception. Call accurate callback.
             {
                 logger.Warn("Ran off end of packet.");
-                if(Callbacks != null)
+                if (Callbacks != null)
                 {
                     Callbacks.OnRanOffEndOfBitstream(_params.sender);  // TODO: This is ad-hoc.
                 }

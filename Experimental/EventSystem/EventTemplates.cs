@@ -28,6 +28,11 @@ namespace Events
             set { newOid = value; }
         }
     }
+
+    [SiteOfHandling("Client")]
+    public partial class TestDOEvent
+    {
+    }
 }
 
 namespace AnotherEvents

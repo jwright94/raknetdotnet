@@ -30,8 +30,8 @@ namespace EventSystem
         }
 
         public virtual void PostEvent(IEvent e)
-        {
-            throw new Exception("The method or operation is not implemented.");
+        {           
+            GetObject(e.TargetOid).PostEvent(e);
         }
   
         #endregion

@@ -30,12 +30,6 @@ namespace EventSystem
             logger.Error("Duplicate DObject found.", dObject.OId);
             return -1;
         }
-
-        public override void PostEvent(IEvent e)
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
-
         #endregion
     }
 }
