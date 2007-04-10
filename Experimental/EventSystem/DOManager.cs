@@ -29,7 +29,7 @@ namespace EventSystem
 
         public virtual void PostEvent(IEvent e)
         {
-            GetObject(e.TargetOid).PostEvent(e);
+            GetObject(e.TargetOId).PostEvent(e);
         }
 
         #endregion

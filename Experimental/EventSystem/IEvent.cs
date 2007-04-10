@@ -6,8 +6,8 @@ namespace EventSystem
     {
         BitStream Stream { get; }
         int Id { get; }
-        int SourceOid { get; set; }
-        int TargetOid { get; set; }
+        int SourceOId { get; set; }
+        int TargetOId { get; set; }
         SystemAddress Sender { get; set; }
         IProtocolInfo ProtocolInfo { get; }
     }

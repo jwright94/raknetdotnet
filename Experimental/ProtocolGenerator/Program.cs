@@ -34,22 +34,33 @@ namespace ProtocolGenerator
 
             Assembly templateAssembly;
 
-            if (!CompileExecutable(parsedArgs.EventTemplatePath, referencedAssemblies.ToArray(), out templateAssembly))
+            if (!CompileLibraryInMemory(parsedArgs.EventTemplatePath, referencedAssemblies.ToArray(), out templateAssembly))
             {
                 Console.WriteLine("ERROR: TemplateFile compile error.");
                 return 2;
             }
 
-            IGenerator rootWriter = new RootGenerator(templateAssembly.GetTypes());
+            IGenerator rootGenerator;
+            try
+            {
+                // TODO - Ctor throws exception. Is it OK?
+                rootGenerator = new RootGenerator(templateAssembly.GetTypes());
+            }
+            catch(SyntaxErrorException e)
+            {
+                Console.WriteLine(e);
+                return 3;
+            }
+
             string generatedFilePath = GetGeneratedFilePath(parsedArgs.EventTemplatePath);
             using (StreamWriter sw = File.CreateText(generatedFilePath))
             {
-                rootWriter.Write(new CodeWriter(sw));
+                rootGenerator.Write(new CodeWriter(sw));
             }
             return 0;
         }
 
-        private static bool CompileExecutable(String sourceName, string[] referencedAssemblies,
+        private static bool CompileLibraryInMemory(String sourceName, string[] referencedAssemblies,
                                               out Assembly compiledAssembly)
         {
             FileInfo sourceFile = new FileInfo(sourceName);

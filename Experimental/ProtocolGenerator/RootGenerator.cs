@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
 using TestEvents;
-using TestEvents2;
-using ProtocolInfo=TestEvents.ProtocolInfo;
 
 namespace ProtocolGenerator
 {
@@ -12,12 +10,29 @@ namespace ProtocolGenerator
     {
         public RootGenerator(Type[] allTypes)
         {
-            Type[] allEventClasses = GetEventAndProtocolClasses(allTypes);
-            IDictionary<string, ICollection<Type>> namespaceTypesHash = GetNamespaceTypesHash(allEventClasses);
-            foreach (KeyValuePair<string, ICollection<Type>> namespaceTypes in namespaceTypesHash)
+            if (!ContainsInSameNamespace(allTypes))
             {
-                AddChildGenerator(new NamespaceGenerator(namespaceTypes.Key, namespaceTypes.Value));
+                throw new SyntaxErrorException("Too many namespace. You can pass one namespace in one template file.");
             }
+
+            Type[] allEventClasses = FindClassByAttribute(allTypes, typeof (SiteOfHandlingAttribute));
+            Type protocolInfoClass = GetProtocolInfoClass(allTypes);
+
+            AddChildGenerator(new NamespaceGenerator(protocolInfoClass.Namespace, protocolInfoClass, allEventClasses));
+        }
+
+        private static Type GetProtocolInfoClass(Type[] allTypes)
+        {
+            Type protocolInfoClass;
+            Type[] protocolInfoClasses = FindClassByAttribute(allTypes, typeof(ProtocolInfoAttribute));
+
+            if (protocolInfoClasses.Length != 1)
+            {
+                throw new SyntaxErrorException("No ProtocolInfo or too many ProtocolInfo class in template file.");
+            }
+
+            protocolInfoClass = protocolInfoClasses[0];
+            return protocolInfoClass;
         }
 
         public override void Write(ICodeWriter o)
@@ -40,68 +55,45 @@ namespace ProtocolGenerator
             o.WriteLine("using EventSystem;");
         }
 
-        private static IDictionary<string, ICollection<Type>> GetNamespaceTypesHash(Type[] allTypes)
+        private static bool ContainsInSameNamespace(Type[] types)
         {
-            IDictionary<string, ICollection<Type>> namespaceTypesHash = new Dictionary<string, ICollection<Type>>();
-            foreach (Type type in allTypes)
+            string namespaceName = null;
+            foreach (Type type in types)
             {
-                ICollection<Type> typesInNamespace;
-                if (!namespaceTypesHash.TryGetValue(type.Namespace, out typesInNamespace))
+                if(namespaceName == null)
                 {
-                    typesInNamespace = new List<Type>();
-                    namespaceTypesHash[type.Namespace] = typesInNamespace;
+                    // this is first one.
+                    namespaceName = type.Namespace;
                 }
-                typesInNamespace.Add(type);
+                else
+                {
+                    if (namespaceName != type.Namespace)
+                    {
+                        return false;
+                    }
+                }
             }
-            return namespaceTypesHash;
+            return true;
         }
 
-        //private static Type[] GetEventClasses(Type[] types)
-        //{
-        //    List<Type> filtered = new List<Type>();
-        //    foreach (Type t in types)
-        //    {
-        //        bool isDefined = Attribute.IsDefined(t, typeof (SiteOfHandlingAttribute));
-        //        if (t.IsClass && isDefined)
-        //        {
-        //            filtered.Add(t);
-        //        }
-        //    }
-        //    return filtered.ToArray();
-        //}
-
-        private static Type[] GetEventAndProtocolClasses(Type[] types)
+        private static Type[] FindClassByAttribute(Type[] types, Type attributeType)
         {
-            List<Type> filtered = new List<Type>();
+            List<Type> matched = new List<Type>();
             foreach (Type t in types)
             {
-                bool isDefined = Attribute.IsDefined(t, typeof (SiteOfHandlingAttribute)) ||
-                                 Attribute.IsDefined(t, typeof (ProtocolInfoAttribute));
+                bool isDefined = Attribute.IsDefined(t, attributeType);
                 if (t.IsClass && isDefined)
                 {
-                    filtered.Add(t);
+                    matched.Add(t);
                 }
             }
-            return filtered.ToArray();
+            return matched.ToArray();
         }
     }
 
     [TestFixture]
     public sealed class RootGeneratorTestCase
     {
-        [Test]
-        public void ClassifyTypes()
-        {
-            Type[] types = new Type[] {typeof (SimpleEvent), typeof (SimpleEvent2)};
-            IDictionary<string, ICollection<Type>> namespaceTypesHash =
-                (IDictionary<string, ICollection<Type>>)
-                PrivateAccessor.ExecuteStaticMethod(typeof (RootGenerator), "GetNamespaceTypesHash", new object[] {types});
-            Assert.IsTrue(namespaceTypesHash.ContainsKey("TestEvents"));
-            Assert.IsTrue(namespaceTypesHash.ContainsKey("TestEvents2"));
-            Assert.IsTrue(namespaceTypesHash["TestEvents"].Contains(typeof (SimpleEvent)));
-            Assert.IsTrue(namespaceTypesHash["TestEvents2"].Contains(typeof (SimpleEvent2)));
-        }
-
         [Test]
         public void FinalOutput()
         {

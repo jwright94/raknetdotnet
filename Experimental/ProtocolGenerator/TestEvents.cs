@@ -11,21 +11,7 @@ namespace TestEvents
         private SystemAddress[] systemAddresses;
     }
 
-    [ProtocolInfoAttribute("SampleProtocol")]
-    public partial class ProtocolInfo
-    {
-    }
-}
-
-namespace TestEvents2
-{
-    [SiteOfHandling("Client")]
-    public partial class SimpleEvent2
-    {
-        private string name;
-    }
-
-    [ProtocolInfoAttribute("SampleProtocol2")]
+    [ProtocolInfoAttribute("TestProtocol")]
     public partial class ProtocolInfo
     {
     }

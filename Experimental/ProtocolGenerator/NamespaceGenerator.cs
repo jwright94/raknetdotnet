@@ -5,26 +5,20 @@ namespace ProtocolGenerator
 {
     internal sealed class NamespaceGenerator : AbstractGenerator
     {
-        public NamespaceGenerator(string _namespace, IEnumerable<Type> typesInNamespace)
+        public NamespaceGenerator(string namespaceName, Type protocolInfoClass, IEnumerable<Type> eventClasses)
             // TODO: I forgot how to use simbol.
         {
-            this._namespace = _namespace;
-            Attribute protocolAttribte;
-            Type t = FindTypeWithProtocolAttribute(typesInNamespace, out protocolAttribte);
-
-
-            IList<Type> eventTypes = new List<Type>(typesInNamespace);
-            eventTypes.Remove(t);
-
-            AddChildGenerator(new ProtocolInfoGenerator(t, protocolAttribte));
-            IList<EventInfo> eventInfos = GetEventInfos(eventTypes);
-            AddClassGenerators(eventInfos);
+            this.namespaceName = namespaceName;
+            ProtocolInfoAttribute protocolInfoAttribute = (ProtocolInfoAttribute)Attribute.GetCustomAttribute(protocolInfoClass, typeof(ProtocolInfoAttribute));
+            AddChildGenerator(new ProtocolInfoGenerator(protocolInfoClass, protocolInfoAttribute));
+            IList<EventInfo> eventInfos = GetEventInfos(eventClasses);
+            AddClassGenerators(protocolInfoClass, eventInfos);
             AddHandlersGenerators(ClassifyBySite(eventInfos));
         }
 
         public override void Write(ICodeWriter o)
         {
-            o.BeginBlock("namespace {0} {{", _namespace);
+            o.BeginBlock("namespace {0} {{", namespaceName);
             foreach (IGenerator generator in generators)
             {
                 generator.Write(o);
@@ -38,11 +32,11 @@ namespace ProtocolGenerator
             o.WriteLine("delegate void EventHandler<T>(T t) where T : IEvent;");
         }
 
-        private void AddClassGenerators(IList<EventInfo> eventInfos)
+        private void AddClassGenerators(Type protocolInfoClass, IList<EventInfo> eventInfos)
         {
             foreach (EventInfo ei in eventInfos)
             {
-                AddChildGenerator(new ClassGenerator(ei.Type, ei.EventId));
+                AddChildGenerator(new EventClassGenerator(ei.Type, ei.EventId, protocolInfoClass));
             }
         }
 
@@ -54,27 +48,6 @@ namespace ProtocolGenerator
                 AddChildGenerator(new EventFactoryGenerator(BasicFactoryName + OnSomewhere, site.Value));
                 AddChildGenerator(new EventHandlersGenerator(BasicHandlersName + OnSomewhere, site.Value));
             }
-        }
-
-        private static Type FindTypeWithProtocolAttribute(IEnumerable<Type> typesInNamespace, out Attribute attributeOut)
-        {
-            attributeOut = null;
-            List<Type> typeList = new List<Type>();
-            foreach (Type type in typesInNamespace)
-            {
-                Attribute attribute = Attribute.GetCustomAttribute(type, typeof (ProtocolInfoAttribute));
-                if (attribute != null)
-                {
-                    typeList.Add(type);
-                    attributeOut = attribute;
-                }
-            }
-
-            if (typeList.Count != 1)
-            {
-                throw new ApplicationException();
-            }
-            return typeList[0];
         }
 
         private static IList<EventInfo> GetEventInfos(IEnumerable<Type> typesInNamespace)
@@ -92,8 +65,7 @@ namespace ProtocolGenerator
 
         private static IDictionary<SiteOfHandlingAttribute, IList<EventInfo>> ClassifyBySite(IList<EventInfo> eventInfos)
         {
-            IDictionary<SiteOfHandlingAttribute, IList<EventInfo>> eventInfosBySite =
-                new Dictionary<SiteOfHandlingAttribute, IList<EventInfo>>();
+            IDictionary<SiteOfHandlingAttribute, IList<EventInfo>> eventInfosBySite = new Dictionary<SiteOfHandlingAttribute, IList<EventInfo>>();
             foreach (EventInfo ei in eventInfos)
             {
                 Attribute[] attributes = Attribute.GetCustomAttributes(ei.Type, typeof (SiteOfHandlingAttribute));
@@ -124,6 +96,6 @@ namespace ProtocolGenerator
             get { return "EventHandlers"; }
         }
 
-        private string _namespace;
+        private readonly string namespaceName;
     }
 }

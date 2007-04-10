@@ -39,7 +39,7 @@
   <ItemGroup>
     <Compile Include="AbstractGenerator.cs" />
     <Compile Include="AppArguments.cs" />
-    <Compile Include="ClassGenerator.cs" />
+    <Compile Include="EventClassGenerator.cs" />
     <Compile Include="CodeWriter.cs" />
     <Compile Include="CommandLineArguments.cs" />
     <Compile Include="EventAttribute.cs" />
@@ -55,6 +55,7 @@
     <Compile Include="ProtocolInfoAttribute.cs" />
     <Compile Include="ProtocolInfoGenerator.cs" />
     <Compile Include="RootGenerator.cs" />
+    <Compile Include="SyntaxErrorException.cs" />
     <Compile Include="TestEvents.cs" />
   </ItemGroup>
   <ItemGroup>

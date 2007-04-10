@@ -5,15 +5,13 @@ namespace ProtocolGenerator
     internal sealed class ProtocolInfoGenerator : IGenerator
     {
         private Type t;
-        private Attribute attribute;
+        private ProtocolInfoAttribute attr;
 
-        public ProtocolInfoGenerator(Type t, Attribute attribute)
+        public ProtocolInfoGenerator(Type t, ProtocolInfoAttribute attr)
         {
             this.t = t;
-            this.attribute = attribute;
+            this.attr = attr;
         }
-
-        #region IGenerator Members
 
         public void AddChildGenerator(IGenerator generator)
         {
@@ -28,7 +26,7 @@ namespace ProtocolGenerator
         public void Write(ICodeWriter o)
         {
             string className = t.Name;
-            string protocolName = (attribute != null) ? ((ProtocolInfoAttribute)attribute).ProtocolName : "";
+            string protocolName = attr.ProtocolName;
             o.BeginBlock("public partial class {0} : IProtocolInfo {{", className);
             o.WriteLine("private static {0} instance = new {0}();", className);
             o.BeginBlock("public static {0} Instance {{", className);
@@ -40,7 +38,5 @@ namespace ProtocolGenerator
             o.EndBlock("}");
             o.EndBlock("}");
         }
-
-        #endregion
     }
 }

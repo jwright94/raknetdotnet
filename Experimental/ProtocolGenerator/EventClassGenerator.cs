@@ -6,12 +6,13 @@ using RakNetDotNet;
 
 namespace ProtocolGenerator
 {
-    internal sealed class ClassGenerator : IGenerator
+    internal sealed class EventClassGenerator : IGenerator
     {
-        public ClassGenerator(Type type, int eventId)
+        public EventClassGenerator(Type type, int eventId, Type protocolInfoType)
         {
             this.type = type;
             this.eventId = eventId;
+            this.protocolInfoType = protocolInfoType;
         }
 
         public void AddChildGenerator(IGenerator generator)
@@ -34,7 +35,7 @@ namespace ProtocolGenerator
             WriteId(o);
             WriteSourceOid(o);
             WriteTargetOid(o);
-            WriteOriginPlayer(o);
+            WriteSender(o);
             WriteProtocolInfo(o);
             o.EndBlock("}");
         }
@@ -50,8 +51,8 @@ namespace ProtocolGenerator
         {
             o.BeginBlock("public {0}(BitStream source) {{", type.Name);
             WriteStreamReadStatement(o, "out", "id");
-            WriteStreamReadStatement(o, "out", "sourceOid");
-            WriteStreamReadStatement(o, "out", "targetOid");
+            WriteStreamReadStatement(o, "out", "sourceOId");
+            WriteStreamReadStatement(o, "out", "targetOId");
 
             foreach (FieldInfo field in GetFields())
             {
@@ -81,18 +82,18 @@ namespace ProtocolGenerator
 
         private static void WriteStreamReadStatement(ICodeWriter o, string modifier, string variableName)
         {
-            o.WriteLine("if (!source.Read({0} {1})) {{ throw new NetworkException(\"Deserialization is failed.\"); }}",
-                        modifier, variableName);
+            o.WriteLine("if (!source.Read({0} {1})) {{ throw new NetworkException(\"Deserialization is failed.\"); }}", modifier, variableName);
         }
 
+        // TODO: ProtocolGenerator can't handle null reference.
         private void WriteGetStream(ICodeWriter o)
         {
             o.BeginBlock("public BitStream Stream {");
             o.BeginBlock("get {");
             o.WriteLine("BitStream eventStream = new BitStream();");
             WriteStreamWriteStatement(o, "id");
-            WriteStreamWriteStatement(o, "sourceOid");
-            WriteStreamWriteStatement(o, "targetOid");
+            WriteStreamWriteStatement(o, "sourceOId");
+            WriteStreamWriteStatement(o, "targetOId");
 
             foreach (FieldInfo field in GetFields())
             {
@@ -168,44 +169,80 @@ namespace ProtocolGenerator
 
         private static void WriteId(ICodeWriter o)
         {
-            o.BeginBlock("public int Id {");
-            o.WriteLine("get { return id; }");
-            o.WriteLine("protected set { id = value; }");
-            o.EndBlock("}");
-            o.WriteLine("int id;");
+            WriteProperty(o, "int", "id", null, null, "protected");
         }
 
         private static void WriteSourceOid(ICodeWriter o)
         {
-            o.BeginBlock("public int SourceOid {");
-            o.WriteLine("set { sourceOid = value; }");
-            o.WriteLine("get { return sourceOid; }");
-            o.EndBlock("}");
-            o.WriteLine("int sourceOid;");
+            WriteProperty(o, "int", "sourceOId", null, null, null);
         }
 
         private static void WriteTargetOid(ICodeWriter o)
         {
-            o.BeginBlock("public int TargetOid {");
-            o.WriteLine("set { targetOid = value; }");
-            o.WriteLine("get { return targetOid; }");
-            o.EndBlock("}");
-            o.WriteLine("int targetOid;");
+            WriteProperty(o, "int", "targetOId", null, null, null);
         }
 
-        private static void WriteOriginPlayer(ICodeWriter o)
+        private static void WriteSender(ICodeWriter o)
         {
-            o.BeginBlock("public SystemAddress Sender {");
-            o.WriteLine("get { return sender; }");
-            o.WriteLine("set { sender = value; }");
+            WriteProperty(o, "SystemAddress", "sender", "RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS", null, null);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="o"></param>
+        /// <param name="typeName"></param>
+        /// <param name="variableNameInLowerCamelCase"></param>
+        /// <param name="defaultValue">Can be null</param>
+        /// <param name="getterAccessibility">Can be null</param>
+        /// <param name="setterAccessibility">Can be null</param>
+        private static void WriteProperty(ICodeWriter o, string typeName, string variableNameInLowerCamelCase, string defaultValue, string getterAccessibility, string setterAccessibility)
+        {
+            string getterAccessibilityWithSpace = "";
+            string setterAccessibilityWithSpace = "";
+            string defaultValueWithAssignMark = "";
+
+            if (getterAccessibility != null)
+            {
+                getterAccessibilityWithSpace = getterAccessibility + " ";
+            }
+            if (setterAccessibility != null)
+            {
+                setterAccessibilityWithSpace = setterAccessibility + " ";
+            }
+            if(defaultValue != null)
+            {
+                defaultValueWithAssignMark = " = " + defaultValue;
+            }
+
+            string variableNameInUpperCamelCase = GetVariableNameInUpperCamelCase(variableNameInLowerCamelCase);
+
+            o.BeginBlock("public {0} {1} {{", typeName, variableNameInUpperCamelCase);
+            o.WriteLine("{0}get {{ return {1}; }}", getterAccessibilityWithSpace, variableNameInLowerCamelCase);
+            o.WriteLine("{0}set {{ {1} = value; }}", setterAccessibilityWithSpace, variableNameInLowerCamelCase);
             o.EndBlock("}");
-            o.WriteLine("SystemAddress sender = RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS;");
+            o.WriteLine("{0} {1}{2};", typeName, variableNameInLowerCamelCase, defaultValueWithAssignMark);            
+        }
+
+        private static string GetVariableNameInUpperCamelCase(string variableNameInLowerCamelCase)
+        {
+            string firstChar = variableNameInLowerCamelCase.Substring(0, 1);
+            string remains;
+            if(1 < variableNameInLowerCamelCase.Length)
+            {
+                remains = variableNameInLowerCamelCase.Substring(1);
+            }
+            else
+            {
+                remains = "";
+            }
+            return firstChar.ToUpper() + remains;
         }
 
         private void WriteProtocolInfo(ICodeWriter o)
         {
             o.BeginBlock("public IProtocolInfo ProtocolInfo {");
-            o.WriteLine("get {{ return {0}.ProtocolInfo.Instance; }}", type.Namespace);
+            o.WriteLine("get {{ return {0}.Instance; }}", protocolInfoType.FullName);
             o.EndBlock("}");
         }
 
@@ -214,8 +251,9 @@ namespace ProtocolGenerator
             return type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
         }
 
-        private Type type;
-        private int eventId;
+        private readonly Type type;
+        private readonly int eventId;
+        private readonly Type protocolInfoType;
     }
 
     internal static class BitstreamSerializationHelper

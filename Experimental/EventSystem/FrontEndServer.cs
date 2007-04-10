@@ -63,7 +63,7 @@ namespace EventSystem
             targetAddress = e.Sender;
 
             TestDOEvent newEvent = new TestDOEvent();
-            newEvent.TargetOid = 0;
+            newEvent.TargetOId = 0;
             communicator.SendEvent(newEvent, targetAddress);
         }
 

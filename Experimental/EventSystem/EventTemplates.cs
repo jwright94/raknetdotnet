@@ -35,24 +35,3 @@ namespace Events
     {
     }
 }
-
-namespace AnotherEvents
-{
-    [SiteOfHandling("Server")]
-    public partial class SampleEvent
-    {
-        // TODO: ProtocolGenerator can't handle null reference.
-        private string name;
-    }
-
-    [SiteOfHandling("Client")]
-    public partial class OtherEvent
-    {
-        private int[] intArray;
-    }
-
-    [ProtocolInfoAttribute("SampleProtocol2")]
-    public partial class ProtocolInfo
-    {
-    }
-}

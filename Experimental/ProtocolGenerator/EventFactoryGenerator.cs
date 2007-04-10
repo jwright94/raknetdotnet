@@ -46,9 +46,7 @@ namespace ProtocolGenerator
                 o.EndBlock("");
             }
             o.BeginBlock("default:");
-            o.WriteLine(
-                "throw new NetworkException(string.Format(\"Event id {{0}} not recognized by {0}.RecreateEvent()!\", id));",
-                factoryName);
+            o.WriteLine("throw new NetworkException(string.Format(\"Event id {{0}} not recognized by {0}.RecreateEvent()!\", id));", factoryName);
             o.EndBlock("");
             o.EndBlock("}");
             o.WriteLine("return _event;");
