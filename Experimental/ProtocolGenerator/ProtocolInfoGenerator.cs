@@ -36,7 +36,7 @@ namespace ProtocolGenerator
             string protocolName = (attribute != null) ? ((ProtocolInfoAttribute)attribute).ProtocolName : "";
             o.BeginBlock("public partial class {0} : IProtocolInfo {{", className);
             o.WriteLine("private static {0} instance = new {0}();", className);
-            o.WriteLine("public static {0} Instance {{", className);
+            o.BeginBlock("public static {0} Instance {{", className);
             o.WriteLine("get { return instance; }");
             o.EndBlock("}");
             o.WriteLine("private {0}() {{ }}", className);

@@ -25,7 +25,7 @@ namespace TestEvents2
         private string name;
     }
 
-    [ProtocolInfoAttribute("SampleProtocol")]
+    [ProtocolInfoAttribute("SampleProtocol2")]
     public partial class ProtocolInfo
     {
     }

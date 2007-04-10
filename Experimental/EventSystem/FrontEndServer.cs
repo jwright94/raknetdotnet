@@ -33,7 +33,7 @@ namespace EventSystem
         private void Handlers_OnConnectionTest(ConnectionTest t)
         {
             logger.Debug("Handlers_OnConnectionTest was called on FrontEndServer.");
-            communicator.Broadcast("samename", t);  // echo back.
+            communicator.Broadcast(t);  // echo back.
         }
 
         public void Update()

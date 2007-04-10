@@ -18,8 +18,8 @@ namespace EventSystem
 
     interface IServerCommunicator : ICommunicator
     {
-        void Broadcast(string protocolName, IEvent e);
-        void SendEvent(string protocolName, IEvent e);
+        void Broadcast(IEvent e);
+        void SendEvent(IEvent e);
     }
 
     /// <summary>

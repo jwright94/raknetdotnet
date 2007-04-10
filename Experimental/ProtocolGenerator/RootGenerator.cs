@@ -104,7 +104,7 @@ namespace ProtocolGenerator
         [Test]
         public void FinalOutput()
         {
-            Type[] types = new Type[] {typeof (SimpleEvent)};
+            Type[] types = new Type[] {typeof (SimpleEvent), typeof(TestEvents.ProtocolInfo) };
             IGenerator rootGenerator = new RootGenerator(types);
             TextWriter textWriter = new StringWriter();
             rootGenerator.Write(new CodeWriter(textWriter));

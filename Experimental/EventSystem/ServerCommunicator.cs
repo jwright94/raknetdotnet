@@ -55,7 +55,7 @@ namespace EventSystem
             module.Shutdown();
         }
 
-        public void Broadcast(string protocolName, IEvent e)
+        public void Broadcast(IEvent e)
         {
             PacketPriority priority = PacketPriority.HIGH_PRIORITY;
             PacketReliability reliability = PacketReliability.RELIABLE_ORDERED;
@@ -65,7 +65,7 @@ namespace EventSystem
             logger.Debug("sending an event: [{0}]", e.ToString());
 
             bool result = module.RakPeerInterface.RPC(
-                protocolName,
+                e.ProtocolInfo.Name,
                 e.Stream, priority, reliability, orderingChannel,
                 RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS, true, shiftTimestamp,
                 RakNetBindings.UNASSIGNED_NETWORK_ID, null);
@@ -76,7 +76,7 @@ namespace EventSystem
                 logger.Debug("send data to clients...");
         }
 
-        public void SendEvent(string protocolName, IEvent e)
+        public void SendEvent(IEvent e)
         {
             throw new NotImplementedException();
         }
