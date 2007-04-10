@@ -5,7 +5,7 @@ using System.Diagnostics;
 using Castle.Core;
 using RakNetDotNet;
 using EventSystem;
-namespace Events {
+namespace TestEvents {
 	public partial class ProtocolInfo : IProtocolInfo {
 		private static ProtocolInfo instance = new ProtocolInfo();
 		public static ProtocolInfo Instance {
@@ -13,22 +13,43 @@ namespace Events {
 		}
 		private ProtocolInfo() { }
 		public string Name {
-			get { return "SampleProtocol"; }
+			get { return "TestProtocol"; }
 		}
 	}
-	public partial class ConnectionTest : IEvent {
-		public ConnectionTest() {
+	public partial class SimpleEvent : IEvent {
+		public SimpleEvent() {
 			id = 0;
 		}
-		public ConnectionTest(BitStream source) {
+		public SimpleEvent(BitStream source) {
 			if (!source.Read(out id)) { throw new NetworkException("Deserialization is failed."); }
+			if (!source.Read(out sourceOId)) { throw new NetworkException("Deserialization is failed."); }
+			if (!source.Read(out targetOId)) { throw new NetworkException("Deserialization is failed."); }
+			if (!source.Read(out name)) { throw new NetworkException("Deserialization is failed."); }
+			if (!source.Read(out age)) { throw new NetworkException("Deserialization is failed."); }
+			int _systemAddressesLength;
+			if (!source.Read(out _systemAddressesLength)) { throw new NetworkException("Deserialization is failed."); }
+			systemAddresses = new RakNetDotNet.SystemAddress[_systemAddressesLength];
+			for (int i = 0; i < _systemAddressesLength; i++) {
+				if (!source.Read( systemAddresses[i])) { throw new NetworkException("Deserialization is failed."); }
+			}
 		}
-		public void SetData() {
+		public void SetData(System.String name, System.Int32 age, RakNetDotNet.SystemAddress[] systemAddresses) {
+			this.name = name;
+			this.age = age;
+			this.systemAddresses = systemAddresses;
 		}
 		public BitStream Stream {
 			get {
 				BitStream eventStream = new BitStream();
 				eventStream.Write(id);
+				eventStream.Write(sourceOId);
+				eventStream.Write(targetOId);
+				eventStream.Write(name);
+				eventStream.Write(age);
+				eventStream.Write(systemAddresses.Length);
+				for (int i = 0; i < systemAddresses.Length; i++) {
+					eventStream.Write(systemAddresses[i]);
+				}
 				return eventStream;
 			}
 		}
@@ -37,25 +58,27 @@ namespace Events {
 			protected set { id = value; }
 		}
 		int id;
-		public int SourceOid {
-			get { return sourceOid; }
+		public int SourceOId {
+			get { return sourceOId; }
+			set { sourceOId = value; }
 		}
-		int sourceOid;
-		public int TargetOid {
-			get { return targetOid; }
+		int sourceOId;
+		public int TargetOId {
+			get { return targetOId; }
+			set { targetOId = value; }
 		}
-		int targetOid;
+		int targetOId;
 		public SystemAddress Sender {
 			get { return sender; }
 			set { sender = value; }
 		}
 		SystemAddress sender = RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS;
 		public IProtocolInfo ProtocolInfo {
-			get { return Events.ProtocolInfo.Instance; }
+			get { return TestEvents.ProtocolInfo.Instance; }
 		}
 	}
 	[Transient]
-	sealed class EventFactoryOnClient : IEventFactory {
+	sealed class EventFactoryOnServer : IEventFactory {
 		public IEvent RecreateSimpleEvent(BitStream source) {
 			Debug.Assert(source != null);
 			IEvent _event;
@@ -64,67 +87,31 @@ namespace Events {
 			source.ResetReadPointer();
 			switch (id) {
 				case 0:
-					_event = new ConnectionTest(source);
+					_event = new SimpleEvent(source);
 					break;
 				
 				default:
-					throw new NetworkException(string.Format("Event id {0} not recognized by EventFactoryOnClient.RecreateEvent()!", id));
+					throw new NetworkException(string.Format("Event id {0} not recognized by EventFactoryOnServer.RecreateEvent()!", id));
 				
 			}
 			return _event;
 		}
 	}
 	[Transient]
-	sealed class EventHandlersOnClient : IEventHandlers {
+	sealed class EventHandlersOnServer : IEventHandlers {
 		public void CallHandler(IEvent e) {
 			switch (e.Id) {
 				case 0:
-					if (ConnectionTest != null)
-						ConnectionTest((ConnectionTest)e);
+					if (Simple != null)
+						Simple((SimpleEvent)e);
 					break;
 				
 				default:
-					throw new NetworkException(string.Format("Event id {0} not recognized by EventHandlersOnClient.CallHandler()!", e.Id));
+					throw new NetworkException(string.Format("Event id {0} not recognized by EventHandlersOnServer.CallHandler()!", e.Id));
 				
 			}
 		}
-		public event EventHandler<ConnectionTest> ConnectionTest;
-	}
-	[Transient]
-	sealed class EventFactoryOnFrontEndServer : IEventFactory {
-		public IEvent RecreateSimpleEvent(BitStream source) {
-			Debug.Assert(source != null);
-			IEvent _event;
-			int id;
-			if(!source.Read(out id)) throw new NetworkException("Deserialization is failed.");
-			source.ResetReadPointer();
-			switch (id) {
-				case 0:
-					_event = new ConnectionTest(source);
-					break;
-				
-				default:
-					throw new NetworkException(string.Format("Event id {0} not recognized by EventFactoryOnFrontEndServer.RecreateEvent()!", id));
-				
-			}
-			return _event;
-		}
-	}
-	[Transient]
-	sealed class EventHandlersOnFrontEndServer : IEventHandlers {
-		public void CallHandler(IEvent e) {
-			switch (e.Id) {
-				case 0:
-					if (ConnectionTest != null)
-						ConnectionTest((ConnectionTest)e);
-					break;
-				
-				default:
-					throw new NetworkException(string.Format("Event id {0} not recognized by EventHandlersOnFrontEndServer.CallHandler()!", e.Id));
-				
-			}
-		}
-		public event EventHandler<ConnectionTest> ConnectionTest;
+		public event EventHandler<SimpleEvent> Simple;
 	}
 	delegate void EventHandler<T>(T t) where T : IEvent;
 }
