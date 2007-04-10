@@ -2,14 +2,14 @@ using ProtocolGenerator;
 
 namespace Events
 {
-    [SiteOfHandling("FrontEndServer")]
-    [SiteOfHandling("Client")]
-    public partial class ConnectionTest
+    [ProtocolInfoAttribute("SampleProtocol", 1)]
+    public partial class ProtocolInfo
     {
     }
 
-    [ProtocolInfoAttribute("SampleProtocol")]
-    public partial class ProtocolInfo
+    [SiteOfHandling("FrontEndServer")]
+    [SiteOfHandling("Client")]
+    public partial class ConnectionTest
     {
     }
 

@@ -15,6 +15,12 @@ namespace TestEvents {
 		public string Name {
 			get { return "TestProtocol"; }
 		}
+		public int MajorVersion {
+			get { return 1; }
+		}
+		public int MinorVersion {
+			get { return 0; }
+		}
 	}
 	public partial class SimpleEvent : IEvent {
 		public SimpleEvent() {

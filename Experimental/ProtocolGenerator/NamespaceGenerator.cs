@@ -10,7 +10,7 @@ namespace ProtocolGenerator
         {
             this.namespaceName = namespaceName;
             ProtocolInfoAttribute protocolInfoAttribute = (ProtocolInfoAttribute)Attribute.GetCustomAttribute(protocolInfoClass, typeof(ProtocolInfoAttribute));
-            AddChildGenerator(new ProtocolInfoGenerator(protocolInfoClass, protocolInfoAttribute));
+            AddChildGenerator(new ProtocolInfoGenerator(protocolInfoClass, protocolInfoAttribute, 0));  // TODO - minorVersion is hash value of template file.
             IList<EventInfo> eventInfos = GetEventInfos(eventClasses);
             AddClassGenerators(protocolInfoClass, eventInfos);
             AddHandlersGenerators(ClassifyBySite(eventInfos));
