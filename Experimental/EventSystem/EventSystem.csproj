@@ -65,6 +65,7 @@
     <Compile Include="DObject.cs" />
     <Compile Include="DOManager.cs" />
     <Compile Include="FrontEndServer.cs" />
+    <Compile Include="GenericEventHandler.cs" />
     <Compile Include="IClientDOManager.cs" />
     <Compile Include="IDObject.cs" />
     <Compile Include="IDOManager.cs" />

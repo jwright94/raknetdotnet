@@ -54,7 +54,7 @@ namespace ProtocolGenerator
         {
             foreach (EventInfo ei in eventInfos)
             {
-                o.WriteLine("public event EventHandler<{0}> {1};", ei.Type.Name, GetHandlerName(ei.Type.Name));
+                o.WriteLine("public event GenericEventHandler<{0}> {1};", ei.Type.Name, GetHandlerName(ei.Type.Name));
             }
         }
 

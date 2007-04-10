@@ -23,13 +23,7 @@ namespace ProtocolGenerator
             {
                 generator.Write(o);
             }
-            WriteEventHandlerDelegate(o);
             o.EndBlock("}");
-        }
-
-        private static void WriteEventHandlerDelegate(ICodeWriter o)
-        {
-            o.WriteLine("delegate void EventHandler<T>(T t) where T : IEvent;");
         }
 
         private void AddClassGenerators(Type protocolInfoClass, IList<EventInfo> eventInfos)

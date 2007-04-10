@@ -111,7 +111,6 @@ namespace TestEvents {
 				
 			}
 		}
-		public event EventHandler<SimpleEvent> Simple;
+		public event GenericEventHandler<SimpleEvent> Simple;
 	}
-	delegate void EventHandler<T>(T t) where T : IEvent;
 }
