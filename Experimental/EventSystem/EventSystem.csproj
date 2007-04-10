@@ -59,11 +59,15 @@
   <ItemGroup>
     <Compile Include="Client.cs" />
     <Compile Include="ClientCommunicator.cs" />
+    <Compile Include="ClientDOManager.cs" />
     <Compile Include="ClientPPLocator.cs" />
     <Compile Include="CommunicatorModule.cs" />
     <Compile Include="DObject.cs" />
+    <Compile Include="DOManager.cs" />
     <Compile Include="FrontEndServer.cs" />
+    <Compile Include="IClientDOManager.cs" />
     <Compile Include="IDObject.cs" />
+    <Compile Include="IDOManager.cs" />
     <Compile Include="IProtocolInfo.cs" />
     <Compile Include="IProtocolProcessorLocator.cs" />
     <Compile Include="IServer.cs" />

@@ -32,6 +32,8 @@ namespace ProtocolGenerator
             WriteSetData(o);
             WriteGetStream(o);
             WriteId(o);
+            WriteSourceOid(o);
+            WriteTargetOid(o);
             WriteOriginPlayer(o);
             WriteProtocolInfo(o);
             o.EndBlock("}");
@@ -165,6 +167,22 @@ namespace ProtocolGenerator
             o.WriteLine("protected set { id = value; }");
             o.EndBlock("}");
             o.WriteLine("int id;");
+        }
+
+        private static void WriteSourceOid(ICodeWriter o)
+        {
+            o.BeginBlock("public int SourceOid {");
+            o.WriteLine("get { return sourceOid; }");         
+            o.EndBlock("}");
+            o.WriteLine("int sourceOid;");
+        }
+
+        private static void WriteTargetOid(ICodeWriter o)
+        {
+            o.BeginBlock("public int TargetOid {");
+            o.WriteLine("get { return targetOid; }");
+            o.EndBlock("}");
+            o.WriteLine("int targetOid;");
         }
 
         private static void WriteOriginPlayer(ICodeWriter o)
