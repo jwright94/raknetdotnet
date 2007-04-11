@@ -40,7 +40,6 @@
     <Compile Include="AppArguments.cs" />
     <Compile Include="CodeWriter.cs" />
     <Compile Include="CommandLineArguments.cs" />
-    <Compile Include="EventAttribute.cs" />
     <Compile Include="EventInfo.cs" />
     <Compile Include="Generators\AbstractGenerator.cs" />
     <Compile Include="Generators\EventClassGenerator.cs" />
@@ -58,6 +57,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProtocolInfoAttribute.cs" />
+    <Compile Include="SiteOfHandlingAttribute.cs" />
     <Compile Include="SyntaxErrorException.cs" />
     <Compile Include="TestEvents.cs" />
   </ItemGroup>
