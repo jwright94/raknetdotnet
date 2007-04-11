@@ -27,16 +27,16 @@ namespace TestEvents {
 			id = 0;
 		}
 		public SimpleEvent(BitStream source) {
-			if (!source.Read(out id)) { throw new NetworkException("Deserialization is failed."); }
-			if (!source.Read(out sourceOId)) { throw new NetworkException("Deserialization is failed."); }
-			if (!source.Read(out targetOId)) { throw new NetworkException("Deserialization is failed."); }
-			if (!source.Read(out name)) { throw new NetworkException("Deserialization is failed."); }
-			if (!source.Read(out age)) { throw new NetworkException("Deserialization is failed."); }
+			if (!source.Read(out id)) { throw new DeserializationException(); }
+			if (!source.Read(out sourceOId)) { throw new DeserializationException(); }
+			if (!source.Read(out targetOId)) { throw new DeserializationException(); }
+			if (!source.Read(out name)) { throw new DeserializationException(); }
+			if (!source.Read(out age)) { throw new DeserializationException(); }
 			int _systemAddressesLength;
-			if (!source.Read(out _systemAddressesLength)) { throw new NetworkException("Deserialization is failed."); }
+			if (!source.Read(out _systemAddressesLength)) { throw new DeserializationException(); }
 			systemAddresses = new RakNetDotNet.SystemAddress[_systemAddressesLength];
 			for (int i = 0; i < _systemAddressesLength; i++) {
-				if (!source.Read( systemAddresses[i])) { throw new NetworkException("Deserialization is failed."); }
+				if (!source.Read( systemAddresses[i])) { throw new DeserializationException(); }
 			}
 		}
 		public void SetData(System.String name, System.Int32 age, RakNetDotNet.SystemAddress[] systemAddresses) {
@@ -89,7 +89,7 @@ namespace TestEvents {
 			Debug.Assert(source != null);
 			IEvent _event;
 			int id;
-			if(!source.Read(out id)) throw new NetworkException("Deserialization is failed.");
+			if(!source.Read(out id)) throw new DeserializationException();
 			source.ResetReadPointer();
 			switch (id) {
 				case 0:
@@ -97,7 +97,7 @@ namespace TestEvents {
 					break;
 				
 				default:
-					throw new NetworkException(string.Format("Event id {0} not recognized by EventFactoryOnServer.RecreateEvent()!", id));
+					throw new UnknownEventIdException(id, "EventFactoryOnServer.RecreateEvent()");
 				
 			}
 			return _event;
@@ -113,7 +113,7 @@ namespace TestEvents {
 					break;
 				
 				default:
-					throw new NetworkException(string.Format("Event id {0} not recognized by EventHandlersOnServer.CallHandler()!", e.Id));
+					throw new UnknownEventIdException(e.Id, "EventHandlersOnServer.CallHandler()");
 				
 			}
 		}

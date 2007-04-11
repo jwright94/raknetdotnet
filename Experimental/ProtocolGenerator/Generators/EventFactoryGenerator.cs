@@ -35,7 +35,7 @@ namespace ProtocolGenerator.Generators
             o.WriteLine("Debug.Assert(source != null);");
             o.WriteLine("IEvent _event;");
             o.WriteLine("int id;");
-            o.WriteLine("if(!source.Read(out id)) throw new NetworkException(\"Deserialization is failed.\");");
+            o.WriteLine("if(!source.Read(out id)) throw new DeserializationException();");
             o.WriteLine("source.ResetReadPointer();");
             o.BeginBlock("switch (id) {");
             foreach (EventInfo ei in eventInfos)
@@ -46,7 +46,7 @@ namespace ProtocolGenerator.Generators
                 o.EndBlock("");
             }
             o.BeginBlock("default:");
-            o.WriteLine("throw new NetworkException(string.Format(\"Event id {{0}} not recognized by {0}.RecreateEvent()!\", id));", factoryName);
+            o.WriteLine("throw new UnknownEventIdException(id, \"{0}\");", factoryName + ".RecreateEvent()");
             o.EndBlock("");
             o.EndBlock("}");
             o.WriteLine("return _event;");

@@ -45,7 +45,7 @@ namespace ProtocolGenerator.Generators
                 o.EndBlock("");
             }
             o.BeginBlock("default:");
-            o.WriteLine("throw new NetworkException(string.Format(\"Event id {{0}} not recognized by {0}.CallHandler()!\", e.Id));", handlersName);
+            o.WriteLine("throw new UnknownEventIdException(e.Id, \"{0}\");", handlersName + ".CallHandler()");
             o.EndBlock("");
             o.EndBlock("}");
             o.EndBlock("}");

@@ -82,7 +82,7 @@ namespace ProtocolGenerator.Generators
 
         private static void WriteStreamReadStatement(ICodeWriter o, string modifier, string variableName)
         {
-            o.WriteLine("if (!source.Read({0} {1})) {{ throw new NetworkException(\"Deserialization is failed.\"); }}", modifier, variableName);
+            o.WriteLine("if (!source.Read({0} {1})) {{ throw new DeserializationException(); }}", modifier, variableName);
         }
 
         // TODO: ProtocolGenerator can't handle null reference.
