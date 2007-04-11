@@ -12,9 +12,14 @@ namespace EventSystem
         public string ConfigurationFilename;
     }
 
-    internal class Program
+    public interface IServerHost
     {
-        private static void Main(string[] args)
+        void Main(string[] args);
+    }
+
+    public sealed class ServerHost : IServerHost
+    {
+        public void Main(string[] args)
         {
             AppArguments parsedArgs = new AppArguments();
             if (!Parser.ParseArgumentsWithUsage(args, parsedArgs))
@@ -46,5 +51,14 @@ namespace EventSystem
 
         [DllImport("crtdll.dll")]
         public static extern int _kbhit(); // I do not want to use this.
+    }
+
+    internal class Program
+    {
+        private static void Main(string[] args)
+        {
+            IServerHost serverHost = new ServerHost();
+            serverHost.Main(args);
+        }
     }
 }
