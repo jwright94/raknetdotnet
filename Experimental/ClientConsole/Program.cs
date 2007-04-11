@@ -8,7 +8,8 @@ namespace ClientConsole
         {
             // サーバとクライアントのプロジェクトを分ける必要はなかった。
             // しかし同じアセンブリで２つのプロセスを起動するのは、デバッグしづらいので分けた。            
-            ServerHost.Run(args);
+            IServerHost host = new ServerHost();
+            host.Run(args);
         }
     }
 }

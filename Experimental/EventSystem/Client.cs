@@ -30,10 +30,6 @@ namespace EventSystem
             this.logger = logger;
             this.sleepTimer = sleepTimer;
             this.dOManager = dOManager;
-            DObject obj = new DObject();
-            obj.OnGetEvent += RootDObjectHandler;
-            rootDObject = obj;
-            dOManager.StoreObject(rootDObject);
         }
 
         public void Startup()
@@ -45,12 +41,17 @@ namespace EventSystem
             communicator.RegisterRakNetEventHandler(RakNetMessageId.ConnectionRequestAccepted, ConnectionRequestAccepted);
             communicator.Startup();
             communicator.Connect();
-            communicator.SendEvent(new LogOnEvent());
         }
 
         private void ConnectionRequestAccepted()
         {
             logger.Debug("ConnectionRequestAccepted on Client");
+            DObject obj = new DObject();
+            obj.OId = 0;
+            obj.OnGetEvent += RootDObjectHandler;
+            rootDObject = obj;
+            dOManager.StoreObject(rootDObject);
+            communicator.SendEvent(new LogOnEvent());
         }
 
         private void RootDObjectHandler(IEvent e)

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Castle.Core.Logging;
@@ -6,9 +7,14 @@ using CommandLine;
 
 namespace EventSystem
 {
-    public sealed class ServerHost
+    public interface IServerHost
     {
-        public static void Run(string[] args)
+        void Run(string[] args);
+    }
+
+    public sealed class ServerHost : IServerHost
+    {
+        public void Run(string[] args)
         {
             AppArguments parsedArgs = new AppArguments();
             if (!Parser.ParseArgumentsWithUsage(args, parsedArgs))
@@ -21,12 +27,21 @@ namespace EventSystem
             IServer server = LightweightContainer.Resolve<IServer>();
             server.Startup();
             logger.Info("Server is started.");
+            BeginReadThread();
             while (true)
             {
-                if (_kbhit() != 0)
+                lock(commandLineQueue)
                 {
-                    char ch = Console.ReadKey(true).KeyChar;
-                    if (ch == 'q' || ch == 'Q')
+                    bool doQuit = false;
+                    while (0 < commandLineQueue.Count)
+                    {
+                        string command = commandLineQueue.Dequeue();
+                        if (command == "quit")
+                        {
+                            doQuit = true;
+                        }
+                    }
+                    if(doQuit)
                     {
                         break;
                     }
@@ -38,7 +53,35 @@ namespace EventSystem
             logger.Info("Server is shutdowned.");
         }
 
-        [DllImport("crtdll.dll")]
-        internal static extern int _kbhit(); // I do not want to use this.
+        private void BeginReadThread()
+        {
+            shouldStop = false;
+            readDelegate = new AsyncReadCommandDelegate(AsyncReadCommand);
+            ar = readDelegate.BeginInvoke(null, null);
+        }
+
+        /// <summary>
+        /// 標準入力からコマンドを読み込みcommandQueueに入れる。
+        /// </summary>
+        private void AsyncReadCommand()
+        {
+            while (!shouldStop)
+            {
+                string command = Console.ReadLine();
+                lock (commandLineQueue)
+                {
+                    commandLineQueue.Enqueue(command);
+                }
+                Thread.Sleep(0);
+            }
+        }
+
+        private AsyncReadCommandDelegate readDelegate;
+        private IAsyncResult ar;
+        // Volatile is used as hint to the compiler that this data
+        // member will be accessed by multiple threads.
+        private volatile bool shouldStop;
+        private delegate void AsyncReadCommandDelegate();
+        private Queue<string> commandLineQueue = new Queue<string>();
     }
 }

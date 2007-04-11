@@ -1,7 +1,3 @@
-using System;
-using System.Runtime.InteropServices;
-using System.Threading;
-using Castle.Core.Logging;
 using CommandLine;
 
 namespace EventSystem
@@ -16,7 +12,8 @@ namespace EventSystem
     {
         private static void Main(string[] args)
         {
-            ServerHost.Run(args);
+            IServerHost host = new ServerHost();
+            host.Run(args);
         }
     }
 }
