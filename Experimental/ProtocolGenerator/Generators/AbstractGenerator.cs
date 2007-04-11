@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace ProtocolGenerator
+namespace ProtocolGenerator.Generators
 {
     internal abstract class AbstractGenerator : IGenerator
     {

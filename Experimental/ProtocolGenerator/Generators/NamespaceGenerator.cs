@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace ProtocolGenerator
+namespace ProtocolGenerator.Generators
 {
     internal sealed class NamespaceGenerator : AbstractGenerator
     {
@@ -9,8 +9,8 @@ namespace ProtocolGenerator
             // TODO: I forgot how to use simbol.
         {
             this.namespaceName = namespaceName;
-            ProtocolInfoAttribute protocolInfoAttribute = (ProtocolInfoAttribute)Attribute.GetCustomAttribute(protocolInfoClass, typeof(ProtocolInfoAttribute));
-            AddChildGenerator(new ProtocolInfoGenerator(protocolInfoClass, protocolInfoAttribute, 0));  // TODO - minorVersion is hash value of template file.
+            ProtocolInfoAttribute protocolInfoAttribute = (ProtocolInfoAttribute)Attribute.GetCustomAttribute(protocolInfoClass, typeof (ProtocolInfoAttribute));
+            AddChildGenerator(new ProtocolInfoGenerator(protocolInfoClass, protocolInfoAttribute, 0)); // TODO - minorVersion is hash value of template file.
             IList<EventInfo> eventInfos = GetEventInfos(eventClasses);
             AddClassGenerators(protocolInfoClass, eventInfos);
             AddHandlersGenerators(ClassifyBySite(eventInfos));

@@ -1,4 +1,4 @@
-namespace ProtocolGenerator
+namespace ProtocolGenerator.Generators
 {
     // I use the composit pattern.
     internal interface IGenerator

@@ -1,10 +1,9 @@
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using RakNetDotNet;
 
-namespace ProtocolGenerator
+namespace ProtocolGenerator.Generators
 {
     internal sealed class EventClassGenerator : IGenerator
     {
@@ -169,74 +168,22 @@ namespace ProtocolGenerator
 
         private static void WriteId(ICodeWriter o)
         {
-            WriteProperty(o, "int", "id", null, null, "protected");
+            ClassGeneratorHelper.WriteProperty(o, "int", "id", null, null, "protected");
         }
 
         private static void WriteSourceOid(ICodeWriter o)
         {
-            WriteProperty(o, "int", "sourceOId", null, null, null);
+            ClassGeneratorHelper.WriteProperty(o, "int", "sourceOId", null, null, null);
         }
 
         private static void WriteTargetOid(ICodeWriter o)
         {
-            WriteProperty(o, "int", "targetOId", null, null, null);
+            ClassGeneratorHelper.WriteProperty(o, "int", "targetOId", null, null, null);
         }
 
         private static void WriteSender(ICodeWriter o)
         {
-            WriteProperty(o, "SystemAddress", "sender", "RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS", null, null);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="o"></param>
-        /// <param name="typeName"></param>
-        /// <param name="variableNameInLowerCamelCase"></param>
-        /// <param name="defaultValue">Can be null</param>
-        /// <param name="getterAccessibility">Can be null</param>
-        /// <param name="setterAccessibility">Can be null</param>
-        private static void WriteProperty(ICodeWriter o, string typeName, string variableNameInLowerCamelCase, string defaultValue, string getterAccessibility, string setterAccessibility)
-        {
-            string getterAccessibilityWithSpace = "";
-            string setterAccessibilityWithSpace = "";
-            string defaultValueWithAssignMark = "";
-
-            if (getterAccessibility != null)
-            {
-                getterAccessibilityWithSpace = getterAccessibility + " ";
-            }
-            if (setterAccessibility != null)
-            {
-                setterAccessibilityWithSpace = setterAccessibility + " ";
-            }
-            if(defaultValue != null)
-            {
-                defaultValueWithAssignMark = " = " + defaultValue;
-            }
-
-            string variableNameInUpperCamelCase = GetVariableNameInUpperCamelCase(variableNameInLowerCamelCase);
-
-            o.BeginBlock("public {0} {1} {{", typeName, variableNameInUpperCamelCase);
-            o.WriteLine("{0}get {{ return {1}; }}", getterAccessibilityWithSpace, variableNameInLowerCamelCase);
-            o.WriteLine("{0}set {{ {1} = value; }}", setterAccessibilityWithSpace, variableNameInLowerCamelCase);
-            o.EndBlock("}");
-            o.WriteLine("{0} {1}{2};", typeName, variableNameInLowerCamelCase, defaultValueWithAssignMark);            
-        }
-
-        private static string GetVariableNameInUpperCamelCase(string variableNameInLowerCamelCase)
-        {
-            string firstChar = variableNameInLowerCamelCase.Substring(0, 1);
-            string remains;
-            if(1 < variableNameInLowerCamelCase.Length)
-            {
-                remains = variableNameInLowerCamelCase.Substring(1);
-            }
-            else
-            {
-                remains = "";
-            }
-            return firstChar.ToUpper() + remains;
+            ClassGeneratorHelper.WriteProperty(o, "SystemAddress", "sender", "RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS", null, null);
         }
 
         private void WriteProtocolInfo(ICodeWriter o)
@@ -254,30 +201,5 @@ namespace ProtocolGenerator
         private readonly Type type;
         private readonly int eventId;
         private readonly Type protocolInfoType;
-    }
-
-    internal static class BitstreamSerializationHelper
-    {
-        static BitstreamSerializationHelper()
-        {
-            supportingPrimitives = new List<Type>();
-            supportingPrimitives.Add(typeof (bool));
-            supportingPrimitives.Add(typeof (byte));
-            supportingPrimitives.Add(typeof (double));
-            supportingPrimitives.Add(typeof (float));
-            supportingPrimitives.Add(typeof (int));
-            supportingPrimitives.Add(typeof (sbyte));
-            supportingPrimitives.Add(typeof (short));
-            supportingPrimitives.Add(typeof (string));
-            supportingPrimitives.Add(typeof (uint));
-            supportingPrimitives.Add(typeof (ushort));
-        }
-
-        public static bool DoesSupportPrimitiveType(Type t)
-        {
-            return supportingPrimitives.Contains(t);
-        }
-
-        private static IList<Type> supportingPrimitives;
     }
 }

@@ -8,6 +8,7 @@ using CommandLine;
 using Microsoft.CSharp;
 using Microsoft.VisualBasic;
 using NUnit.Framework;
+using ProtocolGenerator.Generators;
 
 namespace ProtocolGenerator
 {
@@ -46,7 +47,7 @@ namespace ProtocolGenerator
                 // TODO - Ctor throws exception. Is it OK?
                 rootGenerator = new RootGenerator(templateAssembly.GetTypes());
             }
-            catch(SyntaxErrorException e)
+            catch (SyntaxErrorException e)
             {
                 Console.WriteLine(e);
                 return 3;
@@ -61,7 +62,7 @@ namespace ProtocolGenerator
         }
 
         private static bool CompileLibraryInMemory(String sourceName, string[] referencedAssemblies,
-                                              out Assembly compiledAssembly)
+                                                   out Assembly compiledAssembly)
         {
             FileInfo sourceFile = new FileInfo(sourceName);
             CodeDomProvider provider;

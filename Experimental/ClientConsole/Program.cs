@@ -2,12 +2,12 @@ using EventSystem;
 
 namespace ClientConsole
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            // サーバとクライアントのプロジェクトを分ける必要はなかった。
-            // しかし同じアセンブリで２つのプロセスを起動するのは、デバッグしづらいので分けた。            
+            // サーバとクライアントのプロジェクトを分ける必要はない。
+            // しかし同じアセンブリから２つのプロセスを起動するやり方はデバッグしづらいので分けた。
             IServerHost host = new ServerHost();
             host.Run(args);
         }

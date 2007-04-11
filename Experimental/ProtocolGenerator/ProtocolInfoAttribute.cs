@@ -9,7 +9,7 @@ namespace ProtocolGenerator
         {
             this.protocolName = protocolName;
             this.majorVersion = majorVersion;
-        }       
+        }
 
         public int MajorVersion
         {

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace ProtocolGenerator
+namespace ProtocolGenerator.Generators
 {
     internal sealed class EventHandlersGenerator : IGenerator
     {
@@ -44,7 +44,7 @@ namespace ProtocolGenerator
                 o.EndBlock("");
             }
             o.BeginBlock("default:");
-            o.WriteLine("throw new NetworkException(string.Format(\"Event id {{0}} not recognized by {0}.CallHandler()!\", e.Id));",handlersName);
+            o.WriteLine("throw new NetworkException(string.Format(\"Event id {{0}} not recognized by {0}.CallHandler()!\", e.Id));", handlersName);
             o.EndBlock("");
             o.EndBlock("}");
             o.EndBlock("}");

@@ -37,24 +37,28 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AbstractGenerator.cs" />
     <Compile Include="AppArguments.cs" />
-    <Compile Include="EventClassGenerator.cs" />
+    <Compile Include="BitstreamSerializationHelper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ClassGeneratorHelper.cs" />
     <Compile Include="CodeWriter.cs" />
     <Compile Include="CommandLineArguments.cs" />
     <Compile Include="EventAttribute.cs" />
-    <Compile Include="EventFactoryGenerator.cs" />
-    <Compile Include="EventHandlersGenerator.cs" />
     <Compile Include="EventInfo.cs" />
+    <Compile Include="Generators\AbstractGenerator.cs" />
+    <Compile Include="Generators\EventClassGenerator.cs" />
+    <Compile Include="Generators\EventFactoryGenerator.cs" />
+    <Compile Include="Generators\EventHandlersGenerator.cs" />
+    <Compile Include="Generators\IGenerator.cs" />
+    <Compile Include="Generators\NamespaceGenerator.cs" />
+    <Compile Include="Generators\ProtocolInfoGenerator.cs" />
+    <Compile Include="Generators\RootGenerator.cs" />
     <Compile Include="ICodeWriter.cs" />
-    <Compile Include="IGenerator.cs" />
-    <Compile Include="NamespaceGenerator.cs" />
     <Compile Include="NUnitHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProtocolInfoAttribute.cs" />
-    <Compile Include="ProtocolInfoGenerator.cs" />
-    <Compile Include="RootGenerator.cs" />
     <Compile Include="SyntaxErrorException.cs" />
     <Compile Include="TestEvents.cs" />
   </ItemGroup>

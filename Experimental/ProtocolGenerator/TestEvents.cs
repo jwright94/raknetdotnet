@@ -3,7 +3,7 @@ using RakNetDotNet;
 
 namespace TestEvents
 {
-    [ProtocolInfoAttribute("TestProtocol", 1)]
+    [ProtocolInfo("TestProtocol", 1)]
     public partial class ProtocolInfo
     {
     }

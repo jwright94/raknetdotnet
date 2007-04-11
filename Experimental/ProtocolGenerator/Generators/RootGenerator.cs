@@ -4,7 +4,7 @@ using System.IO;
 using NUnit.Framework;
 using TestEvents;
 
-namespace ProtocolGenerator
+namespace ProtocolGenerator.Generators
 {
     internal sealed class RootGenerator : AbstractGenerator
     {
@@ -24,7 +24,7 @@ namespace ProtocolGenerator
         private static Type GetProtocolInfoClass(Type[] allTypes)
         {
             Type protocolInfoClass;
-            Type[] protocolInfoClasses = FindClassByAttribute(allTypes, typeof(ProtocolInfoAttribute));
+            Type[] protocolInfoClasses = FindClassByAttribute(allTypes, typeof (ProtocolInfoAttribute));
 
             if (protocolInfoClasses.Length != 1)
             {
@@ -60,7 +60,7 @@ namespace ProtocolGenerator
             string namespaceName = null;
             foreach (Type type in types)
             {
-                if(namespaceName == null)
+                if (namespaceName == null)
                 {
                     // this is first one.
                     namespaceName = type.Namespace;

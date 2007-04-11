@@ -1,6 +1,6 @@
 using System;
 
-namespace ProtocolGenerator
+namespace ProtocolGenerator.Generators
 {
     internal sealed class ProtocolInfoGenerator : IGenerator
     {
