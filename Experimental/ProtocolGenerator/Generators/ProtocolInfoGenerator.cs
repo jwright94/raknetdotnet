@@ -1,4 +1,5 @@
 using System;
+using ProtocolGenerator.Helpers;
 
 namespace ProtocolGenerator.Generators
 {
@@ -30,7 +31,7 @@ namespace ProtocolGenerator.Generators
             string className = t.Name;
             string protocolName = attr.ProtocolName;
             o.BeginBlock("public partial class {0} : IProtocolInfo {{", className);
-            WriteSingleton(o, className);
+            ClassGeneratorHelper.WriteSingleton(o, className);
             WriteName(o, protocolName);
             WriteVersionProperty(o, "MajorVersion", attr.MajorVersion);
             WriteVersionProperty(o, "MinorVersion", minorVersion);
@@ -39,25 +40,12 @@ namespace ProtocolGenerator.Generators
 
         private static void WriteVersionProperty(ICodeWriter o, string propertyName, int version)
         {
-            o.BeginBlock("public int {0} {{", propertyName);
-            o.WriteLine("get {{ return {0}; }}", version);
-            o.EndBlock("}");
+            ClassGeneratorHelper.WriteGetProperty(o, "int", propertyName, version.ToString());
         }
 
         private static void WriteName(ICodeWriter o, string protocolName)
         {
-            o.BeginBlock("public string Name {");
-            o.WriteLine("get {{ return \"{0}\"; }}", protocolName);
-            o.EndBlock("}");
-        }
-
-        private static void WriteSingleton(ICodeWriter o, string className)
-        {
-            o.WriteLine("private static {0} instance = new {0}();", className);
-            o.BeginBlock("public static {0} Instance {{", className);
-            o.WriteLine("get { return instance; }");
-            o.EndBlock("}");
-            o.WriteLine("private {0}() {{ }}", className);
+            ClassGeneratorHelper.WriteGetProperty(o, "string", "Name", '"' + protocolName + '"');
         }
     }
 }

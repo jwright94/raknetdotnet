@@ -38,10 +38,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppArguments.cs" />
-    <Compile Include="BitstreamSerializationHelper.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ClassGeneratorHelper.cs" />
     <Compile Include="CodeWriter.cs" />
     <Compile Include="CommandLineArguments.cs" />
     <Compile Include="EventAttribute.cs" />
@@ -54,8 +50,11 @@
     <Compile Include="Generators\NamespaceGenerator.cs" />
     <Compile Include="Generators\ProtocolInfoGenerator.cs" />
     <Compile Include="Generators\RootGenerator.cs" />
+    <Compile Include="Helpers\BitstreamSerializationHelper.cs" />
+    <Compile Include="Helpers\ClassGeneratorHelper.cs" />
+    <Compile Include="Helpers\NamingHelper.cs" />
+    <Compile Include="Helpers\NUnitHelper.cs" />
     <Compile Include="ICodeWriter.cs" />
-    <Compile Include="NUnitHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProtocolInfoAttribute.cs" />

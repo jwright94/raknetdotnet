@@ -1,6 +1,7 @@
 using System;
 using System.Reflection;
 using System.Text;
+using ProtocolGenerator.Helpers;
 using RakNetDotNet;
 
 namespace ProtocolGenerator.Generators

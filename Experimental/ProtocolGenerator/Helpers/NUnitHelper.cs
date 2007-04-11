@@ -2,7 +2,7 @@ using System;
 using System.Reflection;
 using NUnit.Framework;
 
-namespace ProtocolGenerator
+namespace ProtocolGenerator.Helpers
 {
     internal static class PrivateAccessor
     {
