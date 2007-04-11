@@ -168,7 +168,7 @@ namespace EventSystem
             [SetUp]
             public void SetUp()
             {
-                container = new WindsorContainer("test.xml");
+                container = new WindsorContainer("config/test.xml");
                 container.AddComponent("atanytime", typeof (SingletonUsesAtAnyTime));
                 container.AddComponent("anotherinstance", typeof (SingletonUsesAtAnyTime));
                 container.AddComponent("resettable", typeof (ResettableSingleton));
@@ -250,7 +250,7 @@ namespace EventSystem
             [SetUp]
             public void SetUp()
             {
-                LightweightContainer.Configure("common.xml");
+                LightweightContainer.Configure("config/common.xml");
             }
 
             [Test]
