@@ -9,6 +9,9 @@ namespace EventSystem
         void Shutdown();
 
         IProtocolProcessorLocator ProcessorLocator { get; set; }
+
+        void RegisterRakNetEventHandler(RakNetMessageId messageId, RakNetEventHandler handler);
+        void UnregisterRakNetEventHandler(RakNetMessageId messageId, RakNetEventHandler handler);
     }
 
     internal interface IServerCommunicator : ICommunicator

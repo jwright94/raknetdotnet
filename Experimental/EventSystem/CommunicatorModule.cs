@@ -2,9 +2,24 @@ using System.Diagnostics;
 using System.Reflection;
 using Castle.Core.Logging;
 using RakNetDotNet;
+using System;
 
 namespace EventSystem
 {
+    delegate void RakNetEventHandler();
+
+    enum RakNetMessageId
+    {
+        RemoteDisconnectionNotification = RakNetBindings.ID_REMOTE_DISCONNECTION_NOTIFICATION,
+        RemoteConnectionLost = RakNetBindings.ID_REMOTE_CONNECTION_LOST,
+        RemoteNewIncomingConnection = RakNetBindings.ID_REMOTE_NEW_INCOMING_CONNECTION,
+        ConnectionRequestAccepted = RakNetBindings.ID_CONNECTION_REQUEST_ACCEPTED,
+        NewIncomingConnection = RakNetBindings.ID_NEW_INCOMING_CONNECTION,
+        NoFreeIncomingConnections = RakNetBindings.ID_NO_FREE_INCOMING_CONNECTIONS,
+        DisconnectionNotification = RakNetBindings.ID_DISCONNECTION_NOTIFICATION,
+        ConnectionLost = RakNetBindings.ID_CONNECTION_LOST,
+    }
+
     /// <summary>
     /// for implementation
     /// </summary>
@@ -82,37 +97,75 @@ namespace EventSystem
             RakNetworkFactory.DestroyRakPeerInterface(RakPeerInterface);
         }
 
+        System.Collections.Generic.Dictionary<RakNetMessageId, RakNetEventHandler> rakNetHandlers = new System.Collections.Generic.Dictionary<RakNetMessageId, RakNetEventHandler>();
+
+        public void RegisterRakNetEventHandler(RakNetMessageId messageId, RakNetEventHandler handler)
+        {
+            rakNetHandlers.Add(messageId, handler);
+        }
+
+        public void UnregisterRakNetEventHandler(RakNetMessageId messageId, RakNetEventHandler handler)
+        {
+            rakNetHandlers.Remove(messageId);
+        }
+
+        private void CallRakNetEventHandler(RakNetMessageId messageId)
+        {
+            RakNetEventHandler handler;
+            if (rakNetHandlers.TryGetValue(messageId, out handler))
+            {
+                try
+                {
+                    handler.Invoke();
+                }
+                catch (TargetInvocationException e)
+                {
+                    Debugger.Break();
+                    throw e.InnerException;
+                }
+            }
+        }
+
         private void HandlePacket(Packet packet)
         {
             logger.Debug("received Message:");
             BitStream inBitStream = new BitStream(packet, false);
             byte packetIdentifier;
             inBitStream.Read(out packetIdentifier);
+
             switch (packetIdentifier)
             {
                 case RakNetBindings.ID_REMOTE_DISCONNECTION_NOTIFICATION:
                     logger.Debug("Another client has disconnected.\n");
+                    CallRakNetEventHandler((RakNetMessageId)packetIdentifier);
                     break;
                 case RakNetBindings.ID_REMOTE_CONNECTION_LOST:
                     logger.Debug("Another client has lost the connection.\n");
+                    CallRakNetEventHandler((RakNetMessageId)packetIdentifier);
                     break;
                 case RakNetBindings.ID_REMOTE_NEW_INCOMING_CONNECTION:
                     logger.Debug("Another client has connected.\n");
+                    CallRakNetEventHandler((RakNetMessageId)packetIdentifier);
                     break;
                 case RakNetBindings.ID_CONNECTION_REQUEST_ACCEPTED:
                     logger.Debug("Our connection request has been accepted.");
+                    CallRakNetEventHandler((RakNetMessageId)packetIdentifier);
                     break;
                 case RakNetBindings.ID_NEW_INCOMING_CONNECTION:
                     logger.Debug("A connection is incoming.\n");
+                    CallRakNetEventHandler((RakNetMessageId)packetIdentifier);
                     break;
                 case RakNetBindings.ID_NO_FREE_INCOMING_CONNECTIONS:
                     logger.Debug("The server is full.\n");
+                    CallRakNetEventHandler((RakNetMessageId)packetIdentifier);
                     break;
                 case RakNetBindings.ID_DISCONNECTION_NOTIFICATION:
                     logger.Debug("A client has disconnected.\n");
+                    CallRakNetEventHandler((RakNetMessageId)packetIdentifier);
                     break;
                 case RakNetBindings.ID_CONNECTION_LOST:
                     logger.Debug("A client lost the connection.\n");
+                    CallRakNetEventHandler((RakNetMessageId)packetIdentifier);
                     break;
                 case RakNetBindings.ID_DATABASE_UNKNOWN_TABLE:
                     logger.Debug("ID_DATABASE_UNKNOWN_TABLE\n");

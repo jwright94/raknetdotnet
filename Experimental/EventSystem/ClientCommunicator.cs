@@ -69,5 +69,20 @@ namespace EventSystem
             get { return module.ProcessorLocator; }
             set { module.ProcessorLocator = value; }
         }
+
+        #region ICommunicator Members
+
+
+        public void RegisterRakNetEventHandler(RakNetMessageId messageId, RakNetEventHandler handler)
+        {
+            module.RegisterRakNetEventHandler(messageId, handler);
+        }
+
+        public void UnregisterRakNetEventHandler(RakNetMessageId messageId, RakNetEventHandler handler)
+        {
+            module.UnregisterRakNetEventHandler(messageId, handler);
+        }
+
+        #endregion
     }
 }

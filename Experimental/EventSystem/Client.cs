@@ -42,9 +42,15 @@ namespace EventSystem
             handlers.ConnectionTest += Handlers_OnConnectionTest;
             handlers.LogOnACK += Handlers_OnGetLogOnACK;
             communicator.ProcessorLocator = new ClientPPLocator(handlers, dOManager); // inject manually
+            communicator.RegisterRakNetEventHandler(RakNetMessageId.ConnectionRequestAccepted, ConnectionRequestAccepted);
             communicator.Startup();
             communicator.Connect();
             communicator.SendEvent(new LogOnEvent());
+        }
+
+        private void ConnectionRequestAccepted()
+        {
+            logger.Debug("ConnectionRequestAccepted on Client");
         }
 
         private void RootDObjectHandler(IEvent e)
