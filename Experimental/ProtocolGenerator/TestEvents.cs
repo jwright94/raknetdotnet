@@ -1,3 +1,4 @@
+using System;
 using ProtocolGenerator;
 using RakNetDotNet;
 
@@ -14,5 +15,7 @@ namespace TestEvents
         private string name;
         private int age;
         private SystemAddress[] systemAddresses;
+        [NonSerialized]
+        private int localValue;
     }
 }

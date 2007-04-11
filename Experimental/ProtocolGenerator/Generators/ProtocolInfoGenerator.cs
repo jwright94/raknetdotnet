@@ -7,9 +7,9 @@ namespace ProtocolGenerator.Generators
     {
         private readonly Type t;
         private readonly ProtocolInfoAttribute attr;
-        private readonly int minorVersion;
+        private readonly uint minorVersion;
 
-        public ProtocolInfoGenerator(Type t, ProtocolInfoAttribute attr, int minorVersion)
+        public ProtocolInfoGenerator(Type t, ProtocolInfoAttribute attr, uint minorVersion)
         {
             this.t = t;
             this.attr = attr;
@@ -38,14 +38,14 @@ namespace ProtocolGenerator.Generators
             o.EndBlock("}");
         }
 
-        private static void WriteVersionProperty(ICodeWriter o, string propertyName, int version)
+        private static void WriteVersionProperty(ICodeWriter o, string propertyName, uint version)
         {
-            ClassGeneratorHelper.WriteGetProperty(o, "int", propertyName, version.ToString());
+            ClassGeneratorHelper.WriteGetAccessor(o, "uint", propertyName, version.ToString());
         }
 
         private static void WriteName(ICodeWriter o, string protocolName)
         {
-            ClassGeneratorHelper.WriteGetProperty(o, "string", "Name", '"' + protocolName + '"');
+            ClassGeneratorHelper.WriteGetAccessor(o, "string", "Name", '"' + protocolName + '"');
         }
     }
 }

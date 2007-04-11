@@ -8,7 +8,7 @@ namespace ProtocolGenerator.Generators
 {
     internal sealed class RootGenerator : AbstractGenerator
     {
-        public RootGenerator(Type[] allTypes)
+        public RootGenerator(Type[] allTypes, uint minorVersion)
         {
             if (!ContainsInSameNamespace(allTypes))
             {
@@ -18,7 +18,7 @@ namespace ProtocolGenerator.Generators
             Type[] allEventClasses = FindClassByAttribute(allTypes, typeof (SiteOfHandlingAttribute));
             Type protocolInfoClass = GetProtocolInfoClass(allTypes);
 
-            AddChildGenerator(new NamespaceGenerator(protocolInfoClass.Namespace, protocolInfoClass, allEventClasses));
+            AddChildGenerator(new NamespaceGenerator(protocolInfoClass.Namespace, protocolInfoClass, minorVersion, allEventClasses));
         }
 
         private static Type GetProtocolInfoClass(Type[] allTypes)
@@ -98,7 +98,7 @@ namespace ProtocolGenerator.Generators
         public void FinalOutput()
         {
             Type[] types = new Type[] {typeof (SimpleEvent), typeof (ProtocolInfo)};
-            IGenerator rootGenerator = new RootGenerator(types);
+            IGenerator rootGenerator = new RootGenerator(types, 0);
             TextWriter textWriter = new StringWriter();
             rootGenerator.Write(new CodeWriter(textWriter));
             using (StreamReader sr = File.OpenText("GeneratedTextSample.txt"))

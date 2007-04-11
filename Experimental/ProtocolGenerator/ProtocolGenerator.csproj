@@ -40,6 +40,7 @@
     <Compile Include="AppArguments.cs" />
     <Compile Include="CodeWriter.cs" />
     <Compile Include="CommandLineArguments.cs" />
+    <Compile Include="Crc32.cs" />
     <Compile Include="EventInfo.cs" />
     <Compile Include="Generators\AbstractGenerator.cs" />
     <Compile Include="Generators\EventClassGenerator.cs" />

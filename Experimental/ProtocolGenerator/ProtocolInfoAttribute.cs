@@ -5,18 +5,18 @@ namespace ProtocolGenerator
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
     public sealed class ProtocolInfoAttribute : Attribute
     {
-        public ProtocolInfoAttribute(string protocolName, int majorVersion)
+        public ProtocolInfoAttribute(string protocolName, uint majorVersion)
         {
             this.protocolName = protocolName;
             this.majorVersion = majorVersion;
         }
 
-        public int MajorVersion
+        public uint MajorVersion
         {
             get { return majorVersion; }
         }
 
-        private readonly int majorVersion;
+        private readonly uint majorVersion;
 
         public string ProtocolName
         {

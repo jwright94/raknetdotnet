@@ -5,15 +5,15 @@ namespace ProtocolGenerator.Generators
 {
     internal sealed class NamespaceGenerator : AbstractGenerator
     {
-        public NamespaceGenerator(string namespaceName, Type protocolInfoClass, IEnumerable<Type> eventClasses)
+        public NamespaceGenerator(string namespaceName, Type protocolInfoClass, uint minorVersion, IEnumerable<Type> eventClasses)
             // TODO: I forgot how to use simbol.
         {
             this.namespaceName = namespaceName;
             ProtocolInfoAttribute protocolInfoAttribute = (ProtocolInfoAttribute)Attribute.GetCustomAttribute(protocolInfoClass, typeof (ProtocolInfoAttribute));
-            AddChildGenerator(new ProtocolInfoGenerator(protocolInfoClass, protocolInfoAttribute, 0)); // TODO - minorVersion is hash value of template file.
+            AddChildGenerator(new ProtocolInfoGenerator(protocolInfoClass, protocolInfoAttribute, minorVersion));
             IList<EventInfo> eventInfos = GetEventInfos(eventClasses);
             AddClassGenerators(protocolInfoClass, eventInfos);
-            AddHandlersGenerators(ClassifyBySite(eventInfos));
+            AddAuxiliaryGenerators(ClassifyBySite(eventInfos));
         }
 
         public override void Write(ICodeWriter o)
@@ -34,13 +34,19 @@ namespace ProtocolGenerator.Generators
             }
         }
 
-        private void AddHandlersGenerators(IDictionary<SiteOfHandlingAttribute, IList<EventInfo>> eventInfosBySite)
+        private void AddAuxiliaryGenerators(IDictionary<SiteOfHandlingAttribute, IList<EventInfo>> eventInfosBySite)
         {
             foreach (KeyValuePair<SiteOfHandlingAttribute, IList<EventInfo>> site in eventInfosBySite)
             {
                 string OnSomewhere = "On" + site.Key.Site;
-                AddChildGenerator(new EventFactoryGenerator(BasicFactoryName + OnSomewhere, site.Value));
-                AddChildGenerator(new EventHandlersGenerator(BasicHandlersName + OnSomewhere, site.Value));
+                if (site.Key.DoesGenerateFactory)
+                {
+                    AddChildGenerator(new EventFactoryGenerator(BasicFactoryName + OnSomewhere, site.Value));
+                }
+                if (site.Key.DoesGenerateHandlers)
+                {
+                    AddChildGenerator(new EventHandlersGenerator(BasicHandlersName + OnSomewhere, site.Value));
+                }
             }
         }
 

@@ -15,10 +15,10 @@ namespace TestEvents {
 		public string Name {
 			get { return "TestProtocol"; }
 		}
-		public int MajorVersion {
+		public uint MajorVersion {
 			get { return 1; }
 		}
-		public int MinorVersion {
+		public uint MinorVersion {
 			get { return 0; }
 		}
 	}
@@ -39,10 +39,17 @@ namespace TestEvents {
 				if (!source.Read( systemAddresses[i])) { throw new DeserializationException(); }
 			}
 		}
-		public void SetData(System.String name, System.Int32 age, RakNetDotNet.SystemAddress[] systemAddresses) {
-			this.name = name;
-			this.age = age;
-			this.systemAddresses = systemAddresses;
+		public System.String Name {
+			get { return name; }
+			set { name = value; }
+		}
+		public System.Int32 Age {
+			get { return age; }
+			set { age = value; }
+		}
+		public RakNetDotNet.SystemAddress[] SystemAddresses {
+			get { return systemAddresses; }
+			set { systemAddresses = value; }
 		}
 		public BitStream Stream {
 			get {

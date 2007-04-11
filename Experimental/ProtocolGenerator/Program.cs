@@ -4,9 +4,11 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
+using System.Security.Cryptography;
 using CommandLine;
 using Microsoft.CSharp;
 using Microsoft.VisualBasic;
+using NullFX.Security;
 using NUnit.Framework;
 using ProtocolGenerator.Generators;
 using ProtocolGenerator.Helpers;
@@ -16,8 +18,6 @@ namespace ProtocolGenerator
     // CodeDom is complicated. I use a simpler method. It is Console.WriteLine.
     internal class Program
     {
-        #region Static Functions
-
         private static int Main(string[] args)
         {
             AppArguments parsedArgs = new AppArguments();
@@ -42,11 +42,13 @@ namespace ProtocolGenerator
                 return 2;
             }
 
+            uint minorVersion = GetMinorVersion(parsedArgs.EventTemplatePath);
+
             IGenerator rootGenerator;
             try
             {
                 // TODO - Ctor throws exception. Is it OK?
-                rootGenerator = new RootGenerator(templateAssembly.GetTypes());
+                rootGenerator = new RootGenerator(templateAssembly.GetTypes(), minorVersion);
             }
             catch (SyntaxErrorException e)
             {
@@ -60,6 +62,13 @@ namespace ProtocolGenerator
                 rootGenerator.Write(new CodeWriter(sw));
             }
             return 0;
+        }
+
+        private static uint GetMinorVersion(string path)
+        {
+            byte[] allBytes = File.ReadAllBytes(path);
+            Crc32 crc32 = new Crc32();
+            return crc32.ComputeChecksum(allBytes);
         }
 
         private static bool CompileLibraryInMemory(String sourceName, string[] referencedAssemblies,
@@ -152,10 +161,6 @@ namespace ProtocolGenerator
             return compileOk;
         }
 
-        #endregion
-
-        #region Private Utility Functions
-
         private static string GetGeneratedFilePath(string eventTemplatePath)
         {
             string dir = Path.GetDirectoryName(eventTemplatePath);
@@ -163,8 +168,6 @@ namespace ProtocolGenerator
             string ext = Path.GetExtension(eventTemplatePath);
             return dir + "\\" + file + ".generated" + ext;
         }
-
-        #endregion
     }
 
     [TestFixture]

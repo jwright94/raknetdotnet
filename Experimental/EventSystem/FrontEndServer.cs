@@ -34,7 +34,7 @@ namespace EventSystem
             logger.Debug("Received ChangeColorRequest on ServerActor. color = {0}", t.Color);
             color = t.Color;
             ChangeColor changeColor = new ChangeColor();
-            changeColor.SetData(color);
+            changeColor.Color = color;
             changeColor.TargetOId = dObject.OId;
             comm.Broadcast(changeColor);
         }

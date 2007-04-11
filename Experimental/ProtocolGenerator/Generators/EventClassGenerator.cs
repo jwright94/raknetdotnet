@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using ProtocolGenerator.Helpers;
@@ -30,7 +31,7 @@ namespace ProtocolGenerator.Generators
             o.BeginBlock("public partial class {0} : IEvent {{", type.Name);
             WriteCtorWithId(o);
             WriteCtorWithStream(o);
-            WriteSetData(o);
+            WriteAccessors(o);
             WriteGetStream(o);
             WriteId(o);
             WriteSourceOid(o);
@@ -54,17 +55,18 @@ namespace ProtocolGenerator.Generators
             WriteStreamReadStatement(o, "out", "sourceOId");
             WriteStreamReadStatement(o, "out", "targetOId");
 
-            foreach (FieldInfo field in GetFields())
+            foreach (FieldInfo field in GetSerializableFields())
             {
                 WriteSerializeFieldStatementRecursive(o, false, field.FieldType, field.Name);
             }
             o.EndBlock("}");
         }
 
+        [Obsolete]
         private void WriteSetData(ICodeWriter o)
         {
             StringBuilder arg = new StringBuilder();
-            FieldInfo[] fields = GetFields();
+            FieldInfo[] fields = GetSerializableFields();
             for (int i = 0; i < fields.Length; i++)
             {
                 if (0 < i) arg.Append(", ");
@@ -78,6 +80,15 @@ namespace ProtocolGenerator.Generators
                 o.WriteLine("this.{0} = {0};", field.Name);
             }
             o.EndBlock("}");
+        }
+
+        private void WriteAccessors(ICodeWriter o)
+        {
+            FieldInfo[] fields = GetSerializableFields();
+            foreach (FieldInfo info in fields)
+            {
+                ClassGeneratorHelper.WriteAccessor(o, info.FieldType.ToString(), info.Name);
+            }
         }
 
         private static void WriteStreamReadStatement(ICodeWriter o, string modifier, string variableName)
@@ -95,7 +106,7 @@ namespace ProtocolGenerator.Generators
             WriteStreamWriteStatement(o, "sourceOId");
             WriteStreamWriteStatement(o, "targetOId");
 
-            foreach (FieldInfo field in GetFields())
+            foreach (FieldInfo field in GetSerializableFields())
             {
                 WriteSerializeFieldStatementRecursive(o, true, field.FieldType, field.Name);
             }
@@ -194,7 +205,20 @@ namespace ProtocolGenerator.Generators
             o.EndBlock("}");
         }
 
-        private FieldInfo[] GetFields()
+        private FieldInfo[] GetSerializableFields()
+        {
+            FieldInfo[] allFields = GetAllFields();
+            List<FieldInfo> serializableFields = new List<FieldInfo>(allFields);
+            RemoveNotSerializedFields(serializableFields);
+            return serializableFields.ToArray();
+        }
+
+        private static void RemoveNotSerializedFields(List<FieldInfo> serializableFields)
+        {
+            serializableFields.RemoveAll(delegate(FieldInfo fi) { return fi.IsNotSerialized; });
+        }
+
+        private FieldInfo[] GetAllFields()
         {
             return type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
         }

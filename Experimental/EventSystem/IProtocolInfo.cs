@@ -3,7 +3,7 @@ namespace EventSystem
     public interface IProtocolInfo
     {
         string Name { get; }
-        int MajorVersion { get; }
-        int MinorVersion { get; }
+        uint MajorVersion { get; }
+        uint MinorVersion { get; }
     }
 }

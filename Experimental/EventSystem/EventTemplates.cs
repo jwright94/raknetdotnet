@@ -22,12 +22,6 @@ namespace Events
     public partial class LogOnACK
     {
         private int newOid;
-
-        public int NewOid
-        {
-            get { return newOid; }
-            set { newOid = value; }
-        }
     }
 
     [SiteOfHandling("Client")]
@@ -40,11 +34,6 @@ namespace Events
     public partial class ChangeColorRequest
     {
         private string color;
-        public string Color
-        {
-            get { return color; }
-            set { color = value; }
-        }
     }
 
     [SiteOfHandling("Client")]
@@ -52,10 +41,5 @@ namespace Events
     public partial class ChangeColor
     {
         private string color;
-        public string Color
-        {
-            get { return color; }
-            set { color = value; }
-        }
     }
 }

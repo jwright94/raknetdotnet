@@ -95,10 +95,18 @@ namespace ProtocolGenerator.Helpers
             o.WriteLine("private {0}() {{ }}", className);
         }
 
-        public static void WriteGetProperty(ICodeWriter o, string typeName, string propertyName, string value)
+        public static void WriteGetAccessor(ICodeWriter o, string typeName, string propertyName, string value)
         {
             o.BeginBlock("public {0} {1} {{", typeName, propertyName);
             o.WriteLine("get {{ return {0}; }}", value);
+            o.EndBlock("}");
+        }
+
+        public static void WriteAccessor(ICodeWriter o, string typeName, string variableNameInLowerCamelCase)
+        {
+            o.BeginBlock("public {0} {1} {{", typeName, GetVariableNameInUpperCamelCase(variableNameInLowerCamelCase));
+            o.WriteLine("get {{ return {0}; }}", variableNameInLowerCamelCase);
+            o.WriteLine("set {{ {0} = value; }}", variableNameInLowerCamelCase);
             o.EndBlock("}");
         }
     }
