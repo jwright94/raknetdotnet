@@ -40,6 +40,14 @@ namespace EventSystem
                         {
                             doQuit = true;
                         }
+
+                        if(command == "cc")
+                        {
+                            if(server is Client)
+                            {
+                                ((Client)server).ChangeColor();
+                            }
+                        }
                     }
                     if(doQuit)
                     {

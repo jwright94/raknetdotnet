@@ -1,3 +1,4 @@
+using System;
 using Castle.Core;
 using Castle.Core.Logging;
 
@@ -13,8 +14,6 @@ namespace EventSystem
         {
         }
 
-        #region IServerDoManager Members
-
         public int RegisterObject(IDObject dObject)
         {
             if (!dObjects.ContainsValue(dObject))
@@ -27,6 +26,14 @@ namespace EventSystem
             return -1;
         }
 
-        #endregion
+        public override void PostEvent(IEvent e)
+        {
+            GetObject(e.TargetOId).HandleEvent(e);
+        }
+
+        public override void SendEvent(IEvent e)
+        {
+            throw new System.NotSupportedException();
+        }
     }
 }

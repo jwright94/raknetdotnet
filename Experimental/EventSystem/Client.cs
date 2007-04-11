@@ -2,9 +2,50 @@ using Castle.Core;
 using Castle.Core.Logging;
 using Events;
 using RakNetDotNet;
+using System.Collections.Generic;
 
 namespace EventSystem
 {
+
+
+    sealed class ActorProxy : IActor
+    {
+        private readonly DObject dObject;
+        private readonly ILogger logger;
+        private readonly EventHandlersOnClientActor localHandler;
+        private string color = "red";
+
+        public ActorProxy(DObject dObject, ILogger logger)
+        {
+            this.dObject = dObject;
+            this.logger = logger;
+            localHandler = new EventHandlersOnClientActor();
+            this.dObject.OnGetEvent += OnGetEvent;
+
+            localHandler.ChangeColor += Handler_OnChangeColor;
+        }
+
+        public void ChangeColor()
+        {
+            ChangeColorRequest changeColorRequest = new ChangeColorRequest();
+            changeColorRequest.TargetOId = dObject.OId;
+            changeColorRequest.Color = "blue";
+            dObject.SendEvent(changeColorRequest);
+        }
+
+        private void Handler_OnChangeColor(ChangeColor t)
+        {
+            logger.Debug("Received ChangeColorRequest on ServerActor. color = {0}", t.Color);
+            color = t.Color;
+        }
+
+        private void OnGetEvent(IEvent e)
+        {
+            localHandler.CallHandler(e);
+        }
+
+    }
+
     /// <summary>
     /// test client
     /// </summary>
@@ -30,6 +71,7 @@ namespace EventSystem
             this.logger = logger;
             this.sleepTimer = sleepTimer;
             this.dOManager = dOManager;
+            dOManager.ClientCommunicator = communicator;
         }
 
         public void Startup()
@@ -46,12 +88,15 @@ namespace EventSystem
         private void ConnectionRequestAccepted()
         {
             logger.Debug("ConnectionRequestAccepted on Client");
-            DObject obj = new DObject();
+            DObject obj = new DObject(dOManager);
             obj.OId = 0;
             obj.OnGetEvent += RootDObjectHandler;
             rootDObject = obj;
             dOManager.StoreObject(rootDObject);
             communicator.SendEvent(new LogOnEvent());
+
+
+                        
         }
 
         private void RootDObjectHandler(IEvent e)
@@ -64,24 +109,40 @@ namespace EventSystem
             logger.Debug("Handlers_OnConnectionTest was called on Client.");
         }
 
+        Dictionary<int,ActorProxy> actors = new Dictionary<int,ActorProxy>();
+
         private void Handlers_OnGetLogOnACK(LogOnACK e)
         {
             logger.Info("Got ACK for login", e.NewOid);
-            DObject newObject = new DObject();
+            DObject newObject = new DObject(dOManager);
             newObject.OId = e.NewOid;
             dOManager.StoreObject(newObject);
+
+            //create actor for player
+            ActorProxy newActor = new ActorProxy((DObject)dOManager.GetObject(newObject.OId), LightweightContainer.LogFactory.Create(typeof(ActorProxy)));
+            actors.Add(newObject.OId, newActor);
+        }
+
+        public void ChangeColor()
+        {
+            foreach (KeyValuePair<int, ActorProxy> pair in actors)
+            {
+                pair.Value.ChangeColor();
+            }
         }
 
         public void Update()
         {
             communicator.Update();
-            if (4000 < RakNetBindings.GetTime() - lastSent)
-            {
-                ConnectionTest e = new ConnectionTest();
-                communicator.SendEvent(e);
-                lastSent = RakNetBindings.GetTime();
-                logger.Debug("Sent ConnectionTest.");
-            }
+
+        
+            //if (4000 < RakNetBindings.GetTime() - lastSent)
+            //{
+            //    ConnectionTest e = new ConnectionTest();
+            //    communicator.SendEvent(e);
+            //    lastSent = RakNetBindings.GetTime();
+            //    logger.Debug("Sent ConnectionTest.");
+            //}
         }
 
         public void Shutdown()

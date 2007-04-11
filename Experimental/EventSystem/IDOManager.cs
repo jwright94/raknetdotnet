@@ -4,5 +4,6 @@ namespace EventSystem
     {
         IDObject GetObject(int oId);
         void PostEvent(IEvent e);
+        void SendEvent(IEvent e);
     }
 }

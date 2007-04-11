@@ -14,8 +14,6 @@ namespace EventSystem
             this.logger = logger;
         }
 
-        #region IDOManager Members
-
         public virtual IDObject GetObject(int oId)
         {
             IDObject tempObject;
@@ -27,11 +25,7 @@ namespace EventSystem
             return null;
         }
 
-        public virtual void PostEvent(IEvent e)
-        {
-            GetObject(e.TargetOId).PostEvent(e);
-        }
-
-        #endregion
+        public abstract void PostEvent(IEvent e);
+        public abstract void SendEvent(IEvent e);
     }
 }
