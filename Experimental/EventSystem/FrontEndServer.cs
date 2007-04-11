@@ -59,12 +59,12 @@ namespace EventSystem
             logger.Info("Got login request from client");
             LogOnACK ackEvent = new LogOnACK();
             ackEvent.NewOid = dOManager.RegisterObject(new DObject());
-            communicator.SendEvent(ackEvent, e.Sender);
+            communicator.SendEvent(e.Sender, ackEvent);
             targetAddress = e.Sender;
 
             TestDOEvent newEvent = new TestDOEvent();
             newEvent.TargetOId = 0;
-            communicator.SendEvent(newEvent, targetAddress);
+            communicator.SendEvent(targetAddress, newEvent);
         }
 
         public void Update()

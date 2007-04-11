@@ -93,6 +93,7 @@
     <Compile Include="ProtocolProcessor.cs" />
     <Compile Include="RpcBinder.cs" />
     <Compile Include="ServerDOManager.cs" />
+    <Compile Include="ServerHost.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\RakNetDotNet\RakNetDotNet.csproj">

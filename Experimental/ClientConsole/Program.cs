@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using EventSystem;
 
 namespace ClientConsole
@@ -9,8 +6,9 @@ namespace ClientConsole
     {
         static void Main(string[] args)
         {
-            IServerHost serverHost = new ServerHost();
-            serverHost.Main(args);
+            // サーバとクライアントのプロジェクトを分ける必要はなかった。
+            // しかし同じアセンブリで２つのプロセスを起動するのは、デバッグしづらいので分けた。            
+            ServerHost.Run(args);
         }
     }
 }

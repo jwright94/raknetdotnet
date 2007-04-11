@@ -76,7 +76,7 @@ namespace EventSystem
                 logger.Debug("send data to clients...");
         }
 
-        public void SendEvent(IEvent e, SystemAddress targetAddress)
+        public void SendEvent(SystemAddress targetAddress, IEvent e)
         {
             PacketPriority priority = PacketPriority.HIGH_PRIORITY;
             PacketReliability reliability = PacketReliability.RELIABLE_ORDERED;
