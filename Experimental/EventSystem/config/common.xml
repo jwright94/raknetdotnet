@@ -5,9 +5,9 @@
               type="Castle.Facilities.Logging.LoggingFacility, Castle.Facilities.Logging"
               loggingApi="console" />
   </facilities>
-  <components>   
+  <components>
     <component id="processorregistry"
                service="EventSystem.IProcessorRegistry, EventSystem"
-               type="EventSystem.ProcessorRegistry, EventSystem" />      
+               type="EventSystem.ProcessorRegistry, EventSystem" />
   </components>
 </configuration>

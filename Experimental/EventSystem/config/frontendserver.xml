@@ -2,17 +2,13 @@
 <configuration>
   <include uri="common.xml" />
   <components>
-    <component id="serverdomanager"
-             service="EventSystem.IServerDOManager, EventSystem"
-             type="EventSystem.ServerDOManager, EventSystem">
-    </component>    
     <component id="frontendserver"
                service="EventSystem.IServer, EventSystem"
                type="EventSystem.FrontEndServer, EventSystem">
       <parameters>
         <sleepTimer>30</sleepTimer>
       </parameters>
-    </component>      
+    </component>
     <component id="frontendserver.communicator"
                service="EventSystem.IServerCommunicator, EventSystem"
                type="EventSystem.ServerCommunicator, EventSystem">
@@ -25,6 +21,10 @@
           </dictionary>
         </props>
       </parameters>
+    </component>
+    <component id="frontendserver.domanager"
+             service="EventSystem.IServerDOManager, EventSystem"
+             type="EventSystem.ServerDOManager, EventSystem">
     </component>
   </components>
 </configuration>

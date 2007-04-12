@@ -172,7 +172,7 @@ namespace EventSystem
 
             // If we set stateful instance manually then we can't define setter property. Because DI container set undesirable instance automatically. 
             // And we don't recommend to use SetFoo naming rule.
-            public void InitStateful(Stateful s)
+            public void InjectStateful(Stateful s)
             {
                 stateful = s;
             }

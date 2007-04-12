@@ -200,9 +200,7 @@ namespace ProtocolGenerator.Generators
 
         private void WriteProtocolInfo(ICodeWriter o)
         {
-            o.BeginBlock("public IProtocolInfo ProtocolInfo {");
-            o.WriteLine("get {{ return {0}.Instance; }}", protocolInfoType.FullName);
-            o.EndBlock("}");
+            ClassGeneratorHelper.WriteGetAccessor(o, "IProtocolInfo", "ProtocolInfo", protocolInfoType.FullName+".Instance");
         }
 
         private FieldInfo[] GetSerializableFields()

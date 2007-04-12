@@ -8,8 +8,7 @@ namespace EventSystem
         void Update();
         void Shutdown();
 
-        // TODO - Rename setter property to InitProcessorLocator.
-        IProtocolProcessorLocator ProcessorLocator { get; set; }
+        void InjectProcessorLocator(IProtocolProcessorLocator locator);
 
         void RegisterRakNetEventHandler(RakNetMessageId messageId, RakNetEventHandler handler);
         void UnregisterRakNetEventHandler(RakNetMessageId messageId, RakNetEventHandler handler);

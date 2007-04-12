@@ -5,8 +5,7 @@ namespace ProtocolGenerator.Generators
 {
     internal sealed class NamespaceGenerator : AbstractGenerator
     {
-        public NamespaceGenerator(string namespaceName, Type protocolInfoClass, uint minorVersion, IEnumerable<Type> eventClasses)
-            // TODO: I forgot how to use simbol.
+        public NamespaceGenerator(string namespaceName, Type protocolInfoClass, uint minorVersion, IEnumerable<Type> eventClasses)  // I forgot how to use symbol.
         {
             this.namespaceName = namespaceName;
             ProtocolInfoAttribute protocolInfoAttribute = (ProtocolInfoAttribute)Attribute.GetCustomAttribute(protocolInfoClass, typeof (ProtocolInfoAttribute));

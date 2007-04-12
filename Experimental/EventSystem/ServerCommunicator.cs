@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Castle.Core;
 using Castle.Core.Logging;
@@ -17,12 +18,6 @@ namespace EventSystem
             this.props = props;
             this.logger = logger;
             module = new CommunicatorModule(registry, logger);
-        }
-
-        public IProtocolProcessorLocator ProcessorLocator
-        {
-            get { return module.ProcessorLocator; }
-            set { module.ProcessorLocator = value; }
         }
 
         public void Startup()
@@ -55,48 +50,19 @@ namespace EventSystem
             module.Shutdown();
         }
 
-        // TODO - Refactor this.
-        public void Broadcast(IEvent e)
+        public void InjectProcessorLocator(IProtocolProcessorLocator locator)
         {
-            PacketPriority priority = PacketPriority.HIGH_PRIORITY;
-            PacketReliability reliability = PacketReliability.RELIABLE_ORDERED;
-            byte orderingChannel = 0;
-            uint shiftTimestamp = 0;
-
-            logger.Debug("sending an event: [{0}]", e.ToString());
-
-            bool result = module.RakPeerInterface.RPC(
-                e.ProtocolInfo.Name,
-                e.Stream, priority, reliability, orderingChannel,
-                RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS, true, shiftTimestamp,
-                RakNetBindings.UNASSIGNED_NETWORK_ID, null);
-
-            if (!result)
-                logger.Debug("could not send data to clients!");
-            else
-                logger.Debug("send data to clients...");
+            module.InjectProcessorLocator(locator);
         }
 
-        // TODO - Refactor this.
+        public void Broadcast(IEvent e)
+        {
+            module.SendEvent(RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS, true, e);
+        }
+
         public void SendEvent(SystemAddress targetAddress, IEvent e)
         {
-            PacketPriority priority = PacketPriority.HIGH_PRIORITY;
-            PacketReliability reliability = PacketReliability.RELIABLE_ORDERED;
-            byte orderingChannel = 0;
-            uint shiftTimestamp = 0;
-
-            logger.Debug("sending an event: [{0}]", e.ToString());
-
-            bool result = module.RakPeerInterface.RPC(
-                e.ProtocolInfo.Name,
-                e.Stream, priority, reliability, orderingChannel,
-                targetAddress, false, shiftTimestamp,
-                RakNetBindings.UNASSIGNED_NETWORK_ID, null);
-
-            if (!result)
-                logger.Debug("could not send data to clients!");
-            else
-                logger.Debug("send data to clients...");
+            module.SendEvent(targetAddress, false, e);
         }
 
         public void RegisterRakNetEventHandler(RakNetMessageId messageId, RakNetEventHandler handler)

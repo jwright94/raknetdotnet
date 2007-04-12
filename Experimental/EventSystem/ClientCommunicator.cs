@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Castle.Core;
 using Castle.Core.Logging;
@@ -26,26 +27,9 @@ namespace EventSystem
             module.RakPeerInterface.Connect(serverAddr, serverPort, string.Empty, 0);
         }
 
-        // TODO - Refactor this.
         public void SendEvent(IEvent e)
         {
-            PacketPriority priority = PacketPriority.HIGH_PRIORITY;
-            PacketReliability reliability = PacketReliability.RELIABLE_ORDERED;
-            byte orderingChannel = 0;
-            uint shiftTimestamp = 0;
-
-            logger.Debug("sending an event: [{0}]", e.ToString());
-
-            bool result = module.RakPeerInterface.RPC(
-                e.ProtocolInfo.Name,
-                e.Stream, priority, reliability, orderingChannel,
-                RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS, true, shiftTimestamp,
-                RakNetBindings.UNASSIGNED_NETWORK_ID, null);
-
-            if (!result)
-                logger.Debug("could not send data to the server!");
-            else
-                logger.Debug("send data to the server...");
+            module.SendEvent(RakNetBindings.UNASSIGNED_SYSTEM_ADDRESS, true, e);
         }
 
         public void Startup()
@@ -64,10 +48,9 @@ namespace EventSystem
             module.Shutdown();
         }
 
-        public IProtocolProcessorLocator ProcessorLocator
+        public void InjectProcessorLocator(IProtocolProcessorLocator locator)
         {
-            get { return module.ProcessorLocator; }
-            set { module.ProcessorLocator = value; }
+            module.InjectProcessorLocator(locator);
         }
 
         public void RegisterRakNetEventHandler(RakNetMessageId messageId, RakNetEventHandler handler)

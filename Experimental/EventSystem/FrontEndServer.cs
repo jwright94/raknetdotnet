@@ -1,7 +1,6 @@
 using Castle.Core;
 using Castle.Core.Logging;
 using Events;
-using RakNetDotNet;
 
 namespace EventSystem
 {
@@ -80,7 +79,7 @@ namespace EventSystem
             handlers.ConnectionTest += Handlers_OnConnectionTest;
             handlers.LogOn += Handlers_OnLogOnRequest;
 
-            communicator.ProcessorLocator = new FrontEndServerPPLocator(handlers, dOManager);  // inject manually
+            communicator.InjectProcessorLocator(new FrontEndServerPPLocator(handlers, dOManager));  // inject manually
             communicator.Startup();
         }
 

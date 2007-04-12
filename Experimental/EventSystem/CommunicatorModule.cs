@@ -25,10 +25,9 @@ namespace EventSystem
             this.logger = logger;
         }
 
-        public IProtocolProcessorLocator ProcessorLocator
+        public void InjectProcessorLocator(IProtocolProcessorLocator locator)
         {
-            get { return processorLocator; }
-            set { processorLocator = value; }
+            processorLocator = locator;
         }
 
         public RakPeerInterface RakPeerInterface
@@ -55,7 +54,7 @@ namespace EventSystem
             RakPeerInterface.Startup(maxConnections, threadSleepTimer, new SocketDescriptor[] {socketDescriptor}, 1);
             RakPeerInterface.SetMaximumIncomingConnections(maxConnections);
 
-            binder = new RpcBinder(RakPeerInterface, registry, ProcessorLocator.Processor);
+            binder = new RpcBinder(RakPeerInterface, registry, processorLocator.Processor);
             binder.Bind();
         }
 
@@ -83,7 +82,28 @@ namespace EventSystem
             RakPeerInterface.Shutdown(0);
             binder.Unbind();
             RakNetworkFactory.DestroyRakPeerInterface(RakPeerInterface);
-        }        
+        }
+
+        public void SendEvent(SystemAddress systemAddress, bool broadcast, IEvent e)
+        {
+            PacketPriority priority = PacketPriority.HIGH_PRIORITY;
+            PacketReliability reliability = PacketReliability.RELIABLE_ORDERED;
+            byte orderingChannel = 0;
+            uint shiftTimestamp = 0;
+
+            logger.Debug("sending an event: [{0}]", e.ToString());
+
+            bool result = RakPeerInterface.RPC(
+                e.ProtocolInfo.Name,
+                e.Stream, priority, reliability, orderingChannel,
+                systemAddress, broadcast, shiftTimestamp,
+                RakNetBindings.UNASSIGNED_NETWORK_ID, null);
+
+            if (!result)
+                logger.Debug("could not send data!");
+            else
+                logger.Debug("sent data.");
+        }
 
         public void RegisterRakNetEventHandler(RakNetMessageId messageId, RakNetEventHandler handler)
         {

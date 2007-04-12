@@ -11,7 +11,7 @@
                type="EventSystem.Tests.Stateful, EventSystem">
       <parameters>
         <message>bar</message>
-        </parameters>
+      </parameters>
     </component>
   </components>
 </configuration>

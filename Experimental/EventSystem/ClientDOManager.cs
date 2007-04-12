@@ -1,3 +1,4 @@
+using System;
 using Castle.Core;
 using Castle.Core.Logging;
 
@@ -13,10 +14,9 @@ namespace EventSystem
         {
         }
 
-        public IClientCommunicator ClientCommunicator
+        public void InjectClientCommunicator(IClientCommunicator communicator)
         {
-            get { return communicator; }
-            set { communicator = value; }
+            this.communicator = communicator;
         }
 
         public void StoreObject(IDObject dObject)
@@ -32,7 +32,7 @@ namespace EventSystem
 
         public override void SendEvent(IEvent e)
         {
-            ClientCommunicator.SendEvent(e);
+            communicator.SendEvent(e);
         }
 
         public override void PostEvent(IEvent e)

@@ -65,7 +65,7 @@ namespace EventSystem
             this.logger = logger;
             this.sleepTimer = sleepTimer;
             this.dOManager = dOManager;
-            dOManager.ClientCommunicator = communicator;  // inject manually
+            dOManager.InjectClientCommunicator(communicator);  // inject manually
         }
 
         public void Startup()
@@ -74,7 +74,7 @@ namespace EventSystem
             handlers.ConnectionTest += Handlers_OnConnectionTest;
             handlers.LogOnACK += Handlers_OnGetLogOnACK;
 
-            communicator.ProcessorLocator = new ClientPPLocator(handlers, dOManager); // inject manually
+            communicator.InjectProcessorLocator(new ClientPPLocator(handlers, dOManager)); // inject manually
             communicator.RegisterRakNetEventHandler(RakNetMessageId.ConnectionRequestAccepted, ConnectionRequestAccepted);
             communicator.Startup();
             communicator.Connect();
