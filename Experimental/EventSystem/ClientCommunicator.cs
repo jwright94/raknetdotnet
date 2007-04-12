@@ -72,7 +72,6 @@ namespace EventSystem
 
         #region ICommunicator Members
 
-
         public void RegisterRakNetEventHandler(RakNetMessageId messageId, RakNetEventHandler handler)
         {
             module.RegisterRakNetEventHandler(messageId, handler);

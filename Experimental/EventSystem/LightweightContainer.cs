@@ -9,6 +9,7 @@ namespace EventSystem
 {
 
     #region For Castle MicroKernel
+
     // TODO - I should test setter injection with transient object.
     internal static class LightweightContainer
     {

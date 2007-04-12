@@ -33,7 +33,7 @@ namespace EventSystem
 
         public override void SendEvent(IEvent e)
         {
-            throw new System.NotSupportedException();
+            throw new NotSupportedException();
         }
     }
 }

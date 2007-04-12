@@ -1,14 +1,11 @@
+using System.Collections.Generic;
 using Castle.Core;
 using Castle.Core.Logging;
 using Events;
-using RakNetDotNet;
-using System.Collections.Generic;
 
 namespace EventSystem
 {
-
-
-    sealed class ActorProxy : IActor
+    internal sealed class ActorProxy : IActor
     {
         private readonly DObject dObject;
         private readonly ILogger logger;
@@ -43,7 +40,6 @@ namespace EventSystem
         {
             localHandler.CallHandler(e);
         }
-
     }
 
     /// <summary>
@@ -94,9 +90,6 @@ namespace EventSystem
             rootDObject = obj;
             dOManager.StoreObject(rootDObject);
             communicator.SendEvent(new LogOnEvent());
-
-
-                        
         }
 
         private void RootDObjectHandler(IEvent e)
@@ -109,7 +102,7 @@ namespace EventSystem
             logger.Debug("Handlers_OnConnectionTest was called on Client.");
         }
 
-        Dictionary<int,ActorProxy> actors = new Dictionary<int,ActorProxy>();
+        private Dictionary<int, ActorProxy> actors = new Dictionary<int, ActorProxy>();
 
         private void Handlers_OnGetLogOnACK(LogOnACK e)
         {
@@ -119,7 +112,7 @@ namespace EventSystem
             dOManager.StoreObject(newObject);
 
             //create actor for player
-            ActorProxy newActor = new ActorProxy((DObject)dOManager.GetObject(newObject.OId), LightweightContainer.LogFactory.Create(typeof(ActorProxy)));
+            ActorProxy newActor = new ActorProxy((DObject)dOManager.GetObject(newObject.OId), LightweightContainer.LogFactory.Create(typeof (ActorProxy)));
             actors.Add(newObject.OId, newActor);
         }
 
@@ -135,7 +128,7 @@ namespace EventSystem
         {
             communicator.Update();
 
-        
+
             //if (4000 < RakNetBindings.GetTime() - lastSent)
             //{
             //    ConnectionTest e = new ConnectionTest();

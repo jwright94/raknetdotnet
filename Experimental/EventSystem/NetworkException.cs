@@ -6,7 +6,9 @@ namespace EventSystem
     internal class NetworkException : ApplicationException
     {
         public NetworkException()
-        {}
+        {
+        }
+
         public NetworkException(string message)
             : base(message)
         {
@@ -17,11 +19,10 @@ namespace EventSystem
     {
         public DeserializationException() : base("Deserialization is failed.")
         {
-            
         }
+
         public DeserializationException(string message) : base(message)
         {
-            
         }
     }
 
@@ -33,12 +34,11 @@ namespace EventSystem
 
         public UnknownEventIdException(string message) : base(message)
         {
-            
         }
+
         public UnknownEventIdException(int eventId, string thrower)
             : base(string.Format("Event id {0} not recognized by {1}!", eventId, thrower))
         {
-            
         }
     }
 }

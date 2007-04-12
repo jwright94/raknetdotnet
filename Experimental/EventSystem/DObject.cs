@@ -11,7 +11,7 @@ namespace EventSystem
 
         public DObject(IDOManager manaager)
         {
-            this.manager = manaager;
+            manager = manaager;
         }
 
         public int OId

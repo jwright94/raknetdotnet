@@ -1,4 +1,3 @@
-using System;
 using Castle.Core;
 using Castle.Core.Logging;
 using Events;
@@ -6,18 +5,18 @@ using RakNetDotNet;
 
 namespace EventSystem
 {
-    interface IActor
+    internal interface IActor
     {
-        
     }
 
-    sealed class ServerActor : IActor
+    internal sealed class ServerActor : IActor
     {
         private readonly DObject dObject;
         private readonly ILogger logger;
         private readonly IServerCommunicator comm;
         private readonly EventHandlersOnServerActor localHandler;
         private string color = "red";
+
         public ServerActor(DObject dObject, ILogger logger, IServerCommunicator comm)
         {
             this.dObject = dObject;
@@ -100,16 +99,14 @@ namespace EventSystem
             logger.Info("Got login request from client");
             LogOnACK ackEvent = new LogOnACK();
 
-            
 
             ackEvent.NewOid = dOManager.RegisterObject(new DObject(dOManager));
             communicator.SendEvent(e.Sender, ackEvent);
             targetAddress = e.Sender;
 
             //create actor for player
-            ServerActor newActor = new ServerActor((DObject)dOManager.GetObject(ackEvent.NewOid), LightweightContainer.LogFactory.Create(typeof(ServerActor)), communicator);
+            ServerActor newActor = new ServerActor((DObject)dOManager.GetObject(ackEvent.NewOid), LightweightContainer.LogFactory.Create(typeof (ServerActor)), communicator);
 
-            
 
             TestDOEvent newEvent = new TestDOEvent();
             newEvent.TargetOId = 0;

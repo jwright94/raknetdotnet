@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using System.Threading;
 using Castle.Core.Logging;
 using CommandLine;
@@ -30,7 +29,7 @@ namespace EventSystem
             BeginReadThread();
             while (true)
             {
-                lock(commandLineQueue)
+                lock (commandLineQueue)
                 {
                     bool doQuit = false;
                     while (0 < commandLineQueue.Count)
@@ -41,15 +40,15 @@ namespace EventSystem
                             doQuit = true;
                         }
 
-                        if(command == "cc")
+                        if (command == "cc")
                         {
-                            if(server is Client)
+                            if (server is Client)
                             {
                                 ((Client)server).ChangeColor();
                             }
                         }
                     }
-                    if(doQuit)
+                    if (doQuit)
                     {
                         break;
                     }
@@ -89,7 +88,9 @@ namespace EventSystem
         // Volatile is used as hint to the compiler that this data
         // member will be accessed by multiple threads.
         private volatile bool shouldStop;
+
         private delegate void AsyncReadCommandDelegate();
+
         private Queue<string> commandLineQueue = new Queue<string>();
     }
 }

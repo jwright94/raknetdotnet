@@ -4,7 +4,7 @@ using Castle.Core.Logging;
 namespace EventSystem
 {
     [Transient]
-    internal  class ClientDOManager : DOManager, IClientDOManager
+    internal class ClientDOManager : DOManager, IClientDOManager
     {
         private IClientCommunicator comm;
 

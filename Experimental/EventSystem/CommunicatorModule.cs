@@ -1,14 +1,14 @@
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using Castle.Core.Logging;
 using RakNetDotNet;
-using System;
 
 namespace EventSystem
 {
-    delegate void RakNetEventHandler();
+    internal delegate void RakNetEventHandler();
 
-    enum RakNetMessageId
+    internal enum RakNetMessageId
     {
         RemoteDisconnectionNotification = RakNetBindings.ID_REMOTE_DISCONNECTION_NOTIFICATION,
         RemoteConnectionLost = RakNetBindings.ID_REMOTE_CONNECTION_LOST,
@@ -97,7 +97,7 @@ namespace EventSystem
             RakNetworkFactory.DestroyRakPeerInterface(RakPeerInterface);
         }
 
-        System.Collections.Generic.Dictionary<RakNetMessageId, RakNetEventHandler> rakNetHandlers = new System.Collections.Generic.Dictionary<RakNetMessageId, RakNetEventHandler>();
+        private Dictionary<RakNetMessageId, RakNetEventHandler> rakNetHandlers = new Dictionary<RakNetMessageId, RakNetEventHandler>();
 
         public void RegisterRakNetEventHandler(RakNetMessageId messageId, RakNetEventHandler handler)
         {

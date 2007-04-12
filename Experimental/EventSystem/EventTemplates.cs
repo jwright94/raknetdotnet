@@ -2,7 +2,7 @@ using ProtocolGenerator;
 
 namespace Events
 {
-    [ProtocolInfoAttribute("SampleProtocol", 1)]
+    [ProtocolInfo("SampleProtocol", 1)]
     public partial class ProtocolInfo
     {
     }
