@@ -7,9 +7,6 @@ using NUnit.Framework;
 
 namespace EventSystem
 {
-
-    #region For Castle MicroKernel
-
     // TODO - I should test setter injection with transient object.
     internal static class LightweightContainer
     {
@@ -163,6 +160,24 @@ namespace EventSystem
             }
         }
 
+        [Transient]
+        internal sealed class DependsStateful
+        {
+            private Stateful stateful;
+
+            public Stateful Stateful
+            {
+                get { return stateful; }
+            }
+
+            // If we set stateful instance manually then we can't define setter property. Because DI container set undesirable instance automatically. 
+            // And we don't recommend to use SetFoo naming rule.
+            public void InitStateful(Stateful s)
+            {
+                stateful = s;
+            }
+        }
+
         [TestFixture]
         public sealed class MicroKernelSingletonTestCase
         {
@@ -174,6 +189,7 @@ namespace EventSystem
                 container.AddComponent("anotherinstance", typeof (SingletonUsesAtAnyTime));
                 container.AddComponent("resettable", typeof (ResettableSingleton));
                 container.AddComponent("incrementor", typeof (CountIncrementor));
+                container.AddComponent("dependsstateful", typeof(DependsStateful));
             }
 
             [TearDown]
@@ -242,6 +258,13 @@ namespace EventSystem
                 Assert.AreNotEqual(a.Message, b.Message);
             }
 
+            [Test]
+            public void AvoidSetterInjection()
+            {
+                DependsStateful ds = container.Resolve<DependsStateful>();
+                Assert.IsNull(ds.Stateful);
+            }
+
             private IWindsorContainer container;
         }
 
@@ -262,8 +285,6 @@ namespace EventSystem
             }
         }
     }
-
-    #endregion
 
     #endregion
 }
