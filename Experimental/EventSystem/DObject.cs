@@ -1,17 +1,17 @@
 namespace EventSystem
 {
-    public class DObject : IDObject
+    internal delegate void HandleEventDelegate(IEvent e);
+
+    internal class DObject : IDObject
     {
         private readonly IDOManager manager;
         private int oId;
+
         public HandleEventDelegate OnGetEvent;
 
-
-        public delegate void HandleEventDelegate(IEvent e);
-
-        public DObject(IDOManager manaager)
+        public DObject(IDOManager manager)
         {
-            manager = manaager;
+            this.manager = manager;
         }
 
         public int OId
@@ -32,7 +32,6 @@ namespace EventSystem
         {
             manager.PostEvent(e);
         }
-
 
         public void SendEvent(IEvent e)
         {

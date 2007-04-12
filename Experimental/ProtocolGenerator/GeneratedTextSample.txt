@@ -6,7 +6,7 @@ using Castle.Core;
 using RakNetDotNet;
 using EventSystem;
 namespace TestEvents {
-	public partial class ProtocolInfo : IProtocolInfo {
+	internal partial class ProtocolInfo : IProtocolInfo {
 		private static ProtocolInfo instance = new ProtocolInfo();
 		public static ProtocolInfo Instance {
 			get { return instance; }
@@ -22,7 +22,7 @@ namespace TestEvents {
 			get { return 0; }
 		}
 	}
-	public partial class SimpleEvent : IEvent {
+	internal partial class SimpleEvent : IEvent {
 		public SimpleEvent() {
 			id = 0;
 		}
@@ -91,7 +91,7 @@ namespace TestEvents {
 		}
 	}
 	[Transient]
-	sealed class EventFactoryOnServer : IEventFactory {
+	internal sealed class EventFactoryOnServer : IEventFactory {
 		public IEvent RecreateSimpleEvent(BitStream source) {
 			Debug.Assert(source != null);
 			IEvent _event;
@@ -111,7 +111,7 @@ namespace TestEvents {
 		}
 	}
 	[Transient]
-	sealed class EventHandlersOnServer : IEventHandlers {
+	internal sealed class EventHandlersOnServer : IEventHandlers {
 		public void CallHandler(IEvent e) {
 			switch (e.Id) {
 				case 0:

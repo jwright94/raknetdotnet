@@ -10,9 +10,10 @@ namespace EventSystem
         private readonly string protocolName;
         private readonly IEventFactory factory;
         private readonly IEventHandlers handlers;
+        private readonly IDOManager dOManager;
         private readonly ILogger logger;
+
         private IEventExceptionCallbacks callbacks;
-        private IDOManager dOManager;
 
         /// <summary>
         /// 
@@ -20,6 +21,7 @@ namespace EventSystem
         /// <param name="protocolName"></param>
         /// <param name="factory"></param>
         /// <param name="handlers"></param>
+        /// <param name="dOManager"></param>
         /// <param name="logger"></param>
         public ProtocolProcessor(string protocolName, IEventFactory factory, IEventHandlers handlers, IDOManager dOManager, ILogger logger)
         {
@@ -50,12 +52,12 @@ namespace EventSystem
                 e.Sender = _params.sender;
                 dOManager.PostEvent(e);
             }
-            catch (NetworkException) // TODO: Add new type of network exception. Call accurate callback.
+            catch (NetworkException)  // TODO: Call accurate callback.
             {
                 logger.Warn("Ran off end of packet.");
                 if (Callbacks != null)
                 {
-                    Callbacks.OnRanOffEndOfBitstream(_params.sender); // TODO: This is ad-hoc.
+                    Callbacks.OnRanOffEndOfBitstream(_params.sender);  // TODO: This is ad-hoc.
                 }
             }
         }

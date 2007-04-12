@@ -3,42 +3,42 @@ using ProtocolGenerator;
 namespace Events
 {
     [ProtocolInfo("SampleProtocol", 1)]
-    public partial class ProtocolInfo
+    internal partial class ProtocolInfo
     {
     }
 
     [SiteOfHandling("FrontEndServer")]
     [SiteOfHandling("Client")]
-    public partial class ConnectionTest
+    internal partial class ConnectionTest
     {
     }
 
     [SiteOfHandling("FrontEndServer")]
-    public partial class LogOnEvent
+    internal partial class LogOnEvent
     {
     }
 
     [SiteOfHandling("Client")]
-    public partial class LogOnACK
+    internal partial class LogOnACK
     {
-        private int newOid;
+        private int newOId;
     }
 
     [SiteOfHandling("Client")]
-    public partial class TestDOEvent
+    internal partial class TestDOEvent
     {
     }
 
     [SiteOfHandling("FrontEndServer")]
     [SiteOfHandling("ServerActor")]
-    public partial class ChangeColorRequest
+    internal partial class ChangeColorRequest
     {
         private string color;
     }
 
     [SiteOfHandling("Client")]
     [SiteOfHandling("ClientActor")]
-    public partial class ChangeColor
+    internal partial class ChangeColor
     {
         private string color;
     }

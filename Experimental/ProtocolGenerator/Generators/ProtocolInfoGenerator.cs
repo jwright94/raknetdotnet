@@ -30,7 +30,7 @@ namespace ProtocolGenerator.Generators
         {
             string className = t.Name;
             string protocolName = attr.ProtocolName;
-            o.BeginBlock("public partial class {0} : IProtocolInfo {{", className);
+            o.BeginBlock("internal partial class {0} : IProtocolInfo {{", className);
             ClassGeneratorHelper.WriteSingleton(o, className);
             WriteName(o, protocolName);
             WriteVersionProperty(o, "MajorVersion", attr.MajorVersion);

@@ -28,7 +28,7 @@ namespace ProtocolGenerator.Generators
 
         public void Write(ICodeWriter o)
         {
-            o.BeginBlock("public partial class {0} : IEvent {{", type.Name);
+            o.BeginBlock("internal partial class {0} : IEvent {{", type.Name);
             WriteCtorWithId(o);
             WriteCtorWithStream(o);
             WriteAccessors(o);

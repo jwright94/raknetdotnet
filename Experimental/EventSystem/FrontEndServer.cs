@@ -13,52 +13,51 @@ namespace EventSystem
     {
         private readonly DObject dObject;
         private readonly ILogger logger;
-        private readonly IServerCommunicator comm;
-        private readonly EventHandlersOnServerActor localHandler;
+        private readonly IServerCommunicator communicator;
+        private readonly EventHandlersOnServerActor handlers;
+
         private string color = "red";
 
-        public ServerActor(DObject dObject, ILogger logger, IServerCommunicator comm)
+        public ServerActor(DObject dObject, ILogger logger, IServerCommunicator communicator)
         {
             this.dObject = dObject;
             this.logger = logger;
-            this.comm = comm;
-            localHandler = new EventHandlersOnServerActor();
-            this.dObject.OnGetEvent += OnGetEvent;
+            this.communicator = communicator;
+            handlers = new EventHandlersOnServerActor();
 
-            localHandler.ChangeColorRequest += Handler_OnChangeColorRequest;
+            this.dObject.OnGetEvent += OnGetEvent;
+            handlers.ChangeColorRequest += Handler_OnChangeColorRequest;
         }
 
-        private void Handler_OnChangeColorRequest(ChangeColorRequest t)
+        private void Handler_OnChangeColorRequest(ChangeColorRequest e)
         {
-            logger.Debug("Received ChangeColorRequest on ServerActor. color = {0}", t.Color);
-            color = t.Color;
+            logger.Debug("Received ChangeColorRequest on ServerActor. color = {0}", e.Color);
+
+            color = e.Color;
+
             ChangeColor changeColor = new ChangeColor();
             changeColor.Color = color;
             changeColor.TargetOId = dObject.OId;
-            comm.Broadcast(changeColor);
+
+            communicator.Broadcast(changeColor);
         }
 
         private void OnGetEvent(IEvent e)
         {
-            localHandler.CallHandler(e);
+            handlers.CallHandler(e);
         }
     }
 
     [Transient]
     internal sealed class FrontEndServer : IServer
     {
-        private readonly ILogger logger;
         private readonly IServerCommunicator communicator;
+        private readonly ILogger logger;        
         private readonly int sleepTimer;
         private readonly IServerDOManager dOManager;
+
         private IDObject rootDObject;
         private EventHandlersOnFrontEndServer handlers;
-        private SystemAddress targetAddress;
-
-        public int SleepTimer
-        {
-            get { return sleepTimer; }
-        }
 
         public FrontEndServer(IServerCommunicator communicator, ILogger logger, int sleepTimer, IServerDOManager dOManager)
         {
@@ -66,11 +65,13 @@ namespace EventSystem
             this.logger = logger;
             this.sleepTimer = sleepTimer;
             this.dOManager = dOManager;
-            //Create root DObject
-            DObject obj = new DObject(dOManager);
-            obj.OnGetEvent += RootDObjectHandler;
-            rootDObject = obj;
-            dOManager.RegisterObject(rootDObject);
+
+            // Create root DObject
+            // TODO - DObject should have OnGetEvent property.
+            DObject newObject = new DObject(dOManager);
+            newObject.OnGetEvent += RootDObjectHandler;
+            rootDObject = newObject;
+            dOManager.RegisterObject(newObject);
         }
 
         public void Startup()
@@ -78,8 +79,14 @@ namespace EventSystem
             handlers = new EventHandlersOnFrontEndServer();
             handlers.ConnectionTest += Handlers_OnConnectionTest;
             handlers.LogOn += Handlers_OnLogOnRequest;
-            communicator.ProcessorLocator = new FrontEndServerPPLocator(handlers, dOManager); // inject manually
+
+            communicator.ProcessorLocator = new FrontEndServerPPLocator(handlers, dOManager);  // inject manually
             communicator.Startup();
+        }
+
+        public int SleepTimer
+        {
+            get { return sleepTimer; }
         }
 
         private void RootDObjectHandler(IEvent e)
@@ -87,30 +94,29 @@ namespace EventSystem
             handlers.CallHandler(e);
         }
 
-        private void Handlers_OnConnectionTest(ConnectionTest t)
+        private void Handlers_OnConnectionTest(ConnectionTest e)
         {
             logger.Debug("Handlers_OnConnectionTest was called on FrontEndServer.");
-            ConnectionTest response = new ConnectionTest();
-            communicator.Broadcast(t); // echo back.
+            communicator.Broadcast(e);  // echo back.
         }
 
         private void Handlers_OnLogOnRequest(LogOnEvent e)
         {
             logger.Info("Got login request from client");
+            
+            DObject newObject = new DObject(dOManager);
             LogOnACK ackEvent = new LogOnACK();
-
-
-            ackEvent.NewOid = dOManager.RegisterObject(new DObject(dOManager));
+            ackEvent.NewOId = dOManager.RegisterObject(newObject);
             communicator.SendEvent(e.Sender, ackEvent);
-            targetAddress = e.Sender;
 
-            //create actor for player
-            ServerActor newActor = new ServerActor((DObject)dOManager.GetObject(ackEvent.NewOid), LightweightContainer.LogFactory.Create(typeof (ServerActor)), communicator);
-
-
-            TestDOEvent newEvent = new TestDOEvent();
-            newEvent.TargetOId = 0;
-            communicator.SendEvent(targetAddress, newEvent);
+            // create actor for player
+            ILogger newLogger = LightweightContainer.LogFactory.Create(typeof (ServerActor));
+            ServerActor newActor = new ServerActor(newObject, newLogger, communicator);
+            
+            // TODO - Is this obsolete?
+            TestDOEvent testDOEvent = new TestDOEvent();
+            testDOEvent.TargetOId = 0;
+            communicator.SendEvent(e.Sender, testDOEvent);
         }
 
         public void Update()

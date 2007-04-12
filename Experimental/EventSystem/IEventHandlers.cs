@@ -2,6 +2,7 @@ namespace EventSystem
 {
     internal interface IEventHandlers
     {
-        void CallHandler(IEvent e); // TODO: Add calling context
+        // TODO: Add calling context
+        void CallHandler(IEvent e);
     }
 }

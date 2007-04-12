@@ -55,6 +55,7 @@ namespace EventSystem
             module.Shutdown();
         }
 
+        // TODO - Refactor this.
         public void Broadcast(IEvent e)
         {
             PacketPriority priority = PacketPriority.HIGH_PRIORITY;
@@ -76,6 +77,7 @@ namespace EventSystem
                 logger.Debug("send data to clients...");
         }
 
+        // TODO - Refactor this.
         public void SendEvent(SystemAddress targetAddress, IEvent e)
         {
             PacketPriority priority = PacketPriority.HIGH_PRIORITY;
@@ -97,8 +99,6 @@ namespace EventSystem
                 logger.Debug("send data to clients...");
         }
 
-        #region ICommunicator Members
-
         public void RegisterRakNetEventHandler(RakNetMessageId messageId, RakNetEventHandler handler)
         {
             module.RegisterRakNetEventHandler(messageId, handler);
@@ -108,7 +108,5 @@ namespace EventSystem
         {
             module.UnregisterRakNetEventHandler(messageId, handler);
         }
-
-        #endregion
     }
 }

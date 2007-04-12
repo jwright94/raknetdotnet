@@ -1,6 +1,6 @@
 namespace EventSystem
 {
-    public interface IProtocolInfo
+    internal interface IProtocolInfo
     {
         string Name { get; }
         uint MajorVersion { get; }

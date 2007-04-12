@@ -24,7 +24,7 @@ namespace ProtocolGenerator.Generators
         public void Write(ICodeWriter o)
         {
             o.WriteLine("[Transient]");
-            o.BeginBlock("sealed class {0} : IEventFactory {{", factoryName);
+            o.BeginBlock("internal sealed class {0} : IEventFactory {{", factoryName);
             WriteRecreateEvent(o);
             o.EndBlock("}");
         }

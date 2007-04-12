@@ -1,6 +1,6 @@
 namespace EventSystem
 {
-    public interface IServerDOManager : IDOManager
+    internal interface IServerDOManager : IDOManager
     {
         int RegisterObject(IDObject dObject);
     }

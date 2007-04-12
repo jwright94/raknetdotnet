@@ -3,11 +3,10 @@ using Castle.Core.Logging;
 
 namespace EventSystem
 {
-    public abstract class DOManager : IDOManager
+    internal abstract class DOManager : IDOManager
     {
-        protected Dictionary<int, IDObject> dObjects = new Dictionary<int, IDObject>();
-
         protected ILogger logger;
+        protected IDictionary<int, IDObject> dObjects = new Dictionary<int, IDObject>();
 
         public DOManager(ILogger logger)
         {
@@ -21,6 +20,7 @@ namespace EventSystem
             {
                 return tempObject;
             }
+
             logger.Error("No DObject found with object Id. {0}", oId);
             return null;
         }

@@ -1,6 +1,6 @@
 namespace EventSystem
 {
-    public interface IDOManager
+    internal interface IDOManager
     {
         IDObject GetObject(int oId);
         void PostEvent(IEvent e);

@@ -6,7 +6,7 @@ namespace EventSystem
     [Transient]
     internal class ClientDOManager : DOManager, IClientDOManager
     {
-        private IClientCommunicator comm;
+        private IClientCommunicator communicator;
 
         public ClientDOManager(ILogger logger)
             : base(logger)
@@ -15,17 +15,18 @@ namespace EventSystem
 
         public IClientCommunicator ClientCommunicator
         {
-            get { return comm; }
-            set { comm = value; }
+            get { return communicator; }
+            set { communicator = value; }
         }
 
         public void StoreObject(IDObject dObject)
         {
-            if (!dObjects.ContainsValue(dObject))
+            if (!dObjects.Values.Contains(dObject))
             {
                 dObjects.Add(dObject.OId, dObject);
                 return;
             }
+
             logger.Error("Duplicate DObject found.", dObject.OId);
         }
 

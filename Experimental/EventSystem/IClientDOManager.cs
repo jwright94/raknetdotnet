@@ -4,8 +4,7 @@ namespace EventSystem
     {
         void StoreObject(IDObject dObject);
 
-        void SendEvent(IEvent e);
-
+        // TODO - DI container set undesirable instance automatically.
         IClientCommunicator ClientCommunicator { get; set; }
     }
 }

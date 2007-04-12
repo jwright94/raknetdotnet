@@ -1,6 +1,6 @@
 namespace EventSystem
 {
-    public interface IDObject
+    internal interface IDObject
     {
         int OId { get; set; }
         void HandleEvent(IEvent e);

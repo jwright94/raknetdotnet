@@ -6,20 +6,6 @@ using RakNetDotNet;
 
 namespace EventSystem
 {
-    internal delegate void RakNetEventHandler();
-
-    internal enum RakNetMessageId
-    {
-        RemoteDisconnectionNotification = RakNetBindings.ID_REMOTE_DISCONNECTION_NOTIFICATION,
-        RemoteConnectionLost = RakNetBindings.ID_REMOTE_CONNECTION_LOST,
-        RemoteNewIncomingConnection = RakNetBindings.ID_REMOTE_NEW_INCOMING_CONNECTION,
-        ConnectionRequestAccepted = RakNetBindings.ID_CONNECTION_REQUEST_ACCEPTED,
-        NewIncomingConnection = RakNetBindings.ID_NEW_INCOMING_CONNECTION,
-        NoFreeIncomingConnections = RakNetBindings.ID_NO_FREE_INCOMING_CONNECTIONS,
-        DisconnectionNotification = RakNetBindings.ID_DISCONNECTION_NOTIFICATION,
-        ConnectionLost = RakNetBindings.ID_CONNECTION_LOST,
-    }
-
     /// <summary>
     /// for implementation
     /// </summary>
@@ -27,9 +13,11 @@ namespace EventSystem
     {
         private readonly IProcessorRegistry registry;
         private readonly ILogger logger;
+
         private RakPeerInterface rakPeerInterface;
         private IProtocolProcessorLocator processorLocator;
         private IRpcBinder binder;
+        private IDictionary<RakNetMessageId, RakNetEventHandler> rakNetEventHandlers = new Dictionary<RakNetMessageId, RakNetEventHandler>();
 
         public CommunicatorModule(IProcessorRegistry registry, ILogger logger)
         {
@@ -95,24 +83,22 @@ namespace EventSystem
             RakPeerInterface.Shutdown(0);
             binder.Unbind();
             RakNetworkFactory.DestroyRakPeerInterface(RakPeerInterface);
-        }
-
-        private Dictionary<RakNetMessageId, RakNetEventHandler> rakNetHandlers = new Dictionary<RakNetMessageId, RakNetEventHandler>();
+        }        
 
         public void RegisterRakNetEventHandler(RakNetMessageId messageId, RakNetEventHandler handler)
         {
-            rakNetHandlers.Add(messageId, handler);
+            rakNetEventHandlers.Add(messageId, handler);
         }
 
         public void UnregisterRakNetEventHandler(RakNetMessageId messageId, RakNetEventHandler handler)
         {
-            rakNetHandlers.Remove(messageId);
+            rakNetEventHandlers.Remove(messageId);
         }
 
         private void CallRakNetEventHandler(RakNetMessageId messageId)
         {
             RakNetEventHandler handler;
-            if (rakNetHandlers.TryGetValue(messageId, out handler))
+            if (rakNetEventHandlers.TryGetValue(messageId, out handler))
             {
                 try
                 {
@@ -132,7 +118,6 @@ namespace EventSystem
             BitStream inBitStream = new BitStream(packet, false);
             byte packetIdentifier;
             inBitStream.Read(out packetIdentifier);
-
             switch (packetIdentifier)
             {
                 case RakNetBindings.ID_REMOTE_DISCONNECTION_NOTIFICATION:
@@ -181,5 +166,19 @@ namespace EventSystem
                     break;
             }
         }
+    }
+
+    internal delegate void RakNetEventHandler();
+
+    internal enum RakNetMessageId
+    {
+        RemoteDisconnectionNotification = RakNetBindings.ID_REMOTE_DISCONNECTION_NOTIFICATION,
+        RemoteConnectionLost = RakNetBindings.ID_REMOTE_CONNECTION_LOST,
+        RemoteNewIncomingConnection = RakNetBindings.ID_REMOTE_NEW_INCOMING_CONNECTION,
+        ConnectionRequestAccepted = RakNetBindings.ID_CONNECTION_REQUEST_ACCEPTED,
+        NewIncomingConnection = RakNetBindings.ID_NEW_INCOMING_CONNECTION,
+        NoFreeIncomingConnections = RakNetBindings.ID_NO_FREE_INCOMING_CONNECTIONS,
+        DisconnectionNotification = RakNetBindings.ID_DISCONNECTION_NOTIFICATION,
+        ConnectionLost = RakNetBindings.ID_CONNECTION_LOST,
     }
 }

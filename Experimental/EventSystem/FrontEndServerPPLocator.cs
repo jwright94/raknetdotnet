@@ -1,16 +1,18 @@
+using Castle.Core.Logging;
 using Events;
 
 namespace EventSystem
 {
     internal sealed class FrontEndServerPPLocator : IProtocolProcessorLocator
     {
+        private readonly IProtocolProcessor processor;
+
         public FrontEndServerPPLocator(EventHandlersOnFrontEndServer handlers, IDOManager dOManager)
         {
             EventFactoryOnFrontEndServer factory = new EventFactoryOnFrontEndServer();
-            processor = new ProtocolProcessor(ProtocolInfo.Instance.Name, factory, handlers, dOManager, LightweightContainer.LogFactory.Create(typeof (ProtocolProcessor)));
+            ILogger logger = LightweightContainer.LogFactory.Create(typeof (ProtocolProcessor));
+            processor = new ProtocolProcessor(ProtocolInfo.Instance.Name, factory, handlers, dOManager, logger);
         }
-
-        private readonly IProtocolProcessor processor;
 
         public IProtocolProcessor Processor
         {

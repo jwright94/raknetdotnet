@@ -7,10 +7,11 @@ namespace EventSystem
         [DefaultArgument(ArgumentType.Required, HelpText = "Configuration xml filename.")] public string ConfigurationFilename;
     }
 
-    internal class Program
+    public class Program
     {
-        private static void Main(string[] args)
+        public static void Main(string[] args)
         {
+            // TODO - We can remove IServerHost and ServerHost.
             IServerHost host = new ServerHost();
             host.Run(args);
         }

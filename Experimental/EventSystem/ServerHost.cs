@@ -11,6 +11,7 @@ namespace EventSystem
         void Run(string[] args);
     }
 
+    // TODO - Separate class about async command line processor.
     public sealed class ServerHost : IServerHost
     {
         public void Run(string[] args)
@@ -39,12 +40,12 @@ namespace EventSystem
                         {
                             doQuit = true;
                         }
-
-                        if (command == "cc")
+                        else if (command == "cc")
                         {
-                            if (server is Client)
+                            Client client = server as Client;
+                            if (client != null)
                             {
-                                ((Client)server).ChangeColor();
+                                client.ChangeColor();
                             }
                         }
                     }
@@ -67,9 +68,6 @@ namespace EventSystem
             ar = readDelegate.BeginInvoke(null, null);
         }
 
-        /// <summary>
-        /// 標準入力からコマンドを読み込みcommandQueueに入れる。
-        /// </summary>
         private void AsyncReadCommand()
         {
             while (!shouldStop)
@@ -83,14 +81,14 @@ namespace EventSystem
             }
         }
 
+        private Queue<string> commandLineQueue = new Queue<string>();
+
         private AsyncReadCommandDelegate readDelegate;
         private IAsyncResult ar;
         // Volatile is used as hint to the compiler that this data
         // member will be accessed by multiple threads.
         private volatile bool shouldStop;
-
-        private delegate void AsyncReadCommandDelegate();
-
-        private Queue<string> commandLineQueue = new Queue<string>();
     }
+
+    internal delegate void AsyncReadCommandDelegate();
 }
